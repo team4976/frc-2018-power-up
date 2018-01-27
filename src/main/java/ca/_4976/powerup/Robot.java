@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 public final class Robot extends IterativeRobot {
 
     public static OI oi;
+    public static EndGame eg;
 
     @Override public void robotInit() {
         oi = new OI();
@@ -29,6 +30,8 @@ public final class Robot extends IterativeRobot {
     }
 
     @Override public void teleopPeriodic(){
+        eg = new EndGame();
+
 
     }
 

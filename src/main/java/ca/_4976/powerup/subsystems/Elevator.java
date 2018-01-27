@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public final class Elevator extends Subsystem implements Runnable, Sendable{
 
-    private TalonSRX talon1 = new TalonSRX(0);
+    private final TalonSRX liftMotor = new TalonSRX(2);
+    private final TalonSRX liftSlave = new TalonSRX(3);
+
     public boolean end = false;
 
     @Override
@@ -17,16 +19,42 @@ public final class Elevator extends Subsystem implements Runnable, Sendable{
 
     @Override
     public void run() {
-        //CODE GOES HERE
 
+    }
+
+    public double getHeight(){
+        return 0;
+    }
+
+    public void setHeight(int height){
 
     }
 
     public void moveUp(){
-        talon1.set(ControlMode.PercentOutput, 0.5);
+
     }
 
     public void moveDown(){
-        talon1.set(ControlMode.PercentOutput, - 0.5);
+
+    }
+
+    public void groundPS(){
+
+    }
+
+    public void switchPS(){
+
+    }
+
+    public void scaleLowPS(){
+
+    }
+
+    public void scaleMidPS(){
+
+    }
+
+    public void scaleHighPS(){
+
     }
 }

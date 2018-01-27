@@ -15,8 +15,5 @@ public final class OI {
     public Joystick operator = new Joystick(1);
 
     OI() {
-
-        //MAKE BUTTON
-        new JoystickButton(driver, 8).whenPressed(new RaiseLift());
     }
 }

@@ -1,5 +1,6 @@
 package ca._4976.powerup;
 
+import ca._4976.powerup.subsystems.Elevator;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 
@@ -12,9 +13,11 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
+
 public final class Robot extends IterativeRobot {
 
     public static OI oi;
+    public final static Elevator elevator = new Elevator();
 
     @Override public void robotInit() {
         oi = new OI();

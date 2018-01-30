@@ -1,5 +1,6 @@
 package ca._4976.powerup;
 
+import ca._4976.powerup.subsystems.Elevator;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 
@@ -16,8 +17,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 public final class Robot extends IterativeRobot {
 
     public static OI oi;
-    public final static Elevator elevator = new Elevator();
-    public static EndGame eg;
 
     @Override public void robotInit() {
         oi = new OI();
@@ -32,7 +31,6 @@ public final class Robot extends IterativeRobot {
     }
 
     @Override public void teleopPeriodic(){
-        eg = new EndGame();
 
 
     }

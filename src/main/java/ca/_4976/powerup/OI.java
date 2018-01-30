@@ -1,6 +1,8 @@
 package ca._4976.powerup;
 
+import ca._4976.powerup.commands.RaiseLift;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * The operator interface of the robot, it has been simplified from the real
@@ -13,6 +15,5 @@ public final class OI {
     public Joystick operator = new Joystick(1);
 
     OI() {
-
     }
 }

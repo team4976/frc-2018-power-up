@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 public final class Robot extends IterativeRobot {
 
     public static OI oi;
+    public static Elevator elevator;
 
     @Override public void robotInit() {
         oi = new OI();

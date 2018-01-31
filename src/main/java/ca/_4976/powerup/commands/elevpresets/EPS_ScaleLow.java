@@ -1,15 +1,15 @@
-package ca._4976.powerup.commands;
+package ca._4976.powerup.commands.elevpresets;
 
 import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
-public final class ElevPresetThree extends Command {
-    public ElevPresetThree() {
+public final class EPS_ScaleLow extends Command {
+    public EPS_ScaleLow() {
 
     }
 
     @Override
-    protected void execute() {
+    protected void initialize() {
         Robot.elevator.scaleLowPS();
     }
 

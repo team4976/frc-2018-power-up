@@ -9,19 +9,19 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
 
 public final class Elevator extends PIDSubsystem {
 
     //Main motor for moving elevator up and down
-    private final TalonSRX elevMotor = new TalonSRX(2);
+    private final TalonSRX elevMotorMain = new TalonSRX(2);
 
-    //Elevator slaved to main motor
-    private final TalonSRX elevSlave = new TalonSRX(3);
+    //Elevator slave motor 1
+    private final TalonSRX elevSlave1 = new TalonSRX(3);
+
+    //Elevator slave motor 2
+    private final TalonSRX elevSlave2 = new TalonSRX(8);
 
     //Operator Elevator Left JoyStick
     private final Joystick leftOperatorJoy = new Joystick(0);
@@ -44,77 +44,78 @@ public final class Elevator extends PIDSubsystem {
     //Height variable for measurements
     public double elevHeight = 0;
 
-    public Elevator(String name, double p, double i, double d) {
+    /*public Elevator(String name, double p, double i, double d, double setpoint) {
         super(name, p, i, d);
-        //super.setSetpoint();
-    }
+        super.setSetpoint(setpoint);
+    }*/
 
 
     @Override
     protected void initDefaultCommand() {
-        elevSlave.set(ControlMode.Follower, 2);
+        elevSlave1.follow(elevMotorMain);
+        elevSlave2.follow(elevMotorMain);
     }
 
 
-    @Override
-    public void run() {
+/*    public void run() {
         //Use PID to move elevator to setpoint
 
 
     }
 
+
     @Override
     public void setSetpoint(double setpoint) {
-
-    }
+        Elevator.super.setSetpoint(setpoint);
+    }*/
 
     //Reads encoders to return current height of the elevator with reference to it's zero point
     public double getHeight(){
         return 0;
     }
 
-    //Uses PID control to set a height using encoder values -> moves to set height
-    public void setHeight(double height){
 
-    }
-
-    public void ElevatorControl(){
-        elevMotor.set(ControlMode.PercentOutput, leftOperatorJoy.getY());
+    //When PID is implemented, change function to change setpoint instead of output
+    public void moveElevator(){
+        elevMotorMain.set(ControlMode.PercentOutput, leftOperatorJoy.getY());
         double elevOut = 0;
 
-        //UP
 
-        //Stop
+        //Dead zone (stopped)
         if(Math.abs(leftOperatorJoy.getY()) < 0.05 || Math.abs(leftOperatorJoy.getY()) > -0.05){
-            elevMotor.set(ControlMode.PercentOutput, 0);
-        }
-        //Less that 50% pressed
-        else if(Math.abs(leftOperatorJoy.getY()) >= -0.5){
-            elevOut = (leftOperatorJoy.getY() * 0.4);
-        }
-        //Joystick > 50%
-        else{
-            elevOut = (leftOperatorJoy.getY() * 0.8) + 0.2;
+            elevMotorMain.set(ControlMode.PercentOutput, 0);
         }
 
-        //DOWN
+        //UP
+            //Less than or 50% pressed
+            else if(Math.abs(leftOperatorJoy.getY()) >= -0.5){ //ABSOLUTE VALUE BEING CHECKED FOR >= AGAINST A NEGATIVE?
+                elevOut = (leftOperatorJoy.getY() * 0.4);
+            }
 
-        //Less that 50% pressed
-        else if(Math.abs(leftOperatorJoy.getY()) >= -0.5){
-            elevOut = (leftOperatorJoy.getY() * 0.4);
-        }
-        //Joystick > 50%
-        else{
-            elevOut = (leftOperatorJoy.getY() * 0.8) + 0.2;
-        }
+            //Joystick > 50%
+            else{
+                elevOut = (leftOperatorJoy.getY() * 0.8) + 0.2;
+            }
 
-            elevMotor.set(ControlMode.PercentOutput, elevOut);
+            //DOWN
+
+            //Less that 50% pressed
+            else if(Math.abs(leftOperatorJoy.getY()) >= -0.5){
+
+            /*INVALID STRUCTURE - HEED RED LINES!
+            IF/ELSE BLOCKS CONSIST OF IF, ELSE IF, ELSE IF... ELSE. NEW BLOCKS MUST START WITH IF*/
+
+
+                elevOut = (leftOperatorJoy.getY() * 0.4);
+            }
+            //Joystick > 50%
+            else{
+                elevOut = (leftOperatorJoy.getY() * 0.8) + 0.2; //ASSUMING NEGATIVE OUTPUT, OFFSET MUST BE ADJUSTED ACCORDINGLY
+            }
+
+        elevMotorMain.set(ControlMode.PercentOutput, elevOut);
     }
 
-    //Decreases setpoint height
-    public void moveDown(){
-
-    }
 
     //Sets setpoint to ground level preset
     public void groundPS(){

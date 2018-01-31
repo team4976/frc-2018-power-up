@@ -185,6 +185,18 @@
       </item>
     </group>
   </component>
+  <component name="ProjectCodeStyleConfiguration">
+    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default" />
+    <code_scheme name="Project" version="173">
+      <codeStyleSettings language="JAVA">
+        <option name="BRACE_STYLE" value="2" />
+        <option name="CLASS_BRACE_STYLE" value="2" />
+        <option name="METHOD_BRACE_STYLE" value="2" />
+        <option name="CATCH_ON_NEW_LINE" value="true" />
+        <option name="FINALLY_ON_NEW_LINE" value="true" />
+      </codeStyleSettings>
+    </code_scheme>
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/frc2018-power-up.iml" filepath="$PROJECT_DIR$/frc2018-power-up.iml" />
@@ -192,7 +204,7 @@
       <module fileurl="file://$PROJECT_DIR$/frc2018-power-up_test.iml" filepath="$PROJECT_DIR$/frc2018-power-up_test.iml" group="frc2018-power-up" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="SvnBranchConfigurationManager">

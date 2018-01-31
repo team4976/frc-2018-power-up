@@ -1,10 +1,10 @@
-package ca._4976.powerup.commands;
+package ca._4976.powerup.commands.elevpresets;
 
 import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
-public final class ElevPresetSwitch extends Command {
-    public ElevPresetSwitch() {
+public final class EPS_Switch extends Command {
+    public EPS_Switch() {
 
     }
 

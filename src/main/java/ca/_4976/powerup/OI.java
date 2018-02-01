@@ -1,6 +1,5 @@
 package ca._4976.powerup;
 
-import ca._4976.powerup.commands.RaiseLift;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 

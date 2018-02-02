@@ -25,10 +25,10 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     //Driver Elevator Right JoyStick
 
-    //Limit switch near top of the first stage of the elevator. Switch normally held open
+    //Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(4);
 
-    //Limit switch near bottom of the first stage of the elevator. Switch normally held closed
+    //Limit switch near bottom of the first stage of the elevator. Switch normally held closed (false/low)
     private final DigitalInput limitSwitchMin = new DigitalInput(5);
 
     //Encoder on the elevator motors
@@ -74,7 +74,17 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
             elevMotorMain.set(ControlMode.PercentOutput, 0);
         }
 
-        //CHECK FOR MAX / MIN
+
+        //LIMIT SWITCHES TO CONTROL
+        else if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
+            elevMotorMain.set(ControlMode.PercentOutput, 0);
+
+            //ADD SPECIFIC CASES FOR SWITCHES TO LIMIT BUT ENABLE MOVEMENT IN ONE DIRECTION, DEPENDING ON WHICH
+            //SWITCH IS TRIGGERED
+        }
+
+        
+        //CHECK FOR MAX / MIN ENC VALUES
         else if(getHeight() < ELEVATOR_MAX - TOL_RANGE || getHeight() > ELEVATOR_MIN + TOL_RANGE){
             elevMotorMain.set(ControlMode.PercentOutput, input * 0.7 * 100);
         }

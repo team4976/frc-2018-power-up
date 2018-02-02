@@ -30,6 +30,9 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     //Limit switch near bottom of the first stage of the elevator. Switch normally held closed (false/low)
     private final DigitalInput limitSwitchMin = new DigitalInput(5);
+    
+    //Switch states need to be verified logically and codewise
+    
 
     //Encoder on the elevator motors
     private final Encoder elevEnc = new Encoder(4, 5);

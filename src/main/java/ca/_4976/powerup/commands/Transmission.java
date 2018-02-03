@@ -16,7 +16,7 @@ public final class Transmission extends Command {
         Robot.drive.switchGear();
     }
 
-    @Override protected boolean isFinished() { return false; }
+    @Override protected boolean isFinished() { return true; }
 
     @Override protected void end() {  }
 }

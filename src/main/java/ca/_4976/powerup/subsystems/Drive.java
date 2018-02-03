@@ -207,7 +207,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      * 
      * @return the left and right drive output as a double array
      */
-    public synchronized Double[] getTankDrive() { return new Double[] { leftFront.get(), rightFront.get() }; }
+    public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.get(), rightFront.get() }; }
 
     /**
      * Set ramping enabled or disabled

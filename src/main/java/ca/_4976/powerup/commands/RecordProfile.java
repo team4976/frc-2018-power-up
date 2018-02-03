@@ -1,6 +1,7 @@
 package ca._4976.powerup.commands;
 
 import ca._4976.powerup.Robot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -12,11 +13,11 @@ public final class RecordProfile extends Command {
     public RecordProfile() { willRunWhenDisabled(); }
 
     @Override protected void initialize() {
-
+        System.out.println("Pie");
         Robot.drive.resetEncoderPosition();
         Robot.motion.record();
         Robot.drive.enableRamping(true);
-    }
+      }
 
     @Override protected boolean isFinished() { return !Robot.motion.isRecording(); }
 

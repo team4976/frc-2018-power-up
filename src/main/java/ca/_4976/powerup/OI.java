@@ -18,9 +18,6 @@ public final class OI {
     public Joystick operator = new Joystick(1);
 
     OI() {
-
-        new JoystickButton(driver, 7).whenPressed(new RecordProfile());
-        new JoystickButton(driver, 8).whenPressed(new RunProfile());
         new JoystickButton(driver, 4).whenPressed(new Transmission());
     }
 }

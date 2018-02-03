@@ -2,6 +2,8 @@ package ca._4976.powerup;
 
 
 
+import ca._4976.powerup.commands.RecordProfile;
+import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.Drive;
 import ca._4976.powerup.subsystems.Motion;
@@ -58,6 +60,7 @@ public final class Robot extends IterativeRobot {
 
 
     @Override public void autonomousPeriodic(){
+        new RunProfile();
         Scheduler.getInstance().run();
         log();
     }
@@ -67,6 +70,9 @@ public final class Robot extends IterativeRobot {
     @Override public void teleopPeriodic(){
         Scheduler.getInstance().run();
         log();
+    }
+    @Override public void testPeriodic(){
+        new RecordProfile();
     }
 
 

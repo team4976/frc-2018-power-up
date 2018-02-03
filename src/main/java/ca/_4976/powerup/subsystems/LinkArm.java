@@ -4,7 +4,10 @@ package ca._4976.powerup.subsystems;
 Made by Cameron, Jacob, Ethan, Zach
 */
 
+import ca._4976.powerup.Robot;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -54,4 +57,23 @@ public final class LinkArm extends Subsystem implements Runnable, Sendable {
     public double getAngle(){
         return 0;
     }
+
+
+    //move linkage arm
+    public void moveLinkArm{
+
+        double stickArm = Robot.oi.operator.getRawAxis(5);
+
+        //dead zone
+        if (Math.abs(stickArm) < 0.03) {
+            armMotor.set(ControlMode.PercentOutput, 0);
+        }
+
+        else {
+            armMotor.set(ControlMode.PercentOutput,0.5*stickArm*100);
+        }
+
+    }
+
+
 }

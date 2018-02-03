@@ -31,8 +31,8 @@ import static ca.qormix.library.Lazy.use;
 public final class Robot extends IterativeRobot {
 
     public static OI oi;
-    public static Elevator elevator;
-    public static LinkArm linkArm;
+    public final static Elevator elevator = new Elevator();
+    public final static LinkArm linkArm = new LinkArm();
 
     public final static Drive drive = new Drive();
     public final static Motion motion = new Motion();

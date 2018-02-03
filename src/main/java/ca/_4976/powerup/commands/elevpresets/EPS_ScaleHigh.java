@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public final class EPS_ScaleHigh extends Command {
     public EPS_ScaleHigh() {
-
+        requires(Robot.elevator);
     }
 
     @Override

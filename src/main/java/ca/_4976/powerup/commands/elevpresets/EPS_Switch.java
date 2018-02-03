@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public final class EPS_Switch extends Command {
     public EPS_Switch() {
-
+        requires(Robot.elevator);
     }
 
     @Override

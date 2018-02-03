@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public final class MoveElevator extends Command {
     public MoveElevator() {
-
+        requires(Robot.elevator);
     }
 
     @Override

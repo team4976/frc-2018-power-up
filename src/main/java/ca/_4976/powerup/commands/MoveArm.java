@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class MoveArm extends Command{
 
+    public MoveArm() {
+        requires(Robot.linkArm);
+    }
+
     @Override
     protected boolean isFinished() {
         return false;

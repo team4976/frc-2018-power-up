@@ -29,7 +29,7 @@ public final class LinkArm extends Subsystem implements Runnable, Sendable {
 
     @Override
     public void run() {
-
+        moveLinkArm();
     }
 
     //ARM WILL USE 0 DEGREES AS REFERENCE

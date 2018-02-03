@@ -21,12 +21,12 @@ import static ca._4976.powerup.Robot.oi;
 public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     //Network table setup
-    private NetworkTableInstance instance = NetworkTableInstance.getDefault();
-    private NetworkTable table = instance.getTable("Values");
-    private NetworkTableEntry MotorOutput = table.getEntry("Elev Out");
+//    private NetworkTableInstance instance = NetworkTableInstance.getDefault();
+//    private NetworkTable table = instance.getTable("Values");
+//    private NetworkTableEntry MotorOutput = table.getEntry("Elev Out");
 
     //Get motor output value from table
-    private double motorOut = MotorOutput.getDouble(0);
+    private double motorOut = 0.5; //MotorOutput.getDouble(0);
 
 
     //Main motor for moving elevator up and down
@@ -75,7 +75,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     public void run() {
         System.out.println("Run method ran");
-        //Maybe put moveElevator method in here?
+        moveElevator();
     }
 
     //Reads encoders to return current height of the elevator with reference to it's zero point
@@ -147,6 +147,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
             else if(getHeight() > EPS_GROUND + TOL_RANGE){
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
+
+            System.out.println("Encoder output: " + elevEnc.get());
         }
     }
 
@@ -163,6 +165,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
             else if(getHeight() > EPS_SWITCH + TOL_RANGE){
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
+
+            System.out.println("Encoder output: " + elevEnc.get());
         }
     }
 
@@ -179,6 +183,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
             else if(getHeight() > EPS_SCALE_LOW + TOL_RANGE){
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
+
+            System.out.println("Encoder output: " + elevEnc.get());
         }
     }
 
@@ -195,6 +201,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
             else if(getHeight() > EPS_SCALE_MID + TOL_RANGE){
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
+
+            System.out.println("Encoder output: " + elevEnc.get());
         }
     }
 
@@ -211,6 +219,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
             else if(getHeight() > EPS_SCALE_HIGH + TOL_RANGE){
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
+
+            System.out.println("Encoder output: " + elevEnc.get());
         }
     }
 }

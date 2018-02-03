@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public final class EPS_Ground extends Command {
     public EPS_Ground() {
-
+        requires(Robot.elevator);
     }
 
     @Override

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 //main controller grabbing the cube
 
 public class DriverIntake extends Command {
+//    DriverIntake()
     private boolean stop=false;
 
     private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
@@ -26,7 +27,7 @@ public class DriverIntake extends Command {
 //        will continue to grab until the current draw spikes
         System.out.println("executing the intaking");
         System.out.println(Robot.cubeHandler.grabberI.getOutputCurrent());
-        double normalDraw = current.getDouble(0);
+        double normalDraw = 0.2;
         if (Robot.cubeHandler.grabberI.getOutputCurrent()> normalDraw){
             Robot.cubeHandler.slow();
             stop=true;

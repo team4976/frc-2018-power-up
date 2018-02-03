@@ -30,7 +30,7 @@ public final class CubeHandler extends Subsystem implements Runnable, Sendable {
 
     @Override
     protected void initDefaultCommand() {
-
+//        grabberII.follow(grabberI);
     }
 
     @Override
@@ -40,8 +40,10 @@ public final class CubeHandler extends Subsystem implements Runnable, Sendable {
 
     public void grab() {//grabs cube
         System.out.println("my boi is to grab me");
-        grabberI.set(ControlMode.PercentOutput, sped.getDouble(0));
-        grabberII.set(ControlMode.PercentOutput, -sped.getDouble(0));
+        grabberI.set(ControlMode.PercentOutput, 0.1);
+        grabberII.set(ControlMode.PercentOutput, -0.8);
+        System.out.println("Grabber 1 sped "+grabberI.getMotorOutputPercent());
+        System.out.println("Grabber 2 sped "+grabberII.getMotorOutputPercent());
     }
     public void stop(){//Stops the grabber motors
         System.out.println("no longer moving");
@@ -50,14 +52,14 @@ public final class CubeHandler extends Subsystem implements Runnable, Sendable {
     }
     public void release() {//Releases cube from bot
         System.out.println("ejection is in effect");
-        grabberI.set(ControlMode.PercentOutput, -sped.getDouble(0));
-        grabberII.set(ControlMode.PercentOutput, sped.getDouble(0));
+        grabberI.set(ControlMode.PercentOutput, -0.1);
+        grabberII.set(ControlMode.PercentOutput, 0.1);
     }
 
     public void slow(){//spins motors slow when we have a cube
         System.out.println("have cube");
-        grabberI.set(ControlMode.PercentOutput, slow.getDouble(0));
-        grabberII.set(ControlMode.PercentOutput, -slow.getDouble(0));
+        grabberI.set(ControlMode.PercentOutput, 1);
+        grabberII.set(ControlMode.PercentOutput, -1);
     }
     public void test(){
         System.out.println(sped.getDouble(0));

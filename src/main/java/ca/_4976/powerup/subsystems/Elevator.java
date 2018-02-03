@@ -39,16 +39,16 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
 
     //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)
-    private final double EPS_SCALE_HIGH = 24275.63,
-    EPS_SCALE_MID = 19073.71,
-    EPS_SCALE_LOW = 13871.79,
+    private final double EPS_SCALE_HIGH = 12137.81,
+    EPS_SCALE_MID = 9536.85,
+    EPS_SCALE_LOW = 6935.89,
     EPS_SWITCH = 1733.97,
     EPS_GROUND = 0,
-    ELEVATOR_MAX = EPS_SCALE_HIGH,
+    ELEVATOR_MAX = 16472.75,
     ELEVATOR_MIN = EPS_GROUND,
 
     //ABOUT 2 CM OF TOLERANCE IN VALUES - MAY BE UPDATED
-    TOL_RANGE = 340;
+    TOL_RANGE = 170;
 
 
     @Override

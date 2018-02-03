@@ -1,8 +1,12 @@
 package ca._4976.powerup;
 
-import ca._4976.powerup.subsystems.Elevator;
+import ca._4976.powerup.OI;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.IterativeRobot;
-
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is the main class for running the Robot code.
@@ -13,13 +17,14 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-
 public final class Robot extends IterativeRobot {
 
     public static OI oi;
 
     @Override public void robotInit() {
+
         oi = new OI();
+
     }
 
     @Override public void disabledInit() {
@@ -27,15 +32,11 @@ public final class Robot extends IterativeRobot {
     }
 
     @Override public void autonomousPeriodic(){
-
     }
 
     @Override public void teleopPeriodic(){
-
-
     }
 
     private void log() {
-
     }
 }

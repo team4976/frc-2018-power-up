@@ -61,6 +61,9 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     //ABOUT 2 CM OF TOLERANCE IN VALUES - MAY BE UPDATED
     TOL_RANGE = 170;
 
+    //IMPORTANT -> TOL RANGE MUST NOT BE LARGER THAN THE DISTANCE FROM THE MAX TO THE LIMIT SWITCH
+    //WILL BE UNABLE TO MOVE IF THIS IS THE CASE
+
 
     @Override
     protected void initDefaultCommand() {
@@ -81,27 +84,46 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     public void moveElevator() {
 
+        double drInput = Robot.oi.driver.getRawAxis(5);
+        double opInput = Robot.oi.operator.getRawAxis(1);
+        double manualOut = 0;
 
-        double input = Robot.oi.operator.getRawAxis(5);
+        /*
+        Driver input overrides operator input. Only execute a movement initiated by the operator when no input is detected from
+        */
 
-        //JOYSTICK DEAD ZONE
-        if(Math.abs(input) < 0.03){
-            elevMotorMain.set(ControlMode.PercentOutput, 0);
-        }
 
 
         //LIMIT SWITCHES TO CONTROL
-        else if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
-            elevMotorMain.set(ControlMode.PercentOutput, 0);
+        if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
+            manualOut = 0;
+
 
             //ADD SPECIFIC CASES FOR SWITCHES TO LIMIT BUT ENABLE MOVEMENT IN ONE DIRECTION, DEPENDING ON WHICH
             //SWITCH IS TRIGGERED
         }
 
-        
+        //JOYSTICK DEAD ZONE
+        else if(Math.abs(drInput) <= 0.03 && Math.abs(opInput) <= 0.03){
+            manualOut = 0;
+        }
+
+        //DRIVER CONTROL
+        else if(Math.abs(drInput) > 0.03){
+            manualOut = drInput * 0.7 * 100;
+        }
+
+        //OPERATOR CONTROL
+        else if(Math.abs(opInput) > 0.03){
+            manualOut = opInput * 0.7 * 100;
+        }
+
+
         //CHECK FOR MAX / MIN ENC VALUES
-        else if(getHeight() < ELEVATOR_MAX - TOL_RANGE || getHeight() > ELEVATOR_MIN + TOL_RANGE){
-            elevMotorMain.set(ControlMode.PercentOutput, input * 0.7 * 100);
+        else if(getHeight() < ELEVATOR_MAX || getHeight() > ELEVATOR_MIN){
+            //tol range may be taken into account
+
+            elevMotorMain.set(ControlMode.PercentOutput, manualOut);
         }
     }
 
@@ -109,7 +131,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     //Moves elevator until height is within certain range of set value - at ground level
     public void groundPS() {
 
-        while(getHeight() < EPS_GROUND - TOL_RANGE || getHeight() > EPS_GROUND + TOL_RANGE){
+        while(getHeight() > EPS_GROUND + TOL_RANGE){
 
             if(getHeight() < EPS_GROUND - TOL_RANGE){
                 elevMotorMain.set(ControlMode.PercentOutput, motorOut);

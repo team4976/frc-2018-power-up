@@ -74,6 +74,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
 
     public void run() {
+        System.out.println("Run method ran");
         //Maybe put moveElevator method in here?
     }
 

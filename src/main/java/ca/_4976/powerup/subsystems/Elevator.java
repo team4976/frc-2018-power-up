@@ -4,6 +4,8 @@ package ca._4976.powerup.subsystems;
 Made by Cameron, Jacob, Ethan, Zach
 */
 
+import ca._4976.powerup.OI;
+import ca._4976.powerup.Robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
@@ -12,6 +14,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+
+import static ca._4976.powerup.Robot.oi;
 
 
 public final class Elevator extends Subsystem implements Runnable, Sendable {
@@ -31,11 +35,6 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     //Elevator slave motors
     private final TalonSRX elevSlave1 = new TalonSRX(3),
     elevSlave2 = new TalonSRX(8);
-
-    //Operator left Stick - elevator control
-    private final Joystick leftOpJoy = new Joystick(0);
-
-    //Driver Elevator Right JoyStick
 
     //Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(4);
@@ -82,7 +81,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     public void moveElevator() {
 
-        double input = leftOpJoy.getY();
+
+        double input = Robot.oi.operator.getRawAxis(5);
 
         //JOYSTICK DEAD ZONE
         if(Math.abs(input) < 0.03){

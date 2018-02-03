@@ -22,8 +22,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     //Network table setup
     private NetworkTableInstance instance = NetworkTableInstance.getDefault();
-    NetworkTable table = instance.getTable("Values");
-    NetworkTableEntry MotorOutput = table.getEntry("Speed");
+    private NetworkTable table = instance.getTable("Values");
+    private NetworkTableEntry MotorOutput = table.getEntry("Elev Out");
 
     //Get motor output value from table
     private double motorOut = MotorOutput.getDouble(0);
@@ -67,6 +67,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     @Override
     protected void initDefaultCommand() {
+        System.out.println("Motors slaved");
         elevSlave1.follow(elevMotorMain);
         elevSlave2.follow(elevMotorMain);
     }
@@ -96,8 +97,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
         //LIMIT SWITCHES TO CONTROL
         if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
+            System.out.println("Switch triggered");
             manualOut = 0;
-
 
             //ADD SPECIFIC CASES FOR SWITCHES TO LIMIT BUT ENABLE MOVEMENT IN ONE DIRECTION, DEPENDING ON WHICH
             //SWITCH IS TRIGGERED
@@ -105,16 +106,19 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
         //JOYSTICK DEAD ZONE
         else if(Math.abs(drInput) <= 0.03 && Math.abs(opInput) <= 0.03){
+            System.out.println("Dead zone");
             manualOut = 0;
         }
 
         //DRIVER CONTROL
         else if(Math.abs(drInput) > 0.03){
+            System.out.println("Driver control");
             manualOut = drInput * 0.7 * 100;
         }
 
         //OPERATOR CONTROL
         else if(Math.abs(opInput) > 0.03){
+            System.out.println("Operator control");
             manualOut = opInput * 0.7 * 100;
         }
 
@@ -123,6 +127,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
         else if(getHeight() < ELEVATOR_MAX || getHeight() > ELEVATOR_MIN){
             //tol range may be taken into account
 
+            System.out.println("Manual output: " + manualOut);
             elevMotorMain.set(ControlMode.PercentOutput, manualOut);
         }
     }
@@ -131,6 +136,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     //Moves elevator until height is within certain range of set value - at ground level
     public void groundPS() {
 
+        System.out.println("Ground preset triggered");
         while(getHeight() > EPS_GROUND + TOL_RANGE){
 
             if(getHeight() < EPS_GROUND - TOL_RANGE){
@@ -146,6 +152,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     //Moves elevator until height is within certain range of set value - at switch level
     public void switchPS() {
 
+        System.out.println("Switch preset triggered");
         while(getHeight() < EPS_SWITCH - TOL_RANGE || getHeight() > EPS_SWITCH + TOL_RANGE){
 
             if(getHeight() < EPS_SWITCH - TOL_RANGE){
@@ -160,7 +167,8 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
     //Moves elevator until height is within certain range of set value - at low scale level
     public void scaleLowPS() {
-        
+
+        System.out.println("Low scale preset triggered");
         while(getHeight() < EPS_SCALE_LOW - TOL_RANGE || getHeight() > EPS_SCALE_LOW + TOL_RANGE){
 
             if(getHeight() < EPS_SCALE_LOW - TOL_RANGE){
@@ -176,6 +184,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     //Moves elevator until height is within certain range of set value - at mid scale level
     public void scaleMidPS() {
 
+        System.out.println("Mid scale preset triggered");
         while(getHeight() < EPS_SCALE_MID - TOL_RANGE || getHeight() > EPS_SCALE_MID + TOL_RANGE){
 
             if(getHeight() < EPS_SCALE_MID - TOL_RANGE){
@@ -191,6 +200,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     //Moves elevator until height is within certain range of set value - at high scale level
     public void scaleHighPS() {
 
+        System.out.println("High scale preset triggered");
         while(getHeight() < EPS_SCALE_HIGH - TOL_RANGE || getHeight() > EPS_SCALE_HIGH + TOL_RANGE){
 
             if(getHeight() < EPS_SCALE_HIGH - TOL_RANGE){

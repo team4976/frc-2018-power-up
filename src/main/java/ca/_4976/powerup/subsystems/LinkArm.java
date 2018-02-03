@@ -55,7 +55,7 @@ public final class LinkArm extends Subsystem implements Runnable, Sendable {
         double armOut = Robot.oi.operator.getRawAxis(5);
 
         //dead zone
-        if (Math.abs(armOut) < 0.03) {
+        if (Math.abs(armOut) <= 0.03) {
             armMotor.set(ControlMode.PercentOutput, 0);
         }
 

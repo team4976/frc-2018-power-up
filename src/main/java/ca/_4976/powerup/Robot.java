@@ -6,6 +6,7 @@ import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.Drive;
+import ca._4976.powerup.subsystems.Elevator;
 import ca._4976.powerup.subsystems.Motion;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;

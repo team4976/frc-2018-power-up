@@ -6,12 +6,24 @@ Made by Cameron, Jacob, Ethan, Zach
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 
 public final class Elevator extends Subsystem implements Runnable, Sendable {
+
+    //Network table setup
+    private NetworkTableInstance instance = NetworkTableInstance.getDefault();
+    NetworkTable table = instance.getTable("Values");
+    NetworkTableEntry MotorOutput = table.getEntry("Speed");
+
+    //Get motor output value from table
+    private double motorOut = MotorOutput.getDouble(0);
+
 
     //Main motor for moving elevator up and down
     private final TalonSRX elevMotorMain = new TalonSRX(2);
@@ -100,11 +112,11 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
         while(getHeight() < EPS_GROUND - TOL_RANGE || getHeight() > EPS_GROUND + TOL_RANGE){
 
             if(getHeight() < EPS_GROUND - TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, motorOut);
             }
 
             else if(getHeight() > EPS_GROUND + TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
         }
     }
@@ -115,11 +127,11 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
         while(getHeight() < EPS_SWITCH - TOL_RANGE || getHeight() > EPS_SWITCH + TOL_RANGE){
 
             if(getHeight() < EPS_SWITCH - TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, motorOut);
             }
 
             else if(getHeight() > EPS_SWITCH + TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
         }
     }
@@ -130,11 +142,11 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
         while(getHeight() < EPS_SCALE_LOW - TOL_RANGE || getHeight() > EPS_SCALE_LOW + TOL_RANGE){
 
             if(getHeight() < EPS_SCALE_LOW - TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, motorOut);
             }
 
             else if(getHeight() > EPS_SCALE_LOW + TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
         }
     }
@@ -145,11 +157,11 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
         while(getHeight() < EPS_SCALE_MID - TOL_RANGE || getHeight() > EPS_SCALE_MID + TOL_RANGE){
 
             if(getHeight() < EPS_SCALE_MID - TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, motorOut);
             }
 
             else if(getHeight() > EPS_SCALE_MID + TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
         }
     }
@@ -160,11 +172,11 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
         while(getHeight() < EPS_SCALE_HIGH - TOL_RANGE || getHeight() > EPS_SCALE_HIGH + TOL_RANGE){
 
             if(getHeight() < EPS_SCALE_HIGH - TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, motorOut);
             }
 
             else if(getHeight() > EPS_SCALE_HIGH + TOL_RANGE){
-                elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
         }
     }

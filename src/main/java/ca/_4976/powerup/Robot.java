@@ -2,6 +2,7 @@ package ca._4976.powerup;
 
 
 
+import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
@@ -42,13 +43,17 @@ public final class Robot extends IterativeRobot {
 
     private final NetworkTableEntry profiles =  table.getEntry("Profiles");
 
+    private final DefaultGear defaultGear = new DefaultGear();
+    private final RecordProfile recordProfile = new RecordProfile();
+    private final RunProfile runProfile = new RunProfile();
+
     @Override public void robotInit() {
         oi = new OI();
 
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);
 
-        Robot.drive.defaultGear();
+        defaultGear.start();
     }
 
 
@@ -60,7 +65,7 @@ public final class Robot extends IterativeRobot {
 
 
     @Override public void autonomousPeriodic(){
-        new RunProfile();
+        recordProfile.start();
         Scheduler.getInstance().run();
         log();
     }
@@ -72,7 +77,7 @@ public final class Robot extends IterativeRobot {
         log();
     }
     @Override public void testPeriodic(){
-        new RecordProfile();
+        recordProfile.start();
     }
 
 

@@ -56,7 +56,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
     EPS_SWITCH = 1733.97,
     EPS_GROUND = 0,
     ELEVATOR_MAX = 16472.75,
-    ELEVATOR_MIN = EPS_GROUND,
+    ELEVATOR_MIN = EPS_GROUND, //ground level may be readjusted to not be zero
 
     //ABOUT 2 CM OF TOLERANCE IN VALUES - MAY BE UPDATED
     TOL_RANGE = 170;
@@ -97,16 +97,17 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
 
         //LIMIT SWITCHES TO CONTROL
-        if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
+        /*if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
             System.out.println("Switch triggered");
             manualOut = 0;
 
             //ADD SPECIFIC CASES FOR SWITCHES TO LIMIT BUT ENABLE MOVEMENT IN ONE DIRECTION, DEPENDING ON WHICH
             //SWITCH IS TRIGGERED
-        }
+        }*/
 
         //JOYSTICK DEAD ZONE
-        else if(Math.abs(drInput) <= 0.03 && Math.abs(opInput) <= 0.03){
+        //else
+            if(Math.abs(drInput) <= 0.03 && Math.abs(opInput) <= 0.03){
             System.out.println("Dead zone");
             manualOut = 0;
         }

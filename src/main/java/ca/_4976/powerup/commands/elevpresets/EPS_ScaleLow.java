@@ -1,6 +1,7 @@
 package ca._4976.powerup.commands.elevpresets;
 
 import ca._4976.powerup.Robot;
+import ca._4976.powerup.subsystems.Elevator;
 import edu.wpi.first.wpilibj.command.Command;
 
 public final class EPS_ScaleLow extends Command {
@@ -10,7 +11,7 @@ public final class EPS_ScaleLow extends Command {
 
     @Override
     protected void initialize() {
-        Robot.elevator.scaleLowPS();
+        Robot.elevator.moveToPreset(Elevator.ElevPreset.SCALE_LOW);
     }
 
     @Override

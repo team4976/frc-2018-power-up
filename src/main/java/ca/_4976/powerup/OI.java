@@ -9,6 +9,7 @@ import ca._4976.powerup.commands.elevpresets.EPS_ScaleLow;
 import ca._4976.powerup.commands.elevpresets.EPS_Switch;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**
  * The operator interface of the robot, it has been simplified from the real

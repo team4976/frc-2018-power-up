@@ -60,7 +60,7 @@ public final class LinkArm extends Subsystem implements Runnable, Sendable {
         }
 
         else {
-            armMotor.set(ControlMode.PercentOutput,0.5 * armOut * 100);
+            armMotor.set(ControlMode.PercentOutput,0.5 * armOut);
         }
     }
 }

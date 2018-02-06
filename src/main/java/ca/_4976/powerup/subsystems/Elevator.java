@@ -30,23 +30,23 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
 
 
     //Main motor for moving elevator up and down
-    private final TalonSRX elevMotorMain = new TalonSRX(2);
+    private final TalonSRX elevMotorMain = new TalonSRX(5);//2
 
     //Elevator slave motors
     private final TalonSRX elevSlave1 = new TalonSRX(3),
     elevSlave2 = new TalonSRX(8);
 
-    //Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
+    /*//Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(4);
 
     //Limit switch near bottom of the first stage of the elevator. Switch normally held closed (false/low)
-    private final DigitalInput limitSwitchMin = new DigitalInput(5);
+    private final DigitalInput limitSwitchMin = new DigitalInput(5);*/
     
     //Switch states need to be verified logically and codewise
     
 
     //Encoder on the elevator motors
-    private final Encoder elevEnc = new Encoder(4, 5);
+    private final Encoder elevEnc = new Encoder(6, 7);
 
 
     //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)

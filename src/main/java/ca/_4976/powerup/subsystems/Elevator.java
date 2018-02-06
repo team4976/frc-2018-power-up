@@ -114,13 +114,13 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
         //DRIVER CONTROL
         else if(Math.abs(drInput) > 0.03){
             System.out.println("Driver control");
-            manualOut = drInput * 0.7 * 100;
+            manualOut = drInput * 0.7;
         }
 
         //OPERATOR CONTROL
         else if(Math.abs(opInput) > 0.03){
             System.out.println("Operator control");
-            manualOut = opInput * 0.7 * 100;
+            manualOut = opInput * 0.7;
         }
 
 
@@ -148,7 +148,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
 
-            System.out.println("Encoder output: " + elevEnc.get());
+            System.out.println("Preset reached: Encoder output: " + getHeight());
         }
     }
 
@@ -166,7 +166,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
 
-            System.out.println("Encoder output: " + elevEnc.get());
+            System.out.println("Preset reached: Encoder output: " + getHeight());
         }
     }
 
@@ -184,7 +184,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
 
-            System.out.println("Encoder output: " + elevEnc.get());
+            System.out.println("Preset reached: Encoder output: " + getHeight());
         }
     }
 
@@ -202,7 +202,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
 
-            System.out.println("Encoder output: " + elevEnc.get());
+            System.out.println("Preset reached: Encoder output: " + getHeight());
         }
     }
 
@@ -220,7 +220,7 @@ public final class Elevator extends Subsystem implements Runnable, Sendable {
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
             }
 
-            System.out.println("Encoder output: " + elevEnc.get());
+            System.out.println("Preset reached: Encoder output: " + getHeight());
         }
     }
 }

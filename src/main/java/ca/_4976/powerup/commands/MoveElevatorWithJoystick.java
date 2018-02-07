@@ -3,10 +3,8 @@ package ca._4976.powerup.commands;
 import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
-public final class MoveElevator extends Command {
-    public MoveElevator() {
-        requires(Robot.elevator);
-    }
+public final class MoveElevatorWithJoystick extends Command {
+
 
     @Override
     protected void execute() {

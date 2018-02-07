@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public final class EPS_Ground extends Command {
     public EPS_Ground() {
-        requires(Robot.elevator);
+//        requires(Robot.elevator);
     }
 
     @Override
-    protected void execute() {
+    protected void initialize() {
         Robot.elevator.moveToPreset(Elevator.ElevPreset.GROUND);
     }
 

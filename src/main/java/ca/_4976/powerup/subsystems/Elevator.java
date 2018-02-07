@@ -5,9 +5,8 @@ Made by Cameron, Jacob, Ethan, Zach
 */
 
 import ca._4976.powerup.*;
-import ca._4976.powerup.commands.MoveElevator;
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import ca._4976.powerup.commands.MoveElevatorWithJoystick;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -37,27 +36,27 @@ public final class Elevator extends Subsystem implements Sendable {
         //IMPORTANT -> TOL RANGE MUST NOT BE LARGER THAN THE DISTANCE FROM THE MAX TO THE LIMIT SWITCH
         //WILL BE UNABLE TO MOVE IF THIS IS THE CASE
 
-        private final double tolerance = 170;
+//        private final double tolerance = 170;
         public final double value;
-        public double lowerBound;
-        public double upperBound;
+//        public double lowerBound;
+//        public double upperBound;
 
-        private ElevPreset(double value) {
+        ElevPreset(double value) {
             this.value = value;
-            lowerBound = value - tolerance;
-            upperBound = value + tolerance;
+//            lowerBound = value - tolerance;
+//            upperBound = value + tolerance;
         }
-
-
     }
 
-    private final TalonSRX elevMotorMain = new TalonSRX(5);//2
-    private final TalonSRX elevSlave1 = new TalonSRX(3);
-    private final TalonSRX elevSlave2 = new TalonSRX(8);
+
+    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2),
+    elevSlave1 = new WPI_TalonSRX(3),
+    elevSlave2 = new WPI_TalonSRX(8);
 
     private final Encoder elevEnc = new Encoder(6, 7);
 
-    private double motorOut = 0.5;
+    private double kP = 0, kI = 0, kD = 0;
+    private final PIDController elevatorPID = new PIDController(kP, kI, kD, elevEnc, elevMotorMain);
 
     /*
     Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
@@ -71,7 +70,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MoveElevator());
+        setDefaultCommand(new MoveElevatorWithJoystick());
     }
 
 
@@ -111,13 +110,13 @@ public final class Elevator extends Subsystem implements Sendable {
         //DRIVER CONTROL
         else if (Math.abs(drInput) > 0.03) {
             System.out.println("Driver control");
-            manualOut = drInput * 0.7;
+            manualOut = drInput;
         }
 
         //OPERATOR CONTROL
         else if (Math.abs(opInput) > 0.03) {
             System.out.println("Operator control");
-            manualOut = opInput * 0.7;
+            manualOut = opInput;
         }
 
 
@@ -126,9 +125,14 @@ public final class Elevator extends Subsystem implements Sendable {
             //tol range may be taken into account
 
             System.out.println("Manual output: " + manualOut);
-            elevMotorMain.set(ControlMode.PercentOutput, manualOut);
-        } else {
-            elevMotorMain.set(ControlMode.PercentOutput, 0);
+            elevatorPID.setSetpoint(getHeight() + manualOut);
+
+            //elevMotorMain.set(ControlMode.PercentOutput, manualOut);
+
+        }
+
+        else {
+            elevatorPID.setSetpoint(getHeight());
         }
     }
 
@@ -137,6 +141,11 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveToPreset(ElevPreset preset) {
 
         System.out.println("Preset triggered");
+
+        elevatorPID.setSetpoint(preset.value);
+
+        /*double motorOut = 0.5;
+
         while (getHeight() > preset.upperBound) {
 
             if (getHeight() < preset.lowerBound) {
@@ -146,6 +155,8 @@ public final class Elevator extends Subsystem implements Sendable {
             }
 
             System.out.println("Preset reached: Encoder output: " + getHeight());
-        }
+        }*/
+
+
     }
 }

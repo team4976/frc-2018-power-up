@@ -11,7 +11,7 @@ public final class Transmission extends Command {
 
     public Transmission() { willRunWhenDisabled(); }
 
-    @Override protected void execute() {
+    @Override protected void initialize() {
         Robot.drive.switchGear();
     }
 

@@ -111,7 +111,7 @@ public final class Elevator extends Subsystem implements Sendable {
         double opInput = Robot.oi.operator.getRawAxis(1);
         double manualOut = 0;
 
-
+        System.out.println("OUTPUT - DRIVER: " + drInput + " OPERATOR: " + opInput);
         //LIMIT SWITCHES TO CONTROL
         /*if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
             System.out.println("Switch triggered");
@@ -186,9 +186,8 @@ public final class Elevator extends Subsystem implements Sendable {
         setName("Elevator PID");
 
         builder.setSmartDashboardType("PIDController");
-        builder.addDoubleProperty("p", () -> elevatorPID.getP(), it -> elevatorPID.setP(it));
-        builder.addDoubleProperty("i", () -> i, it -> i = it);
-        builder.addDoubleProperty("d", () -> d, it -> d = it);
-        builder.addBooleanProperty("enabled", this::isRunning, ignored -> {});
+        builder.addDoubleProperty("p", elevatorPID::getP, elevatorPID::setP);
+        builder.addDoubleProperty("i", elevatorPID::getI, elevatorPID::setI);
+        builder.addDoubleProperty("d", elevatorPID::getD, elevatorPID::setD);
     }
 }

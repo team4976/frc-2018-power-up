@@ -12,14 +12,19 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 //Main superclass that holds all the methods used by the commands
-public final class CubeHandler extends Subsystem implements Runnable, Sendable {
+public final class CubeHandler extends Subsystem implements Sendable {
     public final TalonSRX grabberI = new TalonSRX(1);
     private final TalonSRX grabberII = new TalonSRX(2);
     private final NetworkTableInstance whateverTheFuckYouWant =  NetworkTableInstance.getDefault();
     private final NetworkTable theFuckYouWantTable = whateverTheFuckYouWant.getTable("Motor Speeds");
     private final NetworkTableEntry sped= theFuckYouWantTable.getEntry("grabber full speed");
     private final NetworkTableEntry slow = theFuckYouWantTable.getEntry("grabber slow speed");
-
+    private final NetworkTableEntry current= theFuckYouWantTable.getEntry("motor current");
+    public CubeHandler(){
+        sped.setDefaultDouble(0);
+        slow.setDefaultDouble(0);
+        current.setDefaultDouble(0);
+    }
     @Override
     public void initSendable(SendableBuilder builder) {
         setName("Cube Motor Speeds");
@@ -33,14 +38,11 @@ public final class CubeHandler extends Subsystem implements Runnable, Sendable {
 //        grabberII.follow(grabberI);
     }
 
-    @Override
-    public void run() {
 
-    }
 
     public void grab() {//grabs cube
         System.out.println("my boi is to grab me");
-        grabberI.set(ControlMode.PercentOutput, 0.1);
+        grabberI.set(ControlMode.PercentOutput, 0.8);
         grabberII.set(ControlMode.PercentOutput, -0.8);
         System.out.println("Grabber 1 sped "+grabberI.getMotorOutputPercent());
         System.out.println("Grabber 2 sped "+grabberII.getMotorOutputPercent());
@@ -58,8 +60,8 @@ public final class CubeHandler extends Subsystem implements Runnable, Sendable {
 
     public void slow(){//spins motors slow when we have a cube
         System.out.println("have cube");
-        grabberI.set(ControlMode.PercentOutput, 1);
-        grabberII.set(ControlMode.PercentOutput, -1);
+        grabberI.set(ControlMode.PercentOutput, 0.05);
+        grabberII.set(ControlMode.PercentOutput, -0.05);
     }
     public void test(){
         System.out.println(sped.getDouble(0));

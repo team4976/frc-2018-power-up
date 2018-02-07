@@ -53,6 +53,8 @@ public final class Robot extends IterativeRobot {
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);
 
+        System.out.println("robot");
+
         Robot.drive.defaultGear();
     }
 

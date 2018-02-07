@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MAX;
 import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MIN;
@@ -25,13 +26,13 @@ public final class Elevator extends Subsystem implements Sendable {
         elevSlave2.follow(elevMotorMain);
 
         kP.setPersistent();
-        kP.setDefaultDouble(0);
+        kP.setDouble(kP.getDouble(0));
 
         kI.setPersistent();
-        kI.setDefaultDouble(0);
+        kI.setDouble(kI.getDouble(0));
 
         kD.setPersistent();
-        kD.setDefaultDouble(0);
+        kD.setDouble(kD.getDouble(0));
 
         elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
     }
@@ -178,5 +179,16 @@ public final class Elevator extends Subsystem implements Sendable {
         }*/
 
 
+    }
+
+    @Override public void initSendable(SendableBuilder builder) {
+
+        setName("Elevator PID");
+
+        builder.setSmartDashboardType("PIDController");
+        builder.addDoubleProperty("p", () -> elevatorPID.getP(), it -> elevatorPID.setP(it));
+        builder.addDoubleProperty("i", () -> i, it -> i = it);
+        builder.addDoubleProperty("d", () -> d, it -> d = it);
+        builder.addBooleanProperty("enabled", this::isRunning, ignored -> {});
     }
 }

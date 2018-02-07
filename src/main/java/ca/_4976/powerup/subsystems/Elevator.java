@@ -7,6 +7,9 @@ Made by Cameron, Jacob, Ethan, Zach
 import ca._4976.powerup.*;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -20,6 +23,17 @@ public final class Elevator extends Subsystem implements Sendable {
         System.out.println("Motors slaved");
         elevSlave1.follow(elevMotorMain);
         elevSlave2.follow(elevMotorMain);
+
+        kP.setPersistent();
+        kP.setDefaultDouble(0);
+
+        kI.setPersistent();
+        kI.setDefaultDouble(0);
+
+        kD.setPersistent();
+        kD.setDefaultDouble(0);
+
+        elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
     }
 
     //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)
@@ -55,9 +69,15 @@ public final class Elevator extends Subsystem implements Sendable {
 
     private final Encoder elevEnc = new Encoder(6, 7);
 
-    private double kP = 0, kI = 0, kD = 0;
-    private final PIDController elevatorPID = new PIDController(kP, kI, kD, elevEnc, elevMotorMain);
 
+
+    private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
+    private final NetworkTable elevatorTable = instance.getTable("Elevator PID");
+    private final NetworkTableEntry kP = elevatorTable.getEntry("P");
+    private final NetworkTableEntry kI = elevatorTable.getEntry("I");
+    private final NetworkTableEntry kD = elevatorTable.getEntry("D");
+
+    private final PIDController elevatorPID;
     /*
     Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(4);

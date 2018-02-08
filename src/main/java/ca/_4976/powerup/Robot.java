@@ -7,6 +7,8 @@ import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.Drive;
+import ca._4976.powerup.subsystems.Elevator;
+import ca._4976.powerup.subsystems.LinkArm;
 import ca._4976.powerup.subsystems.Motion;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -30,6 +32,8 @@ import static ca.qormix.library.Lazy.use;
 public final class Robot extends IterativeRobot {
 
     public static OI oi;
+    public final static Elevator elevator = new Elevator();
+    public final static LinkArm linkArm = new LinkArm();
 
     public final static Drive drive = new Drive();
     public final static Motion motion = new Motion();

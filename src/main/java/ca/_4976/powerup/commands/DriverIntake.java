@@ -35,12 +35,7 @@ public class DriverIntake extends Command {
 
     @Override
     protected boolean isFinished() {
-        if (Robot.cubeHandler.grabberI.getMotorOutputPercent() == 0) return true;
-        else if (Robot.cubeHandler.grabberI.getOutputCurrent() > normalDraw) {
-            Robot.cubeHandler.slow();
-            return true;
-        }
-        else return false;
+        return Robot.cubeHandler.checkCurrent();
     }
 }
 

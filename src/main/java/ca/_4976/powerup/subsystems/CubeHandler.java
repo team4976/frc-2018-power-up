@@ -2,6 +2,7 @@
 package ca._4976.powerup.subsystems;
 
 
+import ca._4976.powerup.Robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
@@ -66,6 +67,15 @@ public final class CubeHandler extends Subsystem implements Sendable {
     public void test(){
         System.out.println(sped.getDouble(0));
         System.out.println(slow.getDouble(0));
+    }
+    public boolean checkCurrent(){
+        double normalDraw = 5;
+        if (grabberI.getMotorOutputPercent() == 0) return true;
+        else if (grabberI.getOutputCurrent() > normalDraw) {
+            slow();
+            return true;
+        }
+        else return false;
     }
 
 }

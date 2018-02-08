@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public final class MoveElevatorWithJoystick extends Command {
 
+    public MoveElevatorWithJoystick(){
+        requires(Robot.elevator);
+    }
 
     @Override
     protected void execute() {

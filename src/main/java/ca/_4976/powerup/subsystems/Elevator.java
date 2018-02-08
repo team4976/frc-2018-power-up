@@ -25,16 +25,21 @@ public final class Elevator extends Subsystem implements Sendable {
         elevSlave1.follow(elevMotorMain);
         elevSlave2.follow(elevMotorMain);
 
-        kP.setPersistent();
-        kP.setDouble(kP.getDouble(0));
+//        kP.setPersistent();
+//        kP.setDouble(kP.getDouble(0));
+//        System.out.println();
+//
+//        kI.setPersistent();
+//        kI.setDouble(kI.getDouble(0));
+//
+//        kD.setPersistent();
+//        kD.setDouble(kD.getDouble(0));
+//
+//        System.out.println("INIT PID: " + kP + " " + kI + " " + kD);
 
-        kI.setPersistent();
-        kI.setDouble(kI.getDouble(0));
-
-        kD.setPersistent();
-        kD.setDouble(kD.getDouble(0));
-
-        elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
+        //elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
+        elevatorPID = new PIDController(0.1, 0, 0, elevEnc, elevMotorMain);
+        elevatorPID.setSetpoint(100);
     }
 
     //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)
@@ -74,9 +79,9 @@ public final class Elevator extends Subsystem implements Sendable {
 
     private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
     private final NetworkTable elevatorTable = instance.getTable("Elevator PID");
-    private final NetworkTableEntry kP = elevatorTable.getEntry("P");
-    private final NetworkTableEntry kI = elevatorTable.getEntry("I");
-    private final NetworkTableEntry kD = elevatorTable.getEntry("D");
+//    private final NetworkTableEntry kP = elevatorTable.getEntry("P");
+//    private final NetworkTableEntry kI = elevatorTable.getEntry("I");
+//    private final NetworkTableEntry kD = elevatorTable.getEntry("D");
 
     private final PIDController elevatorPID;
     /*
@@ -96,6 +101,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
 
     public double getHeight() { //Reads encoders to return current height of the elevator with reference to it's zero point
+        System.out.println("ENCODER READ: " + elevEnc.get());
         return elevEnc.get();
     }
 
@@ -123,30 +129,31 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //DEAD ZONE
         //else
-        if (Math.abs(drInput) <= 0.03 && Math.abs(opInput) <= 0.03) {
+        if (Math.abs(drInput) <= 0.05 && Math.abs(opInput) <= 0.05) {
             System.out.println("Dead zone");
             manualOut = 0;
         }
 
         //DRIVER CONTROL
-        else if (Math.abs(drInput) > 0.03) {
+        else if (Math.abs(drInput) > 0.05) {
             System.out.println("Driver control");
             manualOut = drInput;
         }
 
         //OPERATOR CONTROL
-        else if (Math.abs(opInput) > 0.03) {
+        else if (Math.abs(opInput) > 0.05) {
             System.out.println("Operator control");
             manualOut = opInput;
         }
 
 
         //CHECK FOR MAX / MIN ENC VALUES
-        else if (getHeight() < ELEV_MAX.value || getHeight() > ELEV_MIN.value) {
+        if (true){//getHeight() < ELEV_MAX.value || getHeight() > ELEV_MIN.value) {
             //tol range may be taken into account
 
             System.out.println("Manual output: " + manualOut);
-            elevatorPID.setSetpoint(getHeight() + manualOut);
+            elevatorPID.setSetpoint(getHeight() + (100 * Math.abs(manualOut)));
+            System.out.println("\nSETPOINT SET: " + elevatorPID.getSetpoint() + "\n");
 
             //elevMotorMain.set(ControlMode.PercentOutput, manualOut);
 
@@ -161,10 +168,11 @@ public final class Elevator extends Subsystem implements Sendable {
     //Moves elevator until height is within certain range of set value
     public void moveToPreset(ElevPreset preset) {
 
-        System.out.println("Preset triggered");
+
 
         elevatorPID.setSetpoint(preset.value);
 
+        System.out.println("Preset set to: " + preset.toString() + " at: " + preset.value);
         /*double motorOut = 0.5;
 
         while (getHeight() > preset.upperBound) {
@@ -181,13 +189,16 @@ public final class Elevator extends Subsystem implements Sendable {
 
     }
 
-    @Override public void initSendable(SendableBuilder builder) {
-
-        setName("Elevator PID");
-
-        builder.setSmartDashboardType("PIDController");
-        builder.addDoubleProperty("p", elevatorPID::getP, elevatorPID::setP);
-        builder.addDoubleProperty("i", elevatorPID::getI, elevatorPID::setI);
-        builder.addDoubleProperty("d", elevatorPID::getD, elevatorPID::setD);
-    }
+//    @Override public void initSendable(SendableBuilder builder) {
+//
+//        setName("Elevator PID");
+//
+//        builder.setSmartDashboardType("PIDController");
+//        builder.addDoubleProperty("p", elevatorPID::getP, elevatorPID::setP);
+//        builder.addDoubleProperty("i", elevatorPID::getI, elevatorPID::setI);
+//        builder.addDoubleProperty("d", elevatorPID::getD, elevatorPID::setD);
+//        System.out.println("P: " + elevatorPID.getP());
+//        System.out.println("I: " + elevatorPID.getI());
+//        System.out.println("D: " + elevatorPID.getD());
+//    }
 }

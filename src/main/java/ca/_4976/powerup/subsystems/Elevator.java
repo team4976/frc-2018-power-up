@@ -35,11 +35,15 @@ public final class Elevator extends Subsystem implements Sendable {
 //        kD.setPersistent();
 //        kD.setDouble(kD.getDouble(0));
 //
-//        System.out.println("INIT PID: " + kP + " " + kI + " " + kD);
-
-        //elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
+//        System.out.println("INIT PID: " + kP.getDouble(0) + " "
+//                + kI.getDouble(0) + " "
+//                + kD.getDouble(0));
+//
+//        elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
         elevatorPID = new PIDController(0.1, 0, 0, elevEnc, elevMotorMain);
+        elevatorPID.setAbsoluteTolerance(100);
         elevatorPID.setSetpoint(100);
+        System.out.println("SETPOINT INIT: " + elevatorPID.getSetpoint());
     }
 
     //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)
@@ -56,15 +60,10 @@ public final class Elevator extends Subsystem implements Sendable {
         //IMPORTANT -> TOL RANGE MUST NOT BE LARGER THAN THE DISTANCE FROM THE MAX TO THE LIMIT SWITCH
         //WILL BE UNABLE TO MOVE IF THIS IS THE CASE
 
-//        private final double tolerance = 170;
         public final double value;
-//        public double lowerBound;
-//        public double upperBound;
 
         ElevPreset(double value) {
             this.value = value;
-//            lowerBound = value - tolerance;
-//            upperBound = value + tolerance;
         }
     }
 
@@ -79,9 +78,9 @@ public final class Elevator extends Subsystem implements Sendable {
 
     private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
     private final NetworkTable elevatorTable = instance.getTable("Elevator PID");
-//    private final NetworkTableEntry kP = elevatorTable.getEntry("P");
-//    private final NetworkTableEntry kI = elevatorTable.getEntry("I");
-//    private final NetworkTableEntry kD = elevatorTable.getEntry("D");
+    private final NetworkTableEntry kP = elevatorTable.getEntry("P");
+    private final NetworkTableEntry kI = elevatorTable.getEntry("I");
+    private final NetworkTableEntry kD = elevatorTable.getEntry("D");
 
     private final PIDController elevatorPID;
     /*
@@ -153,7 +152,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
             System.out.println("Manual output: " + manualOut);
             elevatorPID.setSetpoint(getHeight() + (100 * Math.abs(manualOut)));
-            System.out.println("\nSETPOINT SET: " + elevatorPID.getSetpoint() + "\n");
+            System.out.println("\nSETPOINT SET: " + (getHeight() + (100 * Math.abs(manualOut))) + "\n");
 
             //elevMotorMain.set(ControlMode.PercentOutput, manualOut);
 
@@ -185,20 +184,18 @@ public final class Elevator extends Subsystem implements Sendable {
 
             System.out.println("Preset reached: Encoder output: " + getHeight());
         }*/
-
-
     }
 
-//    @Override public void initSendable(SendableBuilder builder) {
-//
-//        setName("Elevator PID");
-//
-//        builder.setSmartDashboardType("PIDController");
-//        builder.addDoubleProperty("p", elevatorPID::getP, elevatorPID::setP);
-//        builder.addDoubleProperty("i", elevatorPID::getI, elevatorPID::setI);
-//        builder.addDoubleProperty("d", elevatorPID::getD, elevatorPID::setD);
-//        System.out.println("P: " + elevatorPID.getP());
-//        System.out.println("I: " + elevatorPID.getI());
-//        System.out.println("D: " + elevatorPID.getD());
-//    }
+    /*@Override public void initSendable(SendableBuilder builder) {
+
+        setName("Elevator PID");
+
+        builder.setSmartDashboardType("PIDController");
+        builder.addDoubleProperty("p", elevatorPID::getP, elevatorPID::setP);
+        builder.addDoubleProperty("i", elevatorPID::getI, elevatorPID::setI);
+        builder.addDoubleProperty("d", elevatorPID::getD, elevatorPID::setD);
+        System.out.println("P: " + elevatorPID.getP());
+        System.out.println("I: " + elevatorPID.getI());
+        System.out.println("D: " + elevatorPID.getD());
+    }*/
 }

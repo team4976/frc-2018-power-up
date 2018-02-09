@@ -6,6 +6,7 @@ import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
+import ca._4976.powerup.subsystems.CubeHandler;
 import ca._4976.powerup.subsystems.Drive;
 import ca._4976.powerup.subsystems.Elevator;
 import ca._4976.powerup.subsystems.LinkArm;
@@ -35,17 +36,21 @@ public final class Robot extends IterativeRobot {
     public final static Elevator elevator = new Elevator();
     public final static LinkArm linkArm = new LinkArm();
 
+    public final static CubeHandler cubeHandler = new CubeHandler();
     public final static Drive drive = new Drive();
     public final static Motion motion = new Motion();
 
-    private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
-    private final NetworkTable table = instance.getTable("Log");
+    public final NetworkTableInstance instance = NetworkTableInstance.getDefault();
+    public final NetworkTable table = instance.getTable("Log");
 
-    private final NetworkTableEntry leftDistance =  table.getEntry("Left Distance");
-    private final NetworkTableEntry rightDistance =  table.getEntry("Right Distance");
-    private final NetworkTableEntry stopped =  table.getEntry("Is Stopped");
+    public final NetworkTableEntry leftDistance =  table.getEntry("Left Distance");
+    public final NetworkTableEntry rightDistance =  table.getEntry("Right Distance");
+    public final NetworkTableEntry stopped =  table.getEntry("Is Stopped");
 
-    private final NetworkTableEntry profiles =  table.getEntry("Profiles");
+    public final NetworkTableEntry sped =  table.getEntry("sped");
+    public final NetworkTableEntry stop =  table.getEntry("stop");
+
+    public final NetworkTableEntry profiles =  table.getEntry("Profiles");
 
     private final DefaultGear defaultGear = new DefaultGear();
     private final RecordProfile recordProfile = new RecordProfile();
@@ -57,6 +62,9 @@ public final class Robot extends IterativeRobot {
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);
 
+        System.out.println("robot");
+
+        Robot.drive.defaultGear();
         defaultGear.start();
     }
 

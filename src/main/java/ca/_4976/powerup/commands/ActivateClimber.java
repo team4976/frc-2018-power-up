@@ -2,13 +2,9 @@
 package ca._4976.powerup.commands;
 
 import ca._4976.powerup.Robot;
-import edu.wpi.first.wpilibj.command.Command;
 
 //When run changes the elevator gear as a toggle(high, low)
-public class ActivateClimber extends Command{
-
-
-    public ActivateClimber(){}
+public class ActivateClimber extends ListenableCommand{
 
     @Override
     protected void execute(){
@@ -20,6 +16,4 @@ public class ActivateClimber extends Command{
 
     @Override
     protected void end(){}
-
-
 }

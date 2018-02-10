@@ -5,7 +5,7 @@ import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 //Stops the forks from extending/retracting
-public class StopForks extends Command {
+public class StopForks extends ListenableCommand {
 
     public StopForks(){}
 

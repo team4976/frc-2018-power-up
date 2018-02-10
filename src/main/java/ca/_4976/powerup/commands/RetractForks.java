@@ -5,7 +5,7 @@ import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 //Used to retract the forks inwards
-public class RetractForks extends Command {
+public class RetractForks extends ListenableCommand {
 
     public RetractForks(){}
 

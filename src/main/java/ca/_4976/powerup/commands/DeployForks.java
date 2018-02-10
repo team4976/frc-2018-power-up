@@ -5,7 +5,7 @@ import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 //Deploys the forks to help pick up a bot
-public class DeployForks extends Command {
+public class DeployForks extends ListenableCommand {
 
     public DeployForks(){}
 

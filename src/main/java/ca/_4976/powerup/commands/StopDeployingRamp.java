@@ -5,7 +5,7 @@ import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 //Stops the deploying the ramp
-public class StopDeployingRamp extends Command {
+public class StopDeployingRamp extends ListenableCommand {
 
     public StopDeployingRamp(){}
 

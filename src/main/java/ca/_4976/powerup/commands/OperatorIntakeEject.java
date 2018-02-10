@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 //the operator functions to grab and release the cube
 
-public class OperatorIntakeEject extends Command {
+public class OperatorIntakeEject extends ListenableCommand {
 
     @Override
     protected void execute() {

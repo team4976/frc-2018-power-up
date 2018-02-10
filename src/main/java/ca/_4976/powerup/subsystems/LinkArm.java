@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public final class LinkArm extends Subsystem implements Sendable {
 
     //Motor inside linkarm carriage - raises/lowers arm
-    //private final TalonSRX armMotor = new TalonSRX(4);
+    private final TalonSRX armMotor = new TalonSRX(4);
 
     //Angle variable for measurements
     private double armAngle = 0;
@@ -29,7 +29,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     //move linkage arm
     public void moveLinkArm(){
 
-        /*double armOut = Robot.oi.operator.getRawAxis(5);
+        double armOut = Robot.oi.operator.getRawAxis(5);
 
         //dead zone
         if (Math.abs(armOut) <= 0.03) {
@@ -38,7 +38,7 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         else {
             armMotor.set(ControlMode.PercentOutput,0.5 * armOut);
-        }*/
+        }
     }
 
     //ARM WILL USE 0 DEGREES AS REFERENCE

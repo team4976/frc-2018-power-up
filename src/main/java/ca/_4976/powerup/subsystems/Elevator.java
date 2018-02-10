@@ -6,6 +6,8 @@ Made by Cameron, Jacob, Ethan, Zach
 
 import ca._4976.powerup.*;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -16,34 +18,40 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MAX;
 import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MIN;
+import static ca.qormix.library.Lazy.use;
 
 
 public final class Elevator extends Subsystem implements Sendable {
+
+
 
     public Elevator() {
         System.out.println("Motors slaved");
         elevSlave1.follow(elevMotorMain);
         elevSlave2.follow(elevMotorMain);
 
-//        kP.setPersistent();
-//        kP.setDouble(kP.getDouble(0));
-//        System.out.println();
-//
-//        kI.setPersistent();
-//        kI.setDouble(kI.getDouble(0));
-//
-//        kD.setPersistent();
-//        kD.setDouble(kD.getDouble(0));
-//
-//        System.out.println("INIT PID: " + kP.getDouble(0) + " "
-//                + kI.getDouble(0) + " "
-//                + kD.getDouble(0));
-//
-//        elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
-        elevatorPID = new PIDController(0.1, 0, 0, elevEnc, elevMotorMain);
-        elevatorPID.setAbsoluteTolerance(100);
-        elevatorPID.setSetpoint(100);
-        System.out.println("SETPOINT INIT: " + elevatorPID.getSetpoint());
+        /*use(NetworkTableInstance.getDefault().getTable("Elevator PID"), it -> {
+
+            NetworkTableEntry p = it.getEntry("P");
+            NetworkTableEntry i = it.getEntry("I");
+            NetworkTableEntry d = it.getEntry("D");
+
+            p.setPersistent();
+            i.setPersistent();
+            d.setPersistent();
+
+            p.setDefaultDouble(0);
+            i.setDefaultDouble(0);
+            d.setDefaultDouble(0);
+
+
+            elevatorPID = new PIDController(
+                    p.getDouble(0),
+                    i.getDouble(0),
+                    d.getDouble(0),
+                    elevEnc,
+                    elevMotorMain);
+        });*/
     }
 
     //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)
@@ -60,10 +68,15 @@ public final class Elevator extends Subsystem implements Sendable {
         //IMPORTANT -> TOL RANGE MUST NOT BE LARGER THAN THE DISTANCE FROM THE MAX TO THE LIMIT SWITCH
         //WILL BE UNABLE TO MOVE IF THIS IS THE CASE
 
+        private final double tolerance = 170;
         public final double value;
+        public double lowerBound;
+        public double upperBound;
 
         ElevPreset(double value) {
             this.value = value;
+            lowerBound = value - tolerance;
+            upperBound = value + tolerance;
         }
     }
 
@@ -72,17 +85,12 @@ public final class Elevator extends Subsystem implements Sendable {
     elevSlave1 = new WPI_TalonSRX(3),
     elevSlave2 = new WPI_TalonSRX(8);
 
-    private final Encoder elevEnc = new Encoder(6, 7);
-
-
+    private final Encoder elevEnc = new Encoder(4, 5);
 
     private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
-    private final NetworkTable elevatorTable = instance.getTable("Elevator PID");
-    private final NetworkTableEntry kP = elevatorTable.getEntry("P");
-    private final NetworkTableEntry kI = elevatorTable.getEntry("I");
-    private final NetworkTableEntry kD = elevatorTable.getEntry("D");
 
-    private final PIDController elevatorPID;
+    private PIDController elevatorPID;
+
     /*
     Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(4);
@@ -91,7 +99,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private final DigitalInput limitSwitchMin = new DigitalInput(5);
 
     //Switch states need to be verified logically and codewise
-*/
+    */
 
     @Override
     protected void initDefaultCommand() {
@@ -112,8 +120,8 @@ public final class Elevator extends Subsystem implements Sendable {
         input is detected from driver
         */
 
-        double drInput = Robot.oi.driver.getRawAxis(5);
-        double opInput = Robot.oi.operator.getRawAxis(1);
+        double drInput = -Robot.oi.driver.getRawAxis(5);
+        double opInput = 0;//-Robot.oi.operator.getRawAxis(1);
         double manualOut = 0;
 
         System.out.println("OUTPUT - DRIVER: " + drInput + " OPERATOR: " + opInput);
@@ -145,21 +153,18 @@ public final class Elevator extends Subsystem implements Sendable {
             manualOut = opInput;
         }
 
-
         //CHECK FOR MAX / MIN ENC VALUES
         if (true){//getHeight() < ELEV_MAX.value || getHeight() > ELEV_MIN.value) {
             //tol range may be taken into account
 
             System.out.println("Manual output: " + manualOut);
-            elevatorPID.setSetpoint(getHeight() + (100 * Math.abs(manualOut)));
-            System.out.println("\nSETPOINT SET: " + (getHeight() + (100 * Math.abs(manualOut))) + "\n");
-
-            //elevMotorMain.set(ControlMode.PercentOutput, manualOut);
-
+            elevMotorMain.set(ControlMode.PercentOutput, manualOut);
+//            elevatorPID.setSetpoint(getHeight() + (1000 * manualOut));
+//            System.out.println("\nSETPOINT SET: " + elevatorPID.getSetpoint() + "\n");
         }
 
         else {
-            elevatorPID.setSetpoint(getHeight());
+            stop();
         }
     }
 
@@ -167,14 +172,13 @@ public final class Elevator extends Subsystem implements Sendable {
     //Moves elevator until height is within certain range of set value
     public void moveToPreset(ElevPreset preset) {
 
-
-
-        elevatorPID.setSetpoint(preset.value);
+        //elevatorPID.setSetpoint(preset.value);
 
         System.out.println("Preset set to: " + preset.toString() + " at: " + preset.value);
-        /*double motorOut = 0.5;
 
-        while (getHeight() > preset.upperBound) {
+        double motorOut = 0.5;
+
+        while (getHeight() > preset.upperBound || getHeight() < preset.lowerBound) {
 
             if (getHeight() < preset.lowerBound) {
                 elevMotorMain.set(ControlMode.PercentOutput, motorOut);
@@ -183,19 +187,19 @@ public final class Elevator extends Subsystem implements Sendable {
             }
 
             System.out.println("Preset reached: Encoder output: " + getHeight());
-        }*/
+        }
+
+
     }
 
-    /*@Override public void initSendable(SendableBuilder builder) {
+    //Run motor method for climbing
+    public void climb(){
 
-        setName("Elevator PID");
+        elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+    }
 
-        builder.setSmartDashboardType("PIDController");
-        builder.addDoubleProperty("p", elevatorPID::getP, elevatorPID::setP);
-        builder.addDoubleProperty("i", elevatorPID::getI, elevatorPID::setI);
-        builder.addDoubleProperty("d", elevatorPID::getD, elevatorPID::setD);
-        System.out.println("P: " + elevatorPID.getP());
-        System.out.println("I: " + elevatorPID.getI());
-        System.out.println("D: " + elevatorPID.getD());
-    }*/
+    //What the hell do you think
+    public void stop(){
+        elevMotorMain.set(ControlMode.PercentOutput, 0);
+    }
 }

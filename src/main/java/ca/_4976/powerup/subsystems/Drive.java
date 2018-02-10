@@ -1,6 +1,9 @@
 package ca._4976.powerup.subsystems;
 
 import ca._4976.powerup.commands.DriveWithJoystick;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
@@ -19,15 +22,16 @@ import static ca.qormix.library.Lazy.using;
 public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // The pneumatic solenoid
-    private DoubleSolenoid transmission = new DoubleSolenoid(10, 1, 6);
+    private DoubleSolenoid transmission = new DoubleSolenoid(5, 5, 6);
+    //private DoubleSolenoid transmission = new DoubleSolenoid(10, 3,2);
 
     // The left drive motors pwm pins 0 and 1
-    private VictorSP leftFront = new VictorSP(0);
-    private VictorSP leftRear = new VictorSP(1);
+    private VictorSPX leftFront = new VictorSPX(9);
+    private TalonSRX leftRear = new TalonSRX(12);
     
      // The right drive motors pwm pins 2 and 3
-    private VictorSP rightFront = new VictorSP(2);
-    private VictorSP rightRear = new VictorSP(3);
+    private VictorSPX rightFront = new VictorSPX(11);
+    private TalonSRX rightRear = new TalonSRX(13);
 
     // The encoders on the drive system
     private Encoder left = new Encoder(0, 1);
@@ -196,10 +200,11 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      */
     public synchronized void setTankDrive(double left, double right) {
 
-        leftFront.set(left);
-        leftRear.set(left);
-        rightFront.set(right);
-        rightRear.set(right);
+        leftRear.set(ControlMode.PercentOutput, left);
+        leftFront.follow(leftRear);
+
+        rightRear.set(ControlMode.PercentOutput, right);
+        rightFront.follow(rightRear);
     }
 
     /**
@@ -207,7 +212,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      * 
      * @return the left and right drive output as a double array
      */
-    public synchronized Double[] getTankDrive() { return new Double[] { leftFront.get(), rightFront.get() }; }
+    public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.getMotorOutputPercent(), rightFront.getMotorOutputPercent() }; }
 
     /**
      * Set ramping enabled or disabled
@@ -238,10 +243,10 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //Switches gear
     public void switchGear(){
         if (gear == false){
-            transmission.set(DoubleSolenoid.Value.kForward);
+            //transmission.set(DoubleSolenoid.Value.kForward);
         }
         else{
-            transmission.set(DoubleSolenoid.Value.kOff);
+            //transmission.set(DoubleSolenoid.Value.kOff);
         }
 
         gear = !gear;
@@ -250,6 +255,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //set the default state for the gear switch
     public void defaultGear(){
         gear = false;
-        transmission.set(DoubleSolenoid.Value.kOff);
+       // transmission.set(DoubleSolenoid.Value.kOff);
+        //transmission.set(DoubleSolenoid.Value.kOff);
     }
 }

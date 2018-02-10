@@ -22,16 +22,16 @@ import static ca.qormix.library.Lazy.using;
 public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // The pneumatic solenoid
-    private DoubleSolenoid transmission = new DoubleSolenoid(10, 2, 3);
+    private DoubleSolenoid transmission = new DoubleSolenoid(5, 5, 6);
     //private DoubleSolenoid transmission = new DoubleSolenoid(10, 3,2);
 
     // The left drive motors pwm pins 0 and 1
     private VictorSPX leftFront = new VictorSPX(9);
-    private VictorSPX leftRear = new VictorSPX(12);
+    private TalonSRX leftRear = new TalonSRX(12);
     
      // The right drive motors pwm pins 2 and 3
-    private VictorSP rightFront = new VictorSP(11);
-    private VictorSP rightRear = new VictorSP(13);
+    private VictorSPX rightFront = new VictorSPX(11);
+    private TalonSRX rightRear = new TalonSRX(13);
 
     // The encoders on the drive system
     private Encoder left = new Encoder(0, 1);
@@ -53,8 +53,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     private boolean gear = false;
 
     public Drive() {
-        leftRear.set(leftFront);
-        rightRear.follow(rightFront);
+
         left.setDistancePerPulse(0.0001114);
         right.setDistancePerPulse(0.0001114);
 
@@ -201,8 +200,11 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      */
     public synchronized void setTankDrive(double left, double right) {
 
-        leftFront.set(left);
-        rightFront.set(right);
+        leftRear.set(ControlMode.PercentOutput, left);
+        leftFront.follow(leftRear);
+
+        rightRear.set(ControlMode.PercentOutput, right);
+        rightFront.follow(rightRear);
     }
 
     /**
@@ -210,7 +212,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      * 
      * @return the left and right drive output as a double array
      */
-    public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.get(), rightFront.get() }; }
+    public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.getMotorOutputPercent(), rightFront.getMotorOutputPercent() }; }
 
     /**
      * Set ramping enabled or disabled

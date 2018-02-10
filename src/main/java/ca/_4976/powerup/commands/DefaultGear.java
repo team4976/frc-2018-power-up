@@ -11,7 +11,7 @@ public final class DefaultGear extends Command {
 
     public DefaultGear() { willRunWhenDisabled(); }
 
-    @Override protected void execute() {
+    @Override protected void initialize() {
         Robot.drive.defaultGear();
     }
 

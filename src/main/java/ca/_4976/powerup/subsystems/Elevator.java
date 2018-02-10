@@ -17,9 +17,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MAX;
 import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MIN;
+import static ca.qormix.library.Lazy.use;
 
 
 public final class Elevator extends Subsystem implements Sendable {
+
+
 
     public Elevator() {
         System.out.println("Motors slaved");
@@ -41,6 +44,17 @@ public final class Elevator extends Subsystem implements Sendable {
         //elevatorPID = new PIDController(kP.getDouble(0), kI.getDouble(0), kD.getDouble(0), elevEnc, elevMotorMain);
         elevatorPID = new PIDController(0.1, 0, 0, elevEnc, elevMotorMain);
         elevatorPID.setSetpoint(100);
+
+        use(NetworkTableInstance.getDefault().getTable("Elevator"), it -> {
+
+            NetworkTableEntry p = it.getEntry("P");
+            NetworkTableEntry i = it.getEntry("I");
+            NetworkTableEntry d = it.getEntry("D");
+
+            p.setDefaultDouble(0);
+            i.setDefaultDouble(0);
+            d.setDefaultDouble(0);
+        });
     }
 
     //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)

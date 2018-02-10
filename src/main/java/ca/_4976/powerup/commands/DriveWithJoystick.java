@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
  * This command allows joystick to drive the robot. It is always running
  * except when interrupted by another command.
  */
-public final class DriveWithJoystick extends Command {
+public final class DriveWithJoystick extends ListenableCommand {
 
     public DriveWithJoystick() { requires(Robot.drive); }
 

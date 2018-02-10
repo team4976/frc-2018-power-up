@@ -1,13 +1,9 @@
-package ca._4976.powerup.commands.elevpresets;
+package ca._4976.powerup.commands;
 
 import ca._4976.powerup.Robot;
 import ca._4976.powerup.subsystems.Elevator;
-import edu.wpi.first.wpilibj.command.Command;
 
-public final class EPS_ScaleMid extends Command {
-    public EPS_ScaleMid() {
-//        requires(Robot.elevator);
-    }
+public final class EPS_ScaleMid extends ListenableCommand {
 
     @Override
     protected void initialize() {

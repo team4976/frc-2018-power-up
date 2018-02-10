@@ -5,7 +5,7 @@ import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 //Increases the endgame variable, when the variable reaches 2 (both button presses) it will climb
-public class EndGameIncrease extends Command {
+public class EndGameIncrease extends ListenableCommand {
 
 
     public EndGameIncrease(){}
@@ -14,7 +14,7 @@ public class EndGameIncrease extends Command {
     protected void execute(){
         Robot.climber.endGameIncrease();
         if(Robot.climber.endGameToggle >= 2){
-            //climb
+            Robot.elevator.climb();
             System.out.println("kachow 2.0");
         }
     }

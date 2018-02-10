@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * This command will toggle the transmission
  */
-public final class Transmission extends Command {
+public final class Transmission extends ListenableCommand {
 
     public Transmission() { willRunWhenDisabled(); }
 

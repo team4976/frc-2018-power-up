@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * This command will toggle the transmission
  */
-public final class DefaultGear extends Command {
+public final class DefaultGear extends ListenableCommand {
 
     public DefaultGear() { willRunWhenDisabled(); }
 

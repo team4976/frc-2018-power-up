@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 //will eject the gear while B is being held
 
-public class DriverEject extends Command{
+public class DriverEject extends ListenableCommand{
 
     @Override
     public void execute() {

@@ -47,9 +47,6 @@ public final class Robot extends IterativeRobot {
     public final NetworkTableEntry rightDistance =  table.getEntry("Right Distance");
     public final NetworkTableEntry stopped =  table.getEntry("Is Stopped");
 
-    public final NetworkTableEntry sped =  table.getEntry("sped");
-    public final NetworkTableEntry stop =  table.getEntry("stop");
-
     public final NetworkTableEntry profiles =  table.getEntry("Profiles");
 
     private final DefaultGear defaultGear = new DefaultGear();

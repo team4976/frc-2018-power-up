@@ -19,7 +19,7 @@ import static ca.qormix.library.Lazy.using;
 public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // The pneumatic solenoid
-    private DoubleSolenoid transmission = new DoubleSolenoid(10, 1, 6);
+    private DoubleSolenoid transmission = new DoubleSolenoid(10, 2, 3);
 
     // The left drive motors pwm pins 0 and 1
     private VictorSP leftFront = new VictorSP(0);
@@ -238,10 +238,10 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //Switches gear
     public void switchGear(){
         if (gear == false){
-            transmission.set(DoubleSolenoid.Value.kForward);
+            //transmission.set(DoubleSolenoid.Value.kForward);
         }
         else{
-            transmission.set(DoubleSolenoid.Value.kOff);
+            //transmission.set(DoubleSolenoid.Value.kOff);
         }
 
         gear = !gear;
@@ -250,6 +250,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //set the default state for the gear switch
     public void defaultGear(){
         gear = false;
-        transmission.set(DoubleSolenoid.Value.kOff);
+        //transmission.set(DoubleSolenoid.Value.kOff);
     }
 }

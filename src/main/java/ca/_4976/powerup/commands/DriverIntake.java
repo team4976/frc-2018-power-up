@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 //main controller grabbing the cube
 
-public class DriverIntake extends Command {
+public class DriverIntake extends ListenableCommand {
 //    DriverIntake()
 
 

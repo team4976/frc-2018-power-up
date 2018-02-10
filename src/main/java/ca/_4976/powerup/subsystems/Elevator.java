@@ -6,6 +6,7 @@ Made by Cameron, Jacob, Ethan, Zach
 
 import ca._4976.powerup.*;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -22,8 +23,8 @@ public final class Elevator extends Subsystem implements Sendable {
 
     public Elevator() {
         System.out.println("Motors slaved");
-        elevSlave1.follow(elevMotorMain);
-        elevSlave2.follow(elevMotorMain);
+//        elevSlave1.follow(elevMotorMain);
+//        elevSlave2.follow(elevMotorMain);
 
 //        kP.setPersistent();
 //        kP.setDouble(kP.getDouble(0));
@@ -56,22 +57,22 @@ public final class Elevator extends Subsystem implements Sendable {
         //IMPORTANT -> TOL RANGE MUST NOT BE LARGER THAN THE DISTANCE FROM THE MAX TO THE LIMIT SWITCH
         //WILL BE UNABLE TO MOVE IF THIS IS THE CASE
 
-//        private final double tolerance = 170;
+        private final double tolerance = 170;
         public final double value;
-//        public double lowerBound;
-//        public double upperBound;
+        public double lowerBound;
+        public double upperBound;
 
         ElevPreset(double value) {
             this.value = value;
-//            lowerBound = value - tolerance;
-//            upperBound = value + tolerance;
+            lowerBound = value - tolerance;
+            upperBound = value + tolerance;
         }
     }
 
 
-    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2),
-    elevSlave1 = new WPI_TalonSRX(3),
-    elevSlave2 = new WPI_TalonSRX(8);
+    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2);
+//    elevSlave1 = new WPI_TalonSRX(3),
+//    elevSlave2 = new WPI_TalonSRX(8);
 
     private final Encoder elevEnc = new Encoder(6, 7);
 
@@ -113,8 +114,8 @@ public final class Elevator extends Subsystem implements Sendable {
         input is detected from driver
         */
 
-        double drInput = Robot.oi.driver.getRawAxis(5);
-        double opInput = Robot.oi.operator.getRawAxis(1);
+        double drInput = -Robot.oi.driver.getRawAxis(5);
+        double opInput = -Robot.oi.operator.getRawAxis(1);
         double manualOut = 0;
 
         System.out.println("OUTPUT - DRIVER: " + drInput + " OPERATOR: " + opInput);
@@ -152,15 +153,17 @@ public final class Elevator extends Subsystem implements Sendable {
             //tol range may be taken into account
 
             System.out.println("Manual output: " + manualOut);
-            elevatorPID.setSetpoint(getHeight() + (100 * Math.abs(manualOut)));
-            System.out.println("\nSETPOINT SET: " + elevatorPID.getSetpoint() + "\n");
+            elevMotorMain.set(ControlMode.PercentOutput, manualOut);
+//            elevatorPID.setSetpoint(getHeight() + (100 * Math.abs(manualOut)));
+//            System.out.println("\nSETPOINT SET: " + elevatorPID.getSetpoint() + "\n");
 
             //elevMotorMain.set(ControlMode.PercentOutput, manualOut);
 
         }
 
         else {
-            elevatorPID.setSetpoint(getHeight());
+            elevMotorMain.set(ControlMode.PercentOutput, 0);
+            //elevatorPID.setSetpoint(getHeight());
         }
     }
 
@@ -170,10 +173,10 @@ public final class Elevator extends Subsystem implements Sendable {
 
 
 
-        elevatorPID.setSetpoint(preset.value);
+        //elevatorPID.setSetpoint(preset.value);
 
         System.out.println("Preset set to: " + preset.toString() + " at: " + preset.value);
-        /*double motorOut = 0.5;
+        double motorOut = 0.5;
 
         while (getHeight() > preset.upperBound) {
 
@@ -184,7 +187,7 @@ public final class Elevator extends Subsystem implements Sendable {
             }
 
             System.out.println("Preset reached: Encoder output: " + getHeight());
-        }*/
+        }
 
 
     }

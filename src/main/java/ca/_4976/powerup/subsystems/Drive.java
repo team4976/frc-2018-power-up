@@ -1,6 +1,8 @@
 package ca._4976.powerup.subsystems;
 
 import ca._4976.powerup.commands.DriveWithJoystick;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
@@ -22,12 +24,12 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     private DoubleSolenoid transmission = new DoubleSolenoid(10, 2, 3);
 
     // The left drive motors pwm pins 0 and 1
-    private VictorSP leftFront = new VictorSP(0);
-    private VictorSP leftRear = new VictorSP(1);
+    private TalonSRX leftFront = new TalonSRX(9);
+    private TalonSRX leftRear = new TalonSRX(12);
     
      // The right drive motors pwm pins 2 and 3
-    private VictorSP rightFront = new VictorSP(2);
-    private VictorSP rightRear = new VictorSP(3);
+    private TalonSRX rightFront = new TalonSRX(11);
+    private TalonSRX rightRear = new TalonSRX(13);
 
     // The encoders on the drive system
     private Encoder left = new Encoder(0, 1);
@@ -49,7 +51,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     private boolean gear = false;
 
     public Drive() {
-
+        leftRear.follow(leftFront);
+        rightRear.follow(rightFront);
         left.setDistancePerPulse(0.0001114);
         right.setDistancePerPulse(0.0001114);
 
@@ -196,10 +199,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      */
     public synchronized void setTankDrive(double left, double right) {
 
-        leftFront.set(left);
-        leftRear.set(left);
-        rightFront.set(right);
-        rightRear.set(right);
+        leftFront.set(ControlMode.PercentOutput, left);
+        rightFront.set(ControlMode.PercentOutput, right);
     }
 
     /**
@@ -207,7 +208,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      * 
      * @return the left and right drive output as a double array
      */
-    public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.get(), rightFront.get() }; }
+    public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.getMotorOutputPercent(), rightFront.getMotorOutputPercent() }; }
 
     /**
      * Set ramping enabled or disabled

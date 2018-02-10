@@ -23,8 +23,8 @@ public final class Elevator extends Subsystem implements Sendable {
 
     public Elevator() {
         System.out.println("Motors slaved");
-        elevSlave1.follow(elevMotorMain);
-        elevSlave2.follow(elevMotorMain);
+//        elevSlave1.follow(elevMotorMain);
+//        elevSlave2.follow(elevMotorMain);
 
 //        kP.setPersistent();
 //        kP.setDouble(kP.getDouble(0));

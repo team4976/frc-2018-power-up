@@ -4,14 +4,14 @@ package ca._4976.powerup.commands;
 import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
-//Used to retract the forks inwards
-public class RetractForks extends Command {
+public class EndGameDecrease extends Command {
 
-    public RetractForks(){}
+    //Decreases the endgame variable
+    public EndGameDecrease(){}
 
     @Override
     protected void execute(){
-        Robot.ramp.retractForks();
+        Robot.climber.endGameDecrease();
     }
 
     @Override
@@ -19,6 +19,5 @@ public class RetractForks extends Command {
 
     @Override
     protected void end(){}
-
 
 }

@@ -32,29 +32,23 @@ public final class OI {
         new JoystickButton(driver, 2).whenReleased(new DriverStop());
         new JoystickButton(driver, 7).whenPressed(new Transmission());
 
-        //Changes the elevator's gear from high-low and from low-high
-        //new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
+        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
 
         //Used for deploying the ramp
-        //new JoystickButton(driver, 8).whenPressed(new DeployRamp());
-        //new JoystickButton(driver, 8).whenReleased(new StopDeployingRamp());
+        new JoystickButton(driver, 8).whenPressed(new DeployRamp());
+        new JoystickButton(driver, 8).whenReleased(new StopDeployingRamp());
 
         //Used for the robots forks
-        //new JoystickButton(operator, 5).whenPressed(new DeployForks());
-        //new JoystickButton(operator, 4).whenPressed(new RetractForks());
-        //new JoystickButton(operator, 5).whenReleased(new StopForks());
-        //new JoystickButton(operator, 4).whenReleased(new StopForks());
+        new JoystickButton(operator, 5).whenPressed(new DeployForks());
+        new JoystickButton(operator, 6).whenPressed(new RetractForks());
+        new JoystickButton(operator, 5).whenReleased(new StopForks());
+        new JoystickButton(operator, 6).whenReleased(new StopForks());
 
         //Runs the command to climb/just run the elevator
-//        new JoystickButton(driver, 4).whenPressed(new EndGameIncrease());
-//        new JoystickButton(driver, 5).whenPressed(new EndGameIncrease());
-//        new JoystickButton(driver, 4).whenReleased(new EndGameDecrease());
-//        new JoystickButton(driver, 5).whenReleased(new EndGameDecrease());
-
-
-
-
-
+        new JoystickButton(driver, 6).whenPressed(new EndGameIncrease());
+        new JoystickButton(driver, 5).whenPressed(new EndGameIncrease());
+        new JoystickButton(driver, 6).whenReleased(new EndGameDecrease());
+        new JoystickButton(driver, 5).whenReleased(new EndGameDecrease());
 
         new JoystickButton(operator, 1).whenPressed(new EPS_Ground());
         new JoystickButton(operator, 2).whenPressed(new EPS_Switch());

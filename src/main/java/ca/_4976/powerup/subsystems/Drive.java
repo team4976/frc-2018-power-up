@@ -22,6 +22,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // The pneumatic solenoid
     private DoubleSolenoid transmission = new DoubleSolenoid(10, 2, 3);
+    //private DoubleSolenoid transmission = new DoubleSolenoid(10, 3,2);
 
     // The left drive motors pwm pins 0 and 1
     private TalonSRX leftFront = new TalonSRX(9);
@@ -251,6 +252,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //set the default state for the gear switch
     public void defaultGear(){
         gear = false;
+       // transmission.set(DoubleSolenoid.Value.kOff);
         //transmission.set(DoubleSolenoid.Value.kOff);
     }
 }

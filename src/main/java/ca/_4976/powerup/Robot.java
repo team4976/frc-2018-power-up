@@ -6,11 +6,7 @@ import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
-import ca._4976.powerup.subsystems.CubeHandler;
-import ca._4976.powerup.subsystems.Drive;
-import ca._4976.powerup.subsystems.Elevator;
-import ca._4976.powerup.subsystems.LinkArm;
-import ca._4976.powerup.subsystems.Motion;
+import ca._4976.powerup.subsystems.*;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -35,6 +31,9 @@ public final class Robot extends IterativeRobot {
     public static OI oi;
     public final static Elevator elevator = new Elevator();
     public final static LinkArm linkArm = new LinkArm();
+
+    public final static Ramp ramp = new Ramp();
+    public final static Climber climber = new Climber();
 
     public final static CubeHandler cubeHandler = new CubeHandler();
     public final static Drive drive = new Drive();

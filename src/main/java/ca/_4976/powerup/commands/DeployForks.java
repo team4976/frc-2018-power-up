@@ -4,18 +4,18 @@ package ca._4976.powerup.commands;
 import ca._4976.powerup.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
-//Used to retract the forks inwards
-public class RetractForks extends Command {
+//Deploys the forks to help pick up a bot
+public class DeployForks extends Command {
 
-    public RetractForks(){}
+    public DeployForks(){}
 
     @Override
     protected void execute(){
-        Robot.ramp.retractForks();
+        Robot.ramp.deployForks();
     }
 
     @Override
-    protected boolean isFinished() {return true;}
+    protected boolean isFinished(){return true;}
 
     @Override
     protected void end(){}

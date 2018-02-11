@@ -79,7 +79,6 @@ public final class Robot extends IterativeRobot {
     }
 
 
-
     @Override public void teleopPeriodic(){
         Scheduler.getInstance().run();
         log();
@@ -87,8 +86,6 @@ public final class Robot extends IterativeRobot {
     @Override public void testPeriodic(){
         recordProfile.start();
     }
-
-
 
     private void log() {
         use(drive.getEncoderPosition(), it -> {

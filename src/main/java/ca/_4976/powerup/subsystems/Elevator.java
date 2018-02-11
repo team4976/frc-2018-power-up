@@ -7,57 +7,27 @@ Made by Cameron, Jacob, Ethan, Zach
 import ca._4976.powerup.*;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MAX;
-import static ca._4976.powerup.subsystems.Elevator.ElevPreset.ELEV_MIN;
+import static ca._4976.powerup.subsystems.Elevator.ElevatorPreset.ELEV_MAX;
+import static ca._4976.powerup.subsystems.Elevator.ElevatorPreset.ELEV_MIN;
 import static ca.qormix.library.Lazy.use;
 
 
 public final class Elevator extends Subsystem implements Sendable {
 
+    /**
+    * Elevator presets
+    *
+    * Encoder values from excel sheet (Elevator Distance Chart.xlsx)
+    */
+    public enum ElevatorPreset {
 
-
-    public Elevator() {
-        System.out.println("Motors slaved");
-        elevSlave1.follow(elevMotorMain);
-        elevSlave2.follow(elevMotorMain);
-
-        /*use(NetworkTableInstance.getDefault().getTable("Elevator PID"), it -> {
-
-            NetworkTableEntry p = it.getEntry("P");
-            NetworkTableEntry i = it.getEntry("I");
-            NetworkTableEntry d = it.getEntry("D");
-
-            p.setPersistent();
-            i.setPersistent();
-            d.setPersistent();
-
-            p.setDefaultDouble(0);
-            i.setDefaultDouble(0);
-            d.setDefaultDouble(0);
-
-
-            elevatorPID = new PIDController(
-                    p.getDouble(0),
-                    i.getDouble(0),
-                    d.getDouble(0),
-                    elevEnc,
-                    elevMotorMain);
-        });*/
-    }
-
-    //Presets - encoder values from excel sheet (Elevator Distance Chart.xlsx)
-    public enum ElevPreset {
-
-        ELEV_MAX(16472.75),
+        ELEV_MAX(16000.00), //slightly rounded down
         SCALE_HIGH(12137.81),
         SCALE_MID(9536.85),
         SCALE_LOW(6935.89),
@@ -65,33 +35,73 @@ public final class Elevator extends Subsystem implements Sendable {
         GROUND(0),
         ELEV_MIN(0);
 
-        //IMPORTANT -> TOL RANGE MUST NOT BE LARGER THAN THE DISTANCE FROM THE MAX TO THE LIMIT SWITCH
-        //WILL BE UNABLE TO MOVE IF THIS IS THE CASE
-
         private final double tolerance = 170;
         public final double value;
         public double lowerBound;
         public double upperBound;
 
-        ElevPreset(double value) {
+        ElevatorPreset(double value) {
             this.value = value;
             lowerBound = value - tolerance;
             upperBound = value + tolerance;
         }
     }
 
+    // Elevator motors
+    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(3);
+    private final WPI_TalonSRX elevSlave1 = new WPI_TalonSRX(2);
 
-    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2),
-    elevSlave1 = new WPI_TalonSRX(3),
-    elevSlave2 = new WPI_TalonSRX(8);
-
+    // Encoder on elevator
     private final Encoder elevEnc = new Encoder(4, 5);
 
-    private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
-
+    //TODO -> PID
+    // PID controller for the elevator subsystem
     private PIDController elevatorPID;
 
-    /*
+    // NetworkTable assigned test value
+    private double motorOutput;
+
+    public Elevator() {
+        System.out.println("Motors slaved");
+        elevSlave1.follow(elevMotorMain);
+
+        //TODO -> PID testing
+        use(NetworkTableInstance.getDefault().getTable("Elevator"), ePIDTable -> {
+
+            NetworkTableEntry p = ePIDTable.getEntry("P");
+            NetworkTableEntry i = ePIDTable.getEntry("I");
+            NetworkTableEntry d = ePIDTable.getEntry("D");
+            NetworkTableEntry motorOut = ePIDTable.getEntry("Manual output");
+
+            p.setPersistent();
+            i.setPersistent();
+            d.setPersistent();
+            motorOut.setPersistent();
+
+            //PID table setup
+            p.setDouble(p.getDouble(0));
+            i.setDouble(i.getDouble(0));
+            d.setDouble(d.getDouble(0));
+
+            //Manual output value for closed loop testing
+            motorOut.setDouble(motorOut.getDouble(0.5));
+
+            motorOutput = motorOut.getDouble(0.5);
+
+            elevatorPID = new PIDController(
+                    p.getDouble(0),
+                    i.getDouble(0),
+                    d.getDouble(0),
+                    elevEnc,
+                    elevMotorMain);
+        });
+
+        System.out.println("PID set: [p - " + elevatorPID.getP() + "]\n"
+        + "[i - " + elevatorPID.getI() + "]\n"
+        + "[i - " + elevatorPID.getI() + "]\n");
+    }
+
+    /*TODO -> Limit switch testing
     Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(4);
 
@@ -106,25 +116,28 @@ public final class Elevator extends Subsystem implements Sendable {
         setDefaultCommand(new MoveElevatorWithJoystick());
     }
 
-
-    public double getHeight() { //Reads encoders to return current height of the elevator with reference to it's zero point
-        System.out.println("ENCODER READ: " + elevEnc.get());
+    /**
+     * Reads encoders to return current height of the elevator with reference to it's zero point
+     */
+    private double getHeight() {
         return elevEnc.get();
     }
 
 
+    /**
+     * Driver input overrides operator input. Only executes a movement initiated by the operator
+     * when no input is detected from driver according to dead zone
+     */
     public void moveElevator() {
 
-        /*
-        Driver input overrides operator input. Only execute a movement initiated by the operator when no
-        input is detected from driver
-        */
-
+        double deadRange = 0.09;
         double drInput = -Robot.oi.driver.getRawAxis(5);
-        double opInput = 0;//-Robot.oi.operator.getRawAxis(1);
+        double opInput = -Robot.oi.operator.getRawAxis(1);
         double manualOut = 0;
 
         System.out.println("OUTPUT - DRIVER: " + drInput + " OPERATOR: " + opInput);
+
+        //TODO -> ADD LIMIT SWITCH FUNCTIONALITY
         //LIMIT SWITCHES TO CONTROL
         /*if(limitSwitchMax.get() != true || limitSwitchMin.get() != false){ //could be simplified but kept for readability
             System.out.println("Switch triggered");
@@ -133,34 +146,32 @@ public final class Elevator extends Subsystem implements Sendable {
             //ADD SPECIFIC CASES FOR SWITCHES TO LIMIT BUT ENABLE MOVEMENT IN ONE DIRECTION, DEPENDING ON WHICH
             //SWITCH IS TRIGGERED
         }*/
+        //TODO END
 
-        //DEAD ZONE
-        //else
-        if (Math.abs(drInput) <= 0.05 && Math.abs(opInput) <= 0.05) {
+        if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
             System.out.println("Dead zone");
             manualOut = 0;
         }
 
-        //DRIVER CONTROL
-        else if (Math.abs(drInput) > 0.05) {
+        else if (Math.abs(drInput) > deadRange) {
             System.out.println("Driver control");
             manualOut = drInput;
         }
 
-        //OPERATOR CONTROL
-        else if (Math.abs(opInput) > 0.05) {
+        else if (Math.abs(opInput) > deadRange) {
             System.out.println("Operator control");
             manualOut = opInput;
         }
 
-        //CHECK FOR MAX / MIN ENC VALUES
-        if (true){//getHeight() < ELEV_MAX.value || getHeight() > ELEV_MIN.value) {
-            //tol range may be taken into account
+        if (getHeight() <= ELEV_MAX.value || getHeight() >= ELEV_MIN.value) {
 
             System.out.println("Manual output: " + manualOut);
             elevMotorMain.set(ControlMode.PercentOutput, manualOut);
-//            elevatorPID.setSetpoint(getHeight() + (1000 * manualOut));
-//            System.out.println("\nSETPOINT SET: " + elevatorPID.getSetpoint() + "\n");
+            System.out.println("Encoder: " + elevEnc.get());
+
+            /*TODO PID TESTING
+            elevatorPID.setSetpoint(getHeight() + (1000 * manualOut));
+            System.out.println("\nSETPOINT SET: " + elevatorPID.getSetpoint() + "\n");*/
         }
 
         else {
@@ -169,36 +180,39 @@ public final class Elevator extends Subsystem implements Sendable {
     }
 
 
-    //Moves elevator until height is within certain range of set value
-    public void moveToPreset(ElevPreset preset) {
+    /**
+     * Moves elevator until height is within certain range of set value assigned by preset
+     */
+    public void moveToPreset(ElevatorPreset preset) {
 
         //elevatorPID.setSetpoint(preset.value);
 
         System.out.println("Preset set to: " + preset.toString() + " at: " + preset.value);
 
-        double motorOut = 0.5;
-
         while (getHeight() > preset.upperBound || getHeight() < preset.lowerBound) {
 
             if (getHeight() < preset.lowerBound) {
-                elevMotorMain.set(ControlMode.PercentOutput, motorOut);
-            } else if (getHeight() > preset.upperBound) {
-                elevMotorMain.set(ControlMode.PercentOutput, -motorOut);
+                elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+            }
+
+            else if (getHeight() > preset.upperBound) {
+                elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
             }
 
             System.out.println("Preset reached: Encoder output: " + getHeight());
         }
-
-
     }
 
-    //Run motor method for climbing
+    /**
+     * Runs motors for use in Climber subsystem & commands
+     */
     public void climb(){
-
         elevMotorMain.set(ControlMode.PercentOutput, 0.5);
     }
 
-    //What the hell do you think
+    /**
+     * Take a wild guess
+     * */
     public void stop(){
         elevMotorMain.set(ControlMode.PercentOutput, 0);
     }

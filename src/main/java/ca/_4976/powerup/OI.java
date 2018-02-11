@@ -50,7 +50,9 @@ public final class OI {
         new JoystickButton(operator, 2).whenPressed(new EPS_Switch());
         new JoystickButton(operator, 3).whenPressed(new EPS_ScaleLow());
         new JoystickButton(operator, 4).whenPressed(new EPS_ScaleHigh());
-        //ADD MID FOR DPAD
-
+        //right dpad
+        if(operator.getPOV() >= 88 && operator.getPOV() <= 92){
+            new EPS_ScaleMid();
+        }
     }
 }

@@ -6,7 +6,7 @@ import ca._4976.powerup.subsystems.Elevator;
 public class EPS_Ground extends ListenableCommand {
 
     @Override
-    protected void initialize() { Robot.elevator.moveToPreset(Elevator.ElevPreset.GROUND); }
+    protected void initialize() { Robot.elevator.moveToPreset(Elevator.ElevatorPreset.GROUND); }
 
     @Override
     protected boolean isFinished() {

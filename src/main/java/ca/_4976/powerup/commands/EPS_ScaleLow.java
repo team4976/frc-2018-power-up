@@ -7,7 +7,7 @@ public final class EPS_ScaleLow extends ListenableCommand {
 
     @Override
     protected void initialize() {
-        Robot.elevator.moveToPreset(Elevator.ElevPreset.SCALE_LOW);
+        Robot.elevator.moveToPreset(Elevator.ElevatorPreset.SCALE_LOW);
     }
 
     @Override

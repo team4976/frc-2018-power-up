@@ -7,7 +7,7 @@ public final class EPS_ScaleMid extends ListenableCommand {
 
     @Override
     protected void initialize() {
-        Robot.elevator.moveToPreset(Elevator.ElevPreset.SCALE_MID);
+        Robot.elevator.moveToPreset(Elevator.ElevatorPreset.SCALE_MID);
     }
 
     @Override

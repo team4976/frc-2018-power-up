@@ -7,7 +7,7 @@ public final class EPS_Switch extends ListenableCommand {
 
     @Override
     protected void initialize() {
-        Robot.elevator.moveToPreset(Elevator.ElevPreset.SWITCH);
+        Robot.elevator.moveToPreset(Elevator.ElevatorPreset.SWITCH);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ca._4976.powerup.subsystems;
 
+import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.DriveWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -102,11 +103,18 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
+        double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/Elevator.ElevPreset.ELEV_MAX.value))*forward;
+        if(elevatorAffectedDrive>0.75){
+            elevatorAffectedDrive = 0.75;
+        }
+        else if(elevatorAffectedDrive<0.25){
+            elevatorAffectedDrive = 0.25;
+        }
 
         // Saves the joystick value as a power of 2 while still keeping the sign
         double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
 
-        arcadeDrive(turn, forward);
+        arcadeDrive(turn, elevatorAffectedDrive);
     }
 
     public void arcadeDrive(double turn, double forward) {

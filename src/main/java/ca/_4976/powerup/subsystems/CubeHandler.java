@@ -16,8 +16,8 @@ import static ca.qormix.library.Lazy.use;
 
 //Main superclass that holds all the methods used by the commands
 public final class CubeHandler extends Subsystem implements Sendable {
-    public final TalonSRX grabberI = new TalonSRX(1);
-    private final TalonSRX grabberII = new TalonSRX(2);
+    public final TalonSRX grabberI = new TalonSRX(0);
+    private final TalonSRX grabberII = new TalonSRX(1);
 
     private double speedFast=0, notFast=0, grabCurrent=0;
     public CubeHandler(){

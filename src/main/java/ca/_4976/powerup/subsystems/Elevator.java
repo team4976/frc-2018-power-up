@@ -58,7 +58,7 @@ public final class Elevator extends Subsystem implements Sendable {
     // PID controller for the elevator subsystem
     private PIDController elevatorPID;
 
-    // NetworkTable assigned test value
+    // NetworkTable assigned inputTest value
     private double motorOutput;
 
     public Elevator() {
@@ -96,7 +96,7 @@ public final class Elevator extends Subsystem implements Sendable {
                     elevMotorMain);
         });
 
-        System.out.println("PID set: [p - " + elevatorPID.getP() + "]\n"
+        System.out.println("\nPID set: [p - " + elevatorPID.getP() + "]\n"
         + "[i - " + elevatorPID.getI() + "]\n"
         + "[i - " + elevatorPID.getI() + "]\n");
     }
@@ -120,7 +120,7 @@ public final class Elevator extends Subsystem implements Sendable {
      * Reads encoders to return current height of the elevator with reference to it's zero point
      */
     private double getHeight() {
-        return elevEnc.get();
+        return elevEnc.getDistance();
     }
 
 
@@ -191,20 +191,26 @@ public final class Elevator extends Subsystem implements Sendable {
 
         while (getHeight() > preset.upperBound || getHeight() < preset.lowerBound) {
 
-            if (getHeight() < preset.lowerBound) {
+            //Test for joysticks
+            if(inputTest()){
+                getCurrentCommand().cancel();
+                break;
+            }
+
+            else if (getHeight() < preset.lowerBound) {
                 elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
             }
 
             else if (getHeight() > preset.upperBound) {
                 elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
             }
-
-            System.out.println("Preset reached: Encoder output: " + getHeight());
         }
+
+        System.out.println("Preset reached: Encoder output: " + getHeight());
     }
 
     /**
-     * Runs motors for use in Climber subsystem & commands
+     * Simply runs motors for use in Climber subsystem & commands
      */
     public void climb(){
         elevMotorMain.set(ControlMode.PercentOutput, 0.5);
@@ -212,8 +218,36 @@ public final class Elevator extends Subsystem implements Sendable {
 
     /**
      * Take a wild guess
-     * */
+     */
     public void stop(){
         elevMotorMain.set(ControlMode.PercentOutput, 0);
+    }
+
+    /**
+     * Tests for input from joysticks
+     */
+    public boolean inputTest(){
+
+        boolean inputPresent = false;
+        double deadRange = 0.09;
+        double drInput = -Robot.oi.driver.getRawAxis(5);
+        double opInput = -Robot.oi.operator.getRawAxis(1);
+
+        if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
+            System.out.println("TEST: DZ");
+            inputPresent = false;
+        }
+
+        else if (Math.abs(drInput) > deadRange) {
+            System.out.println("TEST: DRIVER");
+            inputPresent = true;
+        }
+
+        else if (Math.abs(opInput) > deadRange) {
+            System.out.println("TEST: OPERATOR");
+            inputPresent = true;
+        }
+
+        return inputPresent;
     }
 }

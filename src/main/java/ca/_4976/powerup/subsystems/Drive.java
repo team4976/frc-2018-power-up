@@ -7,11 +7,12 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 import static ca.qormix.library.Lazy.use;
 import static ca.qormix.library.Lazy.using;
@@ -103,7 +104,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
-        double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/Elevator.ElevPreset.ELEV_MAX.value))*forward;
+        double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/16000))*forward;
         if(elevatorAffectedDrive>0.75){
             elevatorAffectedDrive = 0.75;
         }

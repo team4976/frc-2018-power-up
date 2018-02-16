@@ -23,7 +23,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private final WPI_TalonSRX elevSlave1 = new WPI_TalonSRX(3);
 
     // Encoder on elevator
-    private final Encoder elevEnc = new Encoder(4, 5);
+    public final Encoder elevEnc = new Encoder(4, 5);
 
     //TODO -> PID
     // PID controller for the elevator subsystem
@@ -148,7 +148,7 @@ public final class Elevator extends Subsystem implements Sendable {
     /**
      * Reads encoders to return current height of the elevator with reference to it's zero point
      */
-    private double getHeight() {
+    public double getHeight() {
         return elevEnc.getDistance();
     }
 

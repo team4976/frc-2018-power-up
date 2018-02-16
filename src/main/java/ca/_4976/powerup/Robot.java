@@ -2,13 +2,11 @@ package ca._4976.powerup;
 
 
 
-import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.ElevEncoderReset;
 import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.*;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;

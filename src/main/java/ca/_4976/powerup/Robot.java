@@ -3,10 +3,12 @@ package ca._4976.powerup;
 
 
 import ca._4976.powerup.commands.DefaultGear;
+import ca._4976.powerup.commands.ElevEncoderReset;
 import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -48,20 +50,19 @@ public final class Robot extends IterativeRobot {
 
     public final NetworkTableEntry profiles =  table.getEntry("Profiles");
 
-    private final DefaultGear defaultGear = new DefaultGear();
     private final RecordProfile recordProfile = new RecordProfile();
     private final RunProfile runProfile = new RunProfile();
+    private final ElevEncoderReset elevReset = new ElevEncoderReset();
 
     @Override public void robotInit() {
         oi = new OI();
+
+        elevReset.start();
 
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);
 
         System.out.println("robot");
-
-        Robot.drive.defaultGear();
-        defaultGear.start();
     }
 
 

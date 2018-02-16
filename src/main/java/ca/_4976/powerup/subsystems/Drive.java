@@ -22,7 +22,7 @@ import static ca.qormix.library.Lazy.using;
 public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // The pneumatic solenoid
-    private DoubleSolenoid transmission = new DoubleSolenoid(5, 5, 6);
+    //private DoubleSolenoid transmission = new DoubleSolenoid(5, 5, 6);
     //private DoubleSolenoid transmission = new DoubleSolenoid(10, 3,2);
 
     // The left drive motors pwm pins 0 and 1

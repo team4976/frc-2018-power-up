@@ -37,10 +37,13 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
         else {
-            armMotor.set(ControlMode.PercentOutput,0.5 * armOut);
+            armMotor.set(ControlMode.PercentOutput,0.5 * -armOut);
         }
     }
 
+    public void setMax(){
+        armMotor.set(ControlMode.PercentOutput, 1);
+    }
     //ARM WILL USE 0 DEGREES AS REFERENCE
     //Equivalent arm parallel with ground
     //All angle setting/holding will be done using PID

@@ -105,6 +105,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
         double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/16000))*forward;
+        ///
         if(elevatorAffectedDrive>0.75){
             elevatorAffectedDrive = 0.75;
         }

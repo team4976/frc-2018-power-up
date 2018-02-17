@@ -2,15 +2,12 @@
 package ca._4976.powerup.subsystems;
 
 
-import ca._4976.powerup.Robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 import static ca.qormix.library.Lazy.use;
 
@@ -64,7 +61,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
 
     public boolean checkCurrent(){
-        double normalDraw = 5;
+        double normalDraw = 25;
         if (grabberI.getMotorOutputPercent() == 0) return true;
         else if (grabberI.getOutputCurrent() > normalDraw) {
             slow();

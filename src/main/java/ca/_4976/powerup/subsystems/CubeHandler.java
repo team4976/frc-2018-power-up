@@ -15,6 +15,9 @@ import static ca.qormix.library.Lazy.use;
 public final class CubeHandler extends Subsystem implements Sendable {
     public final TalonSRX grabberI = new TalonSRX(0);
 
+    public boolean returnRunIntake = false;
+    public boolean normalSpead = true;
+
     private double speedFast, notFast, grabCurrent;
     public CubeHandler(){
         use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
@@ -23,9 +26,9 @@ public final class CubeHandler extends Subsystem implements Sendable {
             NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
             NetworkTableEntry current = it.getEntry("Current");
 
-            fullSpeed.setDefaultDouble(0);
-            slowSpeed.setDefaultDouble(0);
-            current.setDefaultDouble(0);
+            fullSpeed.setDefaultDouble(0.6);
+            slowSpeed.setDefaultDouble(0.2);
+            current.setDefaultDouble(25);
             speedFast=fullSpeed.getDouble(0);
             notFast=slowSpeed.getDouble(0);
             grabCurrent=current.getDouble(0);
@@ -39,9 +42,19 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
 
     public void grab() {//grabs cube
-        System.out.println("my boi is to grab me");
-        grabberI.set(ControlMode.PercentOutput, speedFast);
-        System.out.println("Grabber 1 sped "+grabberI.getMotorOutputPercent());
+        double normalDraw = grabCurrent;
+
+        if (grabberI.getOutputCurrent() > grabCurrent){
+            System.out.println("have cube");
+            grabberI.set(ControlMode.PercentOutput, notFast);
+            normalSpead = false;
+        }
+        if (normalSpead == true){
+            System.out.println("my boi is to grab me");
+            grabberI.set(ControlMode.PercentOutput, speedFast);
+
+            System.out.println("Grabber 1 sped "+grabberI.getMotorOutputPercent());
+        }
     }
     public void stop(){//Stops the grabber motors
         System.out.println("no longer moving");
@@ -49,21 +62,12 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
     public void release() {//Releases cube from bot
         System.out.println("ejection is in effect");
+        returnRunIntake = true;
+        normalSpead = true;
         grabberI.set(ControlMode.PercentOutput, -speedFast);
     }
 
-    public void slow(){//spins motors slow when we have a cube
-        System.out.println("have cube");
-        grabberI.set(ControlMode.PercentOutput, notFast);
-    }
-
     public boolean checkCurrent(){
-        double normalDraw = grabCurrent;
-        if (grabberI.getMotorOutputPercent() == 0) return true;
-        else if (grabberI.getOutputCurrent() > normalDraw) {
-            slow();
-            return true;
-        }
-        else return false;
+        return returnRunIntake;
     }
 }

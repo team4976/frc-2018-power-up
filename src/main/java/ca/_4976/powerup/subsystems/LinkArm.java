@@ -80,8 +80,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
         else {
-            System.out.println("ENCODER: " + Robot.elevator.getHeight());
-            armMotor.set(ControlMode.PercentOutput,0.5 * -armOut);
+            armMotor.set(ControlMode.PercentOutput,0.5 * armOut);
         }
     }
     

@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Sendable;
@@ -24,14 +25,14 @@ import static ca.qormix.library.Lazy.using;
 public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // The pneumatic solenoid
-    //private DoubleSolenoid transmission = new DoubleSolenoid(5, 5, 6);
+    private DoubleSolenoid transmission = new DoubleSolenoid(5, 5, 6);
     //private DoubleSolenoid transmission = new DoubleSolenoid(10, 3,2);
 
     // The left drive motors pwm pins 0 and 1
     private VictorSPX leftFront = new VictorSPX(9);
     private TalonSRX leftRear = new TalonSRX(12);
-    
-     // The right drive motors pwm pins 2 and 3
+
+    // The right drive motors pwm pins 2 and 3
     private VictorSPX rightFront = new VictorSPX(11);
     private TalonSRX rightRear = new TalonSRX(13);
 
@@ -40,8 +41,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     private Encoder right = new Encoder(2, 3);
 
     // The ramping rate (change per second / ticks per second) { max accel, max jerk }
-    private double[] ramp = new double[] { 1.0 / 200, 0.1 / 200 }; 
-    
+    private double[] ramp = new double[] { 1.0 / 200, 0.1 / 200 };
+
     // Stored varables for calculating the motor output when ramping
     private double[] target = { 0, 0 };
     private double[] velocity = { 0, 0 };
@@ -90,7 +91,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Set user control enabled or disabled
-     * 
+     *
      * @return enabled: enable usercontrol
      */
     public void setUserControlEnabled(boolean enabled) { userControlEnabled = enabled; }
@@ -104,15 +105,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
-        double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/16000))*forward;
+        double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/1620))*forward;
         ///
-        if(elevatorAffectedDrive>0.75){
-            elevatorAffectedDrive = 0.75;
-        }
-        else if(elevatorAffectedDrive<0.25){
-            elevatorAffectedDrive = 0.25;
-        }
-
         // Saves the joystick value as a power of 2 while still keeping the sign
         double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
 
@@ -132,7 +126,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         }
     }
 
-     /**
+    /**
      * The run function  is called when a new thread is started
      *
      * @see     java.lang.Thread#run()
@@ -155,7 +149,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
                     // Checks if we are moving towards the target
                     if (Math.abs(velocity[i] - target[i]) > 0) {
- 
+
                         if (Math.abs(acceleration[i] + target[i] > velocity[i] ? ramp[1] : -ramp[1]) < ramp[0] // Checks if we can still increase acceleration
                                 && Math.abs((target[i] - velocity[i]) / acceleration[i]) > Math.abs(acceleration[i]) / ramp[1]) // Checks if there is enough time to decelerate
                             acceleration[i] += target[i] > velocity[i] ? ramp[1] : -ramp[1]; // Increases acceleration towards the target
@@ -173,22 +167,22 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         }
     }
 
-    public void resetEncoderPosition() { 
+    public void resetEncoderPosition() {
 
         left.reset();
         right.reset();
-     }
+    }
 
     /**
      * Gets the position from the robots drivetrain encoders
-     * 
+     *
      * @return The left and right encoder positions and saves them as a double array
      */
     public Double[] getEncoderPosition() { return new Double[] { left.getDistance(), right.getDistance() }; }
 
     /**
      * Gets the velocity from the robots drivetrain encoders
-     * 
+     *
      * @return The left and right encoder velocity and saves them as a double array
      */
     public Double[] getEncoderRate() { return new Double[] { left.getRate(), right.getRate() }; }
@@ -196,7 +190,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Uses the drivetrain encoders to determine when the robot has stopped.
-     * 
+     *
      * @return boolean value indicating if the robot is not moving
      */
     public boolean isStopped() { return left.getStopped() && right.getStopped(); }
@@ -204,9 +198,9 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Outputs the the drive motors with a tanks style control
-     * 
+     *
      * @param left: the output percentage of the left side of the drive ranging from -1 to 1
-     * @param right: the output percentage of the right side of the drive ranging from -1 to 1 
+     * @param right: the output percentage of the right side of the drive ranging from -1 to 1
      */
     public synchronized void setTankDrive(double left, double right) {
 
@@ -219,14 +213,14 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Gets the current output being applied to the drive motors
-     * 
+     *
      * @return the left and right drive output as a double array
      */
     public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.getMotorOutputPercent(), rightFront.getMotorOutputPercent() }; }
 
     /**
      * Set ramping enabled or disabled
-     * 
+     *
      * @return enable: enable ramping
      */
     public synchronized void enableRamping(boolean enable) {
@@ -253,10 +247,10 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //Switches gear
     public void switchGear(){
         if (gear == false){
-            //transmission.set(DoubleSolenoid.Value.kForward);
+            transmission.set(DoubleSolenoid.Value.kForward);
         }
         else{
-            //transmission.set(DoubleSolenoid.Value.kOff);
+            transmission.set(DoubleSolenoid.Value.kOff);
         }
 
         gear = !gear;
@@ -265,7 +259,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //set the default state for the gear switch
     public void defaultGear(){
         gear = false;
-       // transmission.set(DoubleSolenoid.Value.kOff);
+         transmission.set(DoubleSolenoid.Value.kOff);
         //transmission.set(DoubleSolenoid.Value.kOff);
     }
 }

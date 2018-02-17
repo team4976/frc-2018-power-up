@@ -2,6 +2,7 @@ package ca._4976.powerup;
 
 
 
+import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.ElevEncoderReset;
 import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
@@ -56,6 +57,8 @@ public final class Robot extends IterativeRobot {
         oi = new OI();
 
         elevReset.start();
+
+        new DefaultGear().start();
 
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);

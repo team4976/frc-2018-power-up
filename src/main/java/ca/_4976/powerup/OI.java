@@ -37,19 +37,28 @@ public final class OI {
 //        new JoystickButton(operator, 6).whenReleased(new StopForks());
 
         //Presets
-        new JoystickButton(operator, 1).whenPressed(new SwitchGroup());
-        new JoystickButton(operator, 2).whenPressed(new ScaleLowGroup());
-        new JoystickButton(operator, 3).whenPressed(new ScaleMidGroup());
-        new JoystickButton(operator, 4).whenPressed(new ScaleHighGroup());
+        new JoystickButton(operator, 1).whenPressed(new ElevatorSwitch());
+        new JoystickButton(operator, 1).whenPressed(new ArmDefault());
+
+        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
+        new JoystickButton(operator, 2).whenPressed(new ArmDefault());
+
+        new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
+        new JoystickButton(operator, 3).whenPressed(new ArmScaleMid());
+
+        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
+        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid());
 
         //Right dpad
         if(operator.getPOV() >= 88 && operator.getPOV() <= 92){
-            new ScaleMidGroup();
+            new ElevatorGround();
+            new ArmDefault();
         }
 
         //Down dpad
         if(operator.getPOV() >= 178 && operator.getPOV() <= 182){
-            new ResetGroup();
+            new ElevatorReset();
+            new ArmMinimum();
         }
     }
 }

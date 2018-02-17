@@ -37,7 +37,7 @@ public class Test {
 
     static class SendableTest implements Sendable {
 
-        @Override public String getName() { return "Drive Test"; }
+        @Override public String getName() { return "Drive TestA"; }
 
         @Override public void setName(String name) { }
 

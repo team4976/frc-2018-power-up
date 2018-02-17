@@ -8,6 +8,7 @@ import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.MoveArm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -20,6 +21,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     private double armAngle = 0;
 
     //Add LinkArm encoder built into the TalonSRX -> research code
+    private Encoder armEnc = new Encoder(6,7);
 
     @Override
     protected void initDefaultCommand() {
@@ -37,10 +39,13 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
         else {
-            armMotor.set(ControlMode.PercentOutput,0.5 * armOut);
+            armMotor.set(ControlMode.PercentOutput,0.5 * -armOut);
         }
     }
 
+    public void setMax(){
+        armMotor.set(ControlMode.PercentOutput, 1);
+    }
     //ARM WILL USE 0 DEGREES AS REFERENCE
     //Equivalent arm parallel with ground
     //All angle setting/holding will be done using PID

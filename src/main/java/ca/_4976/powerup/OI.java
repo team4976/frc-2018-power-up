@@ -1,6 +1,5 @@
 package ca._4976.powerup;
 
-import ca._4976.powerup.commands.Transmission;
 import ca._4976.powerup.commands.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -13,16 +12,16 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public final class OI {
 
-    //public Joystick driver = new Joystick(0);
+    public Joystick driver = new Joystick(0);
     public Joystick operator = new Joystick(1);
 
     OI() {
 
         //TODO JOYSTICK STOLEN
 //        new JoystickButton(driver, 4).whenPressed(new Transmission());
-//        new JoystickButton(driver, 1).whenPressed(new DriverIntake());
-//        new JoystickButton(driver, 2).whenPressed(new DriverEject());
-//        new JoystickButton(driver, 2).whenReleased(new DriverStop());
+        new JoystickButton(driver, 1).whenPressed(new DriverIntake());
+        new JoystickButton(driver, 2).whenPressed(new DriverEject());
+        new JoystickButton(driver, 2).whenReleased(new DriverStop());
 //        new JoystickButton(driver, 7).whenPressed(new Transmission());
 //
 //        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
@@ -32,10 +31,10 @@ public final class OI {
 //        new JoystickButton(driver, 8).whenReleased(new StopDeployingRamp());
 
         //Used for the robots forks
-        new JoystickButton(operator, 5).whenPressed(new DeployForks());
-        new JoystickButton(operator, 6).whenPressed(new RetractForks());
-        new JoystickButton(operator, 5).whenReleased(new StopForks());
-        new JoystickButton(operator, 6).whenReleased(new StopForks());
+//        new JoystickButton(operator, 5).whenPressed(new DeployForks());
+//        new JoystickButton(operator, 6).whenPressed(new RetractForks());
+//        new JoystickButton(operator, 5).whenReleased(new StopForks());
+//        new JoystickButton(operator, 6).whenReleased(new StopForks());
 
         //Presets
         new JoystickButton(operator, 1).whenPressed(new PresetGround());

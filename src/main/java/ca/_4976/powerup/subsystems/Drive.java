@@ -1,16 +1,18 @@
 package ca._4976.powerup.subsystems;
 
+import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.DriveWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 import static ca.qormix.library.Lazy.use;
 import static ca.qormix.library.Lazy.using;
@@ -102,11 +104,19 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
+        double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/16000))*forward;
+        ///
+        if(elevatorAffectedDrive>0.75){
+            elevatorAffectedDrive = 0.75;
+        }
+        else if(elevatorAffectedDrive<0.25){
+            elevatorAffectedDrive = 0.25;
+        }
 
         // Saves the joystick value as a power of 2 while still keeping the sign
         double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
 
-        arcadeDrive(turn, forward);
+        arcadeDrive(turn, elevatorAffectedDrive);
     }
 
     public void arcadeDrive(double turn, double forward) {

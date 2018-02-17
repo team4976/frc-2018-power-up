@@ -4,13 +4,16 @@ package ca._4976.powerup.subsystems;
 Made by Cameron, Jacob, Ethan, Zach
 */
 
-import ca._4976.powerup.*;
+import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 import static ca.qormix.library.Lazy.use;
@@ -19,11 +22,12 @@ import static ca.qormix.library.Lazy.use;
 public final class Elevator extends Subsystem implements Sendable {
 
     // Elevator motors
-    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(4);
-    private final WPI_TalonSRX elevSlave1 = new WPI_TalonSRX(3);
+    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2);
+    private final VictorSPX elevSlave1 = new VictorSPX(3);
+    private final WPI_TalonSRX elevSustainableFreeLegalUnionizedLaborer = new WPI_TalonSRX(8);
 
     // Encoder on elevator
-    private final Encoder elevEnc = new Encoder(4, 5);
+    public final Encoder elevEnc = new Encoder(4, 5);
 
     //TODO -> PID
     // PID controller for the elevator subsystem
@@ -43,26 +47,19 @@ public final class Elevator extends Subsystem implements Sendable {
      *
      * Encoder values from excel sheet (Elevator Distance Chart.xlsx)
      */
-    public enum ElevatorPreset {
-
-        ELEV_MAX(16000.00), //slightly rounded down
-        SCALE_HIGH(12137.81),
-        SCALE_MID(9536.85),
-        SCALE_LOW(6935.89),
-        SWITCH(1733.97),
-        GROUND(0),
-        ELEV_MIN(0);
-
-        public final double value;
-
-        ElevatorPreset(double value) {
-            this.value = value;
-        }
-    }
+    /*ELEV_MAX(16000.00), //slightly rounded down
+    SCALE_HIGH(12137.81), //45
+    SCALE_MID(9536.85),   //30
+    SCALE_LOW(6935.89),   //0
+    SWITCH(1733.97),      //0
+    DEFAULT - raise slightly //lowest
+    GROUND(0),            //0
+    ELEV_MIN(0);*/
 
     public Elevator() {
 
         elevSlave1.follow(elevMotorMain);
+        elevSustainableFreeLegalUnionizedLaborer.follow(elevMotorMain);
 
 
         //TODO -> PID testing
@@ -148,7 +145,7 @@ public final class Elevator extends Subsystem implements Sendable {
     /**
      * Reads encoders to return current height of the elevator with reference to it's zero point
      */
-    private double getHeight() {
+    public double getHeight() {
         return elevEnc.getDistance();
     }
 
@@ -164,7 +161,7 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveElevator() {
 
         double deadRange = 0.09;
-        double drInput = 0;//-Robot.oi.driver.getRawAxis(5);
+        double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
         double manualOut = elevMotorMain.getMotorOutputPercent();
 
@@ -187,6 +184,7 @@ public final class Elevator extends Subsystem implements Sendable {
         //if (getHeight() <= ELEV_MAX.value || getHeight() >= ELEV_MIN.value) {
 
             //System.out.println("Manual output: " + manualOut);
+            System.out.println("ENCODER: " + getHeight());
             elevMotorMain.set(ControlMode.PercentOutput, manualOut);
             //System.out.println("Encoder: " + elevEnc.get());
         //}

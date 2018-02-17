@@ -1,29 +1,30 @@
 package ca._4976.powerup.commands;
 
 import ca._4976.powerup.Robot;
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
- * Created by 4976 on 2018-02-15.
+ * Created by 4976 on 2018-02-17.
  */
-public class PresetScaleMid extends ListenableCommand {
+public class ElevatorReset extends Command {
 
-    public PresetScaleMid(){
+    public ElevatorReset(){
         willRunWhenDisabled();
     }
 
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: SCALE MID\n");
+        System.out.println("\nSTART: DEFAULT\n");
     }
 
     @Override
     protected void execute(){
-        Robot.elevator.moveToMidScale();
+        Robot.elevator.moveToDefault();
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkMidScale();
+        return Robot.elevator.checkDefault();
     }
 
     @Override
@@ -31,4 +32,3 @@ public class PresetScaleMid extends ListenableCommand {
         Robot.elevator.stop();
     }
 }
-

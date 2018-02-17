@@ -5,9 +5,9 @@ import ca._4976.powerup.Robot;
 /**
  * Created by 4976 on 2018-02-15.
  */
-public class PresetSwitch extends ListenableCommand {
+public class ElevatorSwitch extends ListenableCommand {
 
-    public PresetSwitch(){
+    public ElevatorSwitch(){
         willRunWhenDisabled();
     }
 

@@ -5,26 +5,25 @@ import ca._4976.powerup.Robot;
 /**
  * Created by 4976 on 2018-02-15.
  */
-public class PresetScaleHigh extends ListenableCommand {
+public class ElevatorScaleMid extends ListenableCommand {
 
-    public PresetScaleHigh(){
+    public ElevatorScaleMid(){
         willRunWhenDisabled();
     }
 
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: SCALE HIGH\n");
+        System.out.println("\nSTART: SCALE MID\n");
     }
 
     @Override
     protected void execute(){
-        System.out.println("HIGH SCALE COMMAND");
-        Robot.elevator.moveToHighScale();
+        Robot.elevator.moveToMidScale();
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkHighScale();
+        return Robot.elevator.checkMidScale();
     }
 
     @Override
@@ -32,3 +31,4 @@ public class PresetScaleHigh extends ListenableCommand {
         Robot.elevator.stop();
     }
 }
+

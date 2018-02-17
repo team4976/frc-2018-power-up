@@ -39,6 +39,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private double scaleMidValue;
     private double scaleLowValue;
     private double switchValue;
+    private double defaultValue;
     private double groundValue;
 
 
@@ -73,6 +74,7 @@ public final class Elevator extends Subsystem implements Sendable {
             NetworkTableEntry scaleMid = ePIDTable.getEntry("Scale Mid");
             NetworkTableEntry scaleLow = ePIDTable.getEntry("Scale Low");
             NetworkTableEntry switchs = ePIDTable.getEntry("Switch");
+            NetworkTableEntry defaulted = ePIDTable.getEntry("Default");
             NetworkTableEntry ground = ePIDTable.getEntry("Ground");
 
             NetworkTableEntry motorOut = ePIDTable.getEntry("Manual Output");
@@ -85,6 +87,7 @@ public final class Elevator extends Subsystem implements Sendable {
             scaleMid.setPersistent();
             scaleLow.setPersistent();
             switchs.setPersistent();
+            defaulted.setPersistent();
             ground.setPersistent();
 
             motorOut.setPersistent();
@@ -99,6 +102,7 @@ public final class Elevator extends Subsystem implements Sendable {
             scaleMid.setDouble(scaleMid.getDouble(9536.85));
             scaleLow.setDouble(scaleLow.getDouble(6935.89));
             switchs.setDouble(switchs.getDouble(1733.97));
+            defaulted.setDouble(defaulted.getDouble(3000.0));
             ground.setDouble(ground.getDouble(0));
 
             scaleHighValue = scaleHigh.getDouble(12137.81);
@@ -106,6 +110,7 @@ public final class Elevator extends Subsystem implements Sendable {
             scaleLowValue = scaleLow.getDouble(6935.89);
             switchValue = switchs.getDouble(1733.97);
             groundValue = ground.getDouble(0);
+            defaultValue = defaulted.getDouble(3000);
 
             //Manual output value for closed loop testing
             motorOut.setDouble(motorOut.getDouble(0.5));
@@ -345,6 +350,35 @@ public final class Elevator extends Subsystem implements Sendable {
         }
     }
 
+
+    /**
+     * Default
+     *
+     * Move and check method
+     */
+    public void moveToDefault() {
+
+        if(getHeight() > defaultValue){
+            elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+        }
+
+        else if(getHeight() < defaultValue){
+            elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
+        }
+    }
+
+    public boolean checkDefault(){
+
+        if(getHeight() >= (defaultValue) && getHeight() <= (defaultValue + 200)){
+            System.out.println("\nENCODER: " + getHeight());
+            System.out.println("FINISHED: DEFAULT\n");
+            return true;
+        }
+
+        else {
+            return false;
+        }
+    }
 
     /**
      * Simply runs motors for use in Climber subsystem & commands

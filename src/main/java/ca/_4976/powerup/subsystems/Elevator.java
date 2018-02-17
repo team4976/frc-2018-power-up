@@ -47,22 +47,14 @@ public final class Elevator extends Subsystem implements Sendable {
      *
      * Encoder values from excel sheet (Elevator Distance Chart.xlsx)
      */
-    public enum ElevatorPreset {
-
-        ELEV_MAX(16000.00), //slightly rounded down
-        SCALE_HIGH(12137.81),
-        SCALE_MID(9536.85),
-        SCALE_LOW(6935.89),
-        SWITCH(1733.97),
-        GROUND(0),
-        ELEV_MIN(0);
-
-        public final double value;
-
-        ElevatorPreset(double value) {
-            this.value = value;
-        }
-    }
+    /*ELEV_MAX(16000.00), //slightly rounded down
+    SCALE_HIGH(12137.81), //45
+    SCALE_MID(9536.85),   //30
+    SCALE_LOW(6935.89),   //0
+    SWITCH(1733.97),      //0
+    DEFAULT - raise slightly //lowest
+    GROUND(0),            //0
+    ELEV_MIN(0);*/
 
     public Elevator() {
 
@@ -192,6 +184,7 @@ public final class Elevator extends Subsystem implements Sendable {
         //if (getHeight() <= ELEV_MAX.value || getHeight() >= ELEV_MIN.value) {
 
             //System.out.println("Manual output: " + manualOut);
+            System.out.println("ENCODER: " + getHeight());
             elevMotorMain.set(ControlMode.PercentOutput, manualOut);
             //System.out.println("Encoder: " + elevEnc.get());
         //}

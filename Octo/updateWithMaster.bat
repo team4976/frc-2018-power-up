@@ -6,6 +6,10 @@ cd curls
 
 	call git checkout master
 
+	call git pull
+
 	call git checkout %branch%
+
+	call git pull
 
 	call git merge master

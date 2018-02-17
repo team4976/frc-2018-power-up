@@ -15,7 +15,7 @@ import static ca.qormix.library.Lazy.use;
 public final class CubeHandler extends Subsystem implements Sendable {
     public final TalonSRX grabberI = new TalonSRX(0);
 
-    private double speedFast=0, notFast=0, grabCurrent=0;
+    private double speedFast, notFast, grabCurrent;
     public CubeHandler(){
         use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
 
@@ -26,6 +26,9 @@ public final class CubeHandler extends Subsystem implements Sendable {
             fullSpeed.setDefaultDouble(0);
             slowSpeed.setDefaultDouble(0);
             current.setDefaultDouble(0);
+            speedFast=fullSpeed.getDouble(0);
+            notFast=slowSpeed.getDouble(0);
+            grabCurrent=current.getDouble(0);
         });
     }
 
@@ -37,7 +40,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
     public void grab() {//grabs cube
         System.out.println("my boi is to grab me");
-        grabberI.set(ControlMode.PercentOutput, 0.8);
+        grabberI.set(ControlMode.PercentOutput, speedFast);
         System.out.println("Grabber 1 sped "+grabberI.getMotorOutputPercent());
     }
     public void stop(){//Stops the grabber motors
@@ -46,16 +49,16 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
     public void release() {//Releases cube from bot
         System.out.println("ejection is in effect");
-        grabberI.set(ControlMode.PercentOutput, -0.1);
+        grabberI.set(ControlMode.PercentOutput, -speedFast);
     }
 
     public void slow(){//spins motors slow when we have a cube
         System.out.println("have cube");
-        grabberI.set(ControlMode.PercentOutput, 0.05);
+        grabberI.set(ControlMode.PercentOutput, notFast);
     }
 
     public boolean checkCurrent(){
-        double normalDraw = 25;
+        double normalDraw = grabCurrent;
         if (grabberI.getMotorOutputPercent() == 0) return true;
         else if (grabberI.getOutputCurrent() > normalDraw) {
             slow();

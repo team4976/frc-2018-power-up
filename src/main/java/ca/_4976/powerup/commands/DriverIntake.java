@@ -1,11 +1,6 @@
 package ca._4976.powerup.commands;
 
 import ca._4976.powerup.Robot;
-import ca._4976.powerup.subsystems.CubeHandler;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.command.Command;
 
 //main controller grabbing the cube
 
@@ -20,8 +15,6 @@ public class DriverIntake extends ListenableCommand {
         //when the button is pressed once start the grab
         Robot.cubeHandler.grab();
     }
-
-    private double normalDraw = 5;
 
     @Override
     protected void execute() {

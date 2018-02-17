@@ -1,0 +1,85 @@
+<head>
+
+<title>Octo Git</title>
+
+<HTA:APPLICATION 
+     APPLICATIONNAME="Octo Git"
+	SCROLL="no"
+	MAXIMIZEBUTTON="no"
+	MINIMIZEBUTTON="no"
+>
+
+<SCRIPT LANGUAGE="VBScript">
+
+    Sub Window_onLoad
+	
+        window.resizeTo 600,315
+
+    End Sub 
+
+</SCRIPT>
+
+</head>
+
+<body bgcolor="black">     
+
+<form NAME="form">
+
+<INPUT TYPE="Button" NAME="commit" VALUE="Commit With Default Message">
+<br>
+<INPUT TYPE="Button" NAME="commitTwo" VALUE="Commit With Custom Message">
+<br>
+<INPUT TYPE="Button" NAME="pull" VALUE="Pull">
+<br>
+<INPUT TYPE="Button" NAME="init" VALUE="Init">
+<br>
+<INPUT TYPE="Button" NAME="clone" VALUE="Clone">
+<br>
+<INPUT TYPE="Button" NAME="makeBranch" VALUE="Make New Branch">
+<br>
+<INPUT TYPE="Button" NAME="switchBranch" VALUE="Switch Branch">
+<br>
+<INPUT TYPE="Button" NAME="updateWithMaster" VALUE="Update With Master">
+
+</form>
+
+      <SCRIPT FOR="commit" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\commit.bat"
+      </SCRIPT>
+
+      <SCRIPT FOR="commitTwo" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\commitTwo.bat"
+      </SCRIPT>
+
+      <SCRIPT FOR="pull" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\pull.bat"
+      </SCRIPT>
+
+      <SCRIPT FOR="init" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\init.bat"
+      </SCRIPT>
+
+      <SCRIPT FOR="clone" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\clone.bat"
+      </SCRIPT>
+
+      <SCRIPT FOR="makeBranch" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\makeBranch.bat"
+      </SCRIPT>
+
+      <SCRIPT FOR="switchBranch" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\switchBranch.bat"
+      </SCRIPT>
+
+      <SCRIPT FOR="updateWithMaster" EVENT="onClick" LANGUAGE="VBScript">
+        Set WshShell = CreateObject("WScript.Shell")
+        WshShell.Run "Octo\updatewithMaster.bat"
+      </SCRIPT>
+</body>

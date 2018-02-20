@@ -15,12 +15,10 @@ public final class RunProfile extends Command {
 
     @Override protected void initialize() {
 
-            System.out.println("run");
-            Robot.drive.resetEncoderPosition();
-            Robot.drive.setUserControlEnabled(false);
-            Robot.motion.run();
-        }
-
+        Robot.drive.resetEncoderPosition();
+        Robot.drive.setUserControlEnabled(false);
+        Robot.motion.run();
+    }
 
     @Override protected boolean isFinished() { return !Robot.motion.isRunning(); }
 

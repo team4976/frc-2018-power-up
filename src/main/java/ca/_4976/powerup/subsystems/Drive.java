@@ -91,7 +91,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Set user control enabled or disabled
-     *
+     * 
      * @return enabled: enable usercontrol
      */
     public void setUserControlEnabled(boolean enabled) { userControlEnabled = enabled; }
@@ -259,7 +259,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     //set the default state for the gear switch
     public void defaultGear(){
         gear = false;
-         transmission.set(DoubleSolenoid.Value.kOff);
-        //transmission.set(DoubleSolenoid.Value.kOff);
+        transmission.set(DoubleSolenoid.Value.kOff);
     }
 }

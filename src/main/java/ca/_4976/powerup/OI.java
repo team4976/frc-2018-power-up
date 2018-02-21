@@ -48,7 +48,7 @@ public final class OI {
 //        new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
 //        new JoystickButton(operator, 3).whenPressed(new ArmScaleMid());
 //
-//        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
+        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
 //        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid());
 //
 //        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());

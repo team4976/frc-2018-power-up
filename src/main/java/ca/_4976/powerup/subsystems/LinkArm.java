@@ -28,32 +28,38 @@ public final class LinkArm extends Subsystem implements Sendable {
     private double armHighValue;
     private double armMidValue;
     private double armResetValue;
+    private double armMinValue;
 
     public LinkArm(){
         use(NetworkTableInstance.getDefault().getTable("Link Arm"), armTable -> {
 
-            NetworkTableEntry p = armTable.getEntry("P");
-            NetworkTableEntry i = armTable.getEntry("I");
-            NetworkTableEntry d = armTable.getEntry("D");
+//            NetworkTableEntry p = armTable.getEntry("P");
+//            NetworkTableEntry i = armTable.getEntry("I");
+//            NetworkTableEntry d = armTable.getEntry("D");
 
             NetworkTableEntry armHigh = armTable.getEntry("45 - High");
             NetworkTableEntry armMid = armTable.getEntry("30 - Mid");
-            NetworkTableEntry armReset = armTable.getEntry("Reset - 0");
+            NetworkTableEntry armReset = armTable.getEntry("0 - Reset");
+            NetworkTableEntry armMin = armTable.getEntry("Minimum");
 
             NetworkTableEntry motorOut = armTable.getEntry("Manual Output");
 
-            p.setPersistent();
-            i.setPersistent();
-            d.setPersistent();
+//            p.setPersistent();
+//            i.setPersistent();
+//            d.setPersistent();
 
             armHigh.setPersistent();
             armMid.setPersistent();
             motorOut.setPersistent();
+            armReset.setPersistent();
+            armMin.setPersistent();
 
             motorSpeed = motorOut.getDouble(0.5);
+            
             armHighValue = armHigh.getDouble(0);
             armMidValue = armMid.getDouble(0);
             armResetValue = armReset.getDouble(0);
+            armMinValue = armMin.getDouble(0);
             
         });
     }
@@ -74,8 +80,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
         else {
-            System.out.println("ENCODER: " + Robot.elevator.getHeight());
-            armMotor.set(ControlMode.PercentOutput,0.5 * -armOut);
+            armMotor.set(ControlMode.PercentOutput,0.5 * armOut);
         }
     }
     
@@ -164,6 +169,35 @@ public final class LinkArm extends Subsystem implements Sendable {
         if(getArmEncoderValue() >= (armResetValue - 200) && getArmEncoderValue() <= (armResetValue + 200)){
             System.out.println("\nENCODER: " + getArmEncoderValue());
             System.out.println("FINISHED: ARM RESET\n");
+            return true;
+        }
+
+        else {
+            System.out.println("UNFINISHED ARM ENCODER: " + getArmEncoderValue());
+            return false;
+        }
+    }
+
+    public void moveArmMinimum(){
+
+        System.out.println("Min ARM METHOD: " + armMinValue);
+
+        if(getArmEncoderValue() > armMinValue){
+            System.out.println("DOWN ARM");
+            armMotor.set(ControlMode.PercentOutput, motorSpeed);
+        }
+
+        else if(getArmEncoderValue() < armMinValue){
+            System.out.println("UP ARM");
+            armMotor.set(ControlMode.PercentOutput, -motorSpeed);
+        }
+    }
+
+    public boolean checkArmMinimum(){
+
+        if(getArmEncoderValue() >= (armMinValue - 200) && getArmEncoderValue() <= (armMinValue + 200)){
+            System.out.println("\nENCODER: " + getArmEncoderValue());
+            System.out.println("FINISHED: ARM Min\n");
             return true;
         }
 

@@ -13,7 +13,8 @@ public class DriverIntake extends ListenableCommand {
     protected void initialize() {
         System.out.println("initializing the intaking");
         //when the button is pressed once start the grab
-        Robot.cubeHandler.grab();
+        Robot.cubeHandler.returnRunIntake=false;
+
     }
 
     @Override
@@ -23,7 +24,7 @@ public class DriverIntake extends ListenableCommand {
         System.out.println("executing the intaking");
         System.out.println(Robot.cubeHandler.grabberI.getOutputCurrent());
         System.out.println(Robot.cubeHandler.grabberI.getMotorOutputPercent());
-
+        Robot.cubeHandler.grab();
     }
 
     @Override

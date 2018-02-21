@@ -5,25 +5,25 @@ import ca._4976.powerup.Robot;
 /**
  * Created by 4976 on 2018-02-15.
  */
-public class PresetScaleLow extends ListenableCommand {
+public class ElevatorGround extends ListenableCommand {
 
-    public PresetScaleLow(){
+    public ElevatorGround(){
         willRunWhenDisabled();
     }
 
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: SCALE LOW\n");
+        System.out.println("\nSTART: GROUND\n");
     }
 
     @Override
     protected void execute(){
-        Robot.elevator.moveToLowScale();
+        Robot.elevator.moveToGround();
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkLowScale();
+        return Robot.elevator.checkGround();
     }
 
     @Override
@@ -31,4 +31,3 @@ public class PresetScaleLow extends ListenableCommand {
         Robot.elevator.stop();
     }
 }
-

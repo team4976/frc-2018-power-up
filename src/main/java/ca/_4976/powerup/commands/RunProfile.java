@@ -11,16 +11,12 @@ public final class RunProfile extends Command {
 
     public RunProfile() { willRunWhenDisabled(); }
 
-    private Joystick driver = new Joystick(0);
-
     @Override protected void initialize() {
 
-            System.out.println("run");
-            Robot.drive.resetEncoderPosition();
-            Robot.drive.setUserControlEnabled(false);
-            Robot.motion.run();
-        }
-
+        Robot.drive.resetEncoderPosition();
+        Robot.drive.setUserControlEnabled(false);
+        Robot.motion.run();
+    }
 
     @Override protected boolean isFinished() { return !Robot.motion.isRunning(); }
 

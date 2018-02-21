@@ -13,7 +13,7 @@ public final class RecordProfile extends Command {
     public RecordProfile() { willRunWhenDisabled(); }
 
     @Override protected void initialize() {
-        System.out.println("Pie");
+
         Robot.drive.resetEncoderPosition();
         Robot.motion.record();
         Robot.drive.enableRamping(true);

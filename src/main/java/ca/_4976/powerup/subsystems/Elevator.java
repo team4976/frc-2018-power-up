@@ -39,6 +39,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private double scaleMidValue;
     private double scaleLowValue;
     private double switchValue;
+    private double defaultValue;
     private double groundValue;
 
 
@@ -73,6 +74,7 @@ public final class Elevator extends Subsystem implements Sendable {
             NetworkTableEntry scaleMid = ePIDTable.getEntry("Scale Mid");
             NetworkTableEntry scaleLow = ePIDTable.getEntry("Scale Low");
             NetworkTableEntry switchs = ePIDTable.getEntry("Switch");
+            NetworkTableEntry defaulted = ePIDTable.getEntry("Default");
             NetworkTableEntry ground = ePIDTable.getEntry("Ground");
 
             NetworkTableEntry motorOut = ePIDTable.getEntry("Manual Output");
@@ -85,6 +87,7 @@ public final class Elevator extends Subsystem implements Sendable {
             scaleMid.setPersistent();
             scaleLow.setPersistent();
             switchs.setPersistent();
+            defaulted.setPersistent();
             ground.setPersistent();
 
             motorOut.setPersistent();
@@ -95,20 +98,22 @@ public final class Elevator extends Subsystem implements Sendable {
             d.setDouble(d.getDouble(0));
 
             //Preset initial values
-            scaleHigh.setDouble(scaleHigh.getDouble(12137.81));
+            scaleHigh.setDouble(scaleHigh.getDouble(1621.75)); // Real Value
             scaleMid.setDouble(scaleMid.getDouble(9536.85));
-            scaleLow.setDouble(scaleLow.getDouble(6935.89));
+            scaleLow.setDouble(scaleLow.getDouble(1220.5)); // Real Value
             switchs.setDouble(switchs.getDouble(1733.97));
-            ground.setDouble(ground.getDouble(0));
+            defaulted.setDouble(defaulted.getDouble(3000.0));
+            ground.setDouble(ground.getDouble(0)); // Real Value
 
             scaleHighValue = scaleHigh.getDouble(12137.81);
             scaleMidValue = scaleMid.getDouble(9536.85);
             scaleLowValue = scaleLow.getDouble(6935.89);
             switchValue = switchs.getDouble(1733.97);
             groundValue = ground.getDouble(0);
+            defaultValue = defaulted.getDouble(3000);
 
             //Manual output value for closed loop testing
-            motorOut.setDouble(motorOut.getDouble(0.5));
+            motorOut.setDouble(motorOut.getDouble(0.7));
             //motorOutput = motorOut.getDouble(0.5);
             motorOutput = 0.2;
 
@@ -120,11 +125,6 @@ public final class Elevator extends Subsystem implements Sendable {
                     elevMotorMain);
              elevatorPID.disable();
         });
-
-        System.out.println("\nPID set: [p - " + elevatorPID.getP() + "]\n"
-                + "[i - " + elevatorPID.getI() + "]\n"
-                + "[i - " + elevatorPID.getI() + "]\n");
-
     }
 
     /*TODO -> Limit switch testing
@@ -183,11 +183,15 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //if (getHeight() <= ELEV_MAX.value || getHeight() >= ELEV_MIN.value) {
 
-            //System.out.println("Manual output: " + manualOut);
-            System.out.println("ENCODER: " + getHeight());
+//            System.out.println("Manual output: " + manualOut);
             elevMotorMain.set(ControlMode.PercentOutput, manualOut);
-            //System.out.println("Encoder: " + elevEnc.get());
+            System.out.println("Encoder: " + elevEnc.getDistance());
+           System.out.println("Link Arm: " + Robot.linkArm.getArmEncoderValue());
+        System.out.println(elevSlave1.getMotorOutputPercent());
+        System.out.println(elevMotorMain.getMotorOutputPercent());
+        System.out.println(elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
         //}
+        System.out.println();
     }
 
 
@@ -202,18 +206,18 @@ public final class Elevator extends Subsystem implements Sendable {
 
         if(getHeight() > scaleHighValue){
             System.out.println("DOWN");
-            elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, -0.5);
         }
 
         else if(getHeight() < scaleHighValue){
             System.out.println("UP");
-            elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, 0.5);
         }
     }
 
     public boolean checkHighScale(){
 
-        if(getHeight() >= (scaleHighValue - 200) && getHeight() <= (scaleHighValue + 200)){
+        if(getHeight() >= (scaleHighValue - 20) && getHeight() <= (scaleHighValue + 20)){
             System.out.println("\nENCODER: " + getHeight());
             System.out.println("FINISHED: SCALE HIGH\n");
             return true;
@@ -234,17 +238,17 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveToMidScale() {
 
         if(getHeight() > scaleMidValue){
-            elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, -0.5);
         }
 
         else if(getHeight() < scaleMidValue){
-            elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, 0.5);
         }
     }
 
     public boolean checkMidScale(){
 
-        if(getHeight() >= (scaleMidValue - 200) && getHeight() <= (scaleMidValue + 200)){
+        if(getHeight() >= (scaleMidValue - 20) && getHeight() <= (scaleMidValue + 20)){
             System.out.println("\nENCODER: " + getHeight());
             System.out.println("FINISHED: SCALE MID\n");
             return true;
@@ -264,17 +268,17 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveToLowScale() {
 
         if(getHeight() > scaleLowValue){
-            elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, -0.5);
         }
 
         else if(getHeight() < scaleLowValue){
-            elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, 0.5);
         }
     }
 
     public boolean checkLowScale(){
 
-        if(getHeight() >= (scaleLowValue - 200) && getHeight() <= (scaleLowValue + 200)){
+        if(getHeight() >= (scaleLowValue - 20) && getHeight() <= (scaleLowValue + 20)){
             System.out.println("\nENCODER: " + getHeight());
             System.out.println("FINISHED: SCALE LOW\n");
             return true;
@@ -294,17 +298,17 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveToSwitch() {
 
         if(getHeight() > switchValue){
-            elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, -0.5);
         }
 
         else if(getHeight() < switchValue){
-            elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, 0.5);
         }
     }
 
     public boolean checkSwitch(){
 
-        if(getHeight() >= (switchValue - 200) && getHeight() <= (switchValue + 200)){
+        if(getHeight() >= (switchValue - 20) && getHeight() <= (switchValue + 20)){
             System.out.println("\nENCODER: " + getHeight());
             System.out.println("FINISHED: SWITCH\n");
             return true;
@@ -324,17 +328,17 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveToGround() {
 
         if(getHeight() > groundValue){
-            elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, -0.5);
         }
 
         else if(getHeight() < groundValue){
-            elevMotorMain.set(ControlMode.PercentOutput, -motorOutput);
+            elevMotorMain.set(ControlMode.PercentOutput, 0.5);
         }
     }
 
     public boolean checkGround(){
 
-        if(getHeight() >= (groundValue) && getHeight() <= (groundValue + 200)){
+        if(getHeight() >= (groundValue) && getHeight() <= (groundValue + 20)){
             System.out.println("\nENCODER: " + getHeight());
             System.out.println("FINISHED: GROUND\n");
             return true;
@@ -347,11 +351,40 @@ public final class Elevator extends Subsystem implements Sendable {
 
 
     /**
+     * Default
+     *
+     * Move and check method
+     */
+    public void moveToDefault() {
+
+        if(getHeight() > defaultValue){
+            elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+        }
+
+        else if(getHeight() < defaultValue){
+            elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+        }
+    }
+
+    public boolean checkDefault(){
+
+        if(getHeight() >= (defaultValue) && getHeight() <= (defaultValue + 20)){
+            System.out.println("\nENCODER: " + getHeight());
+            System.out.println("FINISHED: DEFAULT\n");
+            return true;
+        }
+
+        else {
+            return false;
+        }
+    }
+
+    /**
      * Simply runs motors for use in Climber subsystem & commands
      */
     public void climb(){
 //        elevatorPID.disable();
-        elevMotorMain.set(ControlMode.PercentOutput, motorOutput);
+        elevMotorMain.set(ControlMode.PercentOutput, -0.5);
     }
 
 

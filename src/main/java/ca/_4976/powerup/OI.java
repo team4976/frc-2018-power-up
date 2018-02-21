@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * robot to allow control with a single PS3 joystick. As a result, not all
  * functionality from the real robot is available.
  */
-
 public final class OI {
 
     public Joystick driver = new Joystick(0);
@@ -37,14 +36,30 @@ public final class OI {
 //        new JoystickButton(operator, 6).whenReleased(new StopForks());
 
         //Presets
-        new JoystickButton(operator, 1).whenPressed(new PresetGround());
-        new JoystickButton(operator, 2).whenPressed(new PresetSwitch());
-        new JoystickButton(operator, 3).whenPressed(new PresetScaleLow());
-        new JoystickButton(operator, 4).whenPressed(new PresetScaleHigh());
+        new JoystickButton(operator, 1).whenPressed(new ElevatorSwitch());
+        new JoystickButton(operator, 1).whenPressed(new ArmDefault());
 
-        //right dpad
+        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
+        new JoystickButton(operator, 2).whenPressed(new ArmDefault());
+
+        new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
+        new JoystickButton(operator, 3).whenPressed(new ArmScaleMid());
+
+        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
+        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid());
+
+        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
+        new JoystickButton(operator, 5).whenPressed(new ArmDefault());
+        //Right dpad
         if(operator.getPOV() >= 88 && operator.getPOV() <= 92){
-            new PresetScaleMid();
+            new ElevatorGround();
+            new ArmDefault();
+        }
+
+        //Down dpad
+        if(operator.getPOV() >= 178 && operator.getPOV() <= 182){
+            new ElevatorReset();
+            new ArmMinimum();
         }
     }
 }

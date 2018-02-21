@@ -3,13 +3,13 @@ package ca._4976.powerup.subsystems;
 import ca._4976.powerup.commands.ListenableCommand;
 import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.SaveProfile;
+import ca._4976.powerup.data.Initialization;
 import ca._4976.powerup.data.Moment;
 import ca._4976.powerup.data.Profile;
-import ca._4976.powerup.data.Profile;
-import ca._4976.powerup.subsystems.Drive;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
@@ -51,9 +51,27 @@ public final class Motion extends Subsystem implements Sendable {
 
     public boolean isRunning() { return isRunning; }
 
-    public synchronized void record() { new Thread(new Record()).start(); }
+    public synchronized void record() {
 
-    public synchronized void run() { new Thread(new Run()).start(); }
+        if (commands.length == 0) {
+
+            commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
+            Initialization.commands = null;
+        }
+
+        new Thread(new Record()).start();
+    }
+
+    public synchronized void run() {
+
+        if (commands.length == 0) {
+
+            commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
+            Initialization.commands = null;
+        }
+
+        new Thread(new Run()).start();
+    }
 
     public synchronized void stop() {
 

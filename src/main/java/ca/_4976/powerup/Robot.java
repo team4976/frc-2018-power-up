@@ -1,5 +1,8 @@
 package ca._4976.powerup;
 
+import ca._4976.powerup.data.Profile;
+import ca._4976.powerup.subsystems.Drive;
+import ca._4976.powerup.subsystems.Motion;
 import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.ElevEncoderReset;
 import ca._4976.powerup.commands.RecordProfile;
@@ -52,6 +55,7 @@ public final class Robot extends IterativeRobot {
     private final ElevEncoderReset elevReset = new ElevEncoderReset();
 
     @Override public void robotInit() {
+
         oi = new OI();
 
         elevReset.start();
@@ -64,13 +68,9 @@ public final class Robot extends IterativeRobot {
         Robot.drive.defaultGear();
     }
 
-
-
     @Override public void disabledInit() {
         motion.stop();
     }
-
-
 
     @Override public void autonomousPeriodic(){
         runProfile.start();
@@ -80,6 +80,7 @@ public final class Robot extends IterativeRobot {
 
 
     @Override public void teleopPeriodic(){
+        new DefaultGear().start();
         Scheduler.getInstance().run();
         log();
     }

@@ -190,7 +190,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Uses the drivetrain encoders to determine when the robot has stopped.
-     *
+     * 
      * @return boolean value indicating if the robot is not moving
      */
     public boolean isStopped() { return left.getStopped() && right.getStopped(); }
@@ -198,9 +198,9 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Outputs the the drive motors with a tanks style control
-     *
+     * 
      * @param left: the output percentage of the left side of the drive ranging from -1 to 1
-     * @param right: the output percentage of the right side of the drive ranging from -1 to 1
+     * @param right: the output percentage of the right side of the drive ranging from -1 to 1 
      */
     public synchronized void setTankDrive(double left, double right) {
 
@@ -213,14 +213,14 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     /**
      * Gets the current output being applied to the drive motors
-     *
+     * 
      * @return the left and right drive output as a double array
      */
     public synchronized Double[]  getTankDrive() { return new Double[] { leftFront.getMotorOutputPercent(), rightFront.getMotorOutputPercent() }; }
 
     /**
      * Set ramping enabled or disabled
-     *
+     * 
      * @return enable: enable ramping
      */
     public synchronized void enableRamping(boolean enable) {

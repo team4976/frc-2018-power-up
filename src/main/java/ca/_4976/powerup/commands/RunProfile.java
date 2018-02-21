@@ -11,8 +11,6 @@ public final class RunProfile extends Command {
 
     public RunProfile() { willRunWhenDisabled(); }
 
-    private Joystick driver = new Joystick(0);
-
     @Override protected void initialize() {
 
         Robot.drive.resetEncoderPosition();

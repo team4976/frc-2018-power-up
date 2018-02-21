@@ -17,10 +17,13 @@ public final class OI {
     OI() {
 
         //TODO JOYSTICK STOLEN
+
+        new JoystickButton(driver,1).whenPressed(new RecordProfile());
+        new JoystickButton(driver,2).whenPressed(new RunProfile());
 //        new JoystickButton(driver, 4).whenPressed(new Transmission());
-        new JoystickButton(driver, 1).whenPressed(new DriverIntake());
-        new JoystickButton(driver, 2).whenPressed(new DriverEject());
-        new JoystickButton(driver, 2).whenReleased(new DriverStop());
+        new JoystickButton(driver, 4).whenPressed(new DriverIntake());
+        new JoystickButton(driver, 3).whenPressed(new DriverEject());
+        new JoystickButton(driver, 3).whenReleased(new DriverStop());
 //        new JoystickButton(driver, 7).whenPressed(new Transmission());
 //
 //        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
@@ -36,30 +39,30 @@ public final class OI {
 //        new JoystickButton(operator, 6).whenReleased(new StopForks());
 
         //Presets
-        new JoystickButton(operator, 1).whenPressed(new ElevatorSwitch());
-        new JoystickButton(operator, 1).whenPressed(new ArmDefault());
-
-        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
-        new JoystickButton(operator, 2).whenPressed(new ArmDefault());
-
-        new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
-        new JoystickButton(operator, 3).whenPressed(new ArmScaleMid());
-
-        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
-        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid());
-
-        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
-        new JoystickButton(operator, 5).whenPressed(new ArmDefault());
-        //Right dpad
-        if(operator.getPOV() >= 88 && operator.getPOV() <= 92){
-            new ElevatorGround();
-            new ArmDefault();
-        }
-
-        //Down dpad
-        if(operator.getPOV() >= 178 && operator.getPOV() <= 182){
-            new ElevatorReset();
-            new ArmMinimum();
-        }
+//        new JoystickButton(operator, 1).whenPressed(new ElevatorSwitch());
+//        new JoystickButton(operator, 1).whenPressed(new ArmDefault());
+//
+//        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
+//        new JoystickButton(operator, 2).whenPressed(new ArmDefault());
+//
+//        new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
+//        new JoystickButton(operator, 3).whenPressed(new ArmScaleMid());
+//
+//        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
+//        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid());
+//
+//        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
+//        new JoystickButton(operator, 5).whenPressed(new ArmDefault());
+//        //Right dpad
+//        if(operator.getPOV() >= 88 && operator.getPOV() <= 92){
+//            new ElevatorGround();
+//            new ArmDefault();
+//        }
+//
+//        //Down dpad
+//        if(operator.getPOV() >= 178 && operator.getPOV() <= 182){
+//            new ElevatorReset();
+//            new ArmMinimum();
+//        }
     }
 }

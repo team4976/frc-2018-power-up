@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * Created by 4976 on 2018-02-17.
  */
-public class ArmDefault extends Command {
+public class ArmDefault extends ListenableCommand {
 
     @Override
     protected void initialize(){

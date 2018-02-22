@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * Created by 4976 on 2018-02-15.
  */
-public class MoveElevatorWithJoystick extends Command {
+public class MoveElevatorWithJoystick extends ListenableCommand {
 
     public MoveElevatorWithJoystick(){
         requires(Robot.elevator);

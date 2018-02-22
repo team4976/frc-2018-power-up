@@ -184,7 +184,7 @@ public final class Elevator extends Subsystem implements Sendable {
         //if (getHeight() <= ELEV_MAX.value || getHeight() >= ELEV_MIN.value) {
 
 //            System.out.println("Manual output: " + manualOut);
-            elevMotorMain.set(ControlMode.PercentOutput, manualOut);
+            elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
             System.out.println("Encoder: " + elevEnc.getDistance());
            System.out.println("Link Arm: " + Robot.linkArm.getArmEncoderValue());
         System.out.println(elevSlave1.getMotorOutputPercent());

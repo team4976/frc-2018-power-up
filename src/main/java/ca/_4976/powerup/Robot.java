@@ -58,7 +58,7 @@ public final class Robot extends IterativeRobot {
 
         oi = new OI();
 
-        elevReset.start();
+//        elevReset.start();
 
         new DefaultGear().start();
 

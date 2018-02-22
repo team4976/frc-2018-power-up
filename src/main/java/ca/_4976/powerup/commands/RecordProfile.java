@@ -16,7 +16,7 @@ public final class RecordProfile extends Command {
 
         Robot.drive.resetEncoderPosition();
         Robot.motion.record();
-        Robot.drive.enableRamping(true);
+      //  Robot.drive.enableRamping(true);
       }
 
     @Override protected boolean isFinished() { return !Robot.motion.isRecording(); }

@@ -141,7 +141,7 @@ public final class Motion extends Subsystem implements Sendable {
             builder.append("Motion Profile Log: ").append(profile.name).append(" ").append(profile.version).append('\n');
             builder.append("Left Output,Right Output,,Left Error,Right Error\n");
 
-            while (isRunning && interval < profile.moments.length && ds.isEnabled()) {  
+            while (isRunning && interval < profile.moments.length && ds.isEnabled()) {
 
                 if (System.nanoTime() - lastTick >= timing)  {
 

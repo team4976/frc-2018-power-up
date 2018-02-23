@@ -167,31 +167,19 @@ public final class Elevator extends Subsystem implements Sendable {
 
 
         if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
-            //System.out.println("Dead zone");
             manualOut = 0;
         }
 
         else if (Math.abs(drInput) > deadRange) {
-            System.out.println("Driver control");
             manualOut = drInput;
         }
 
         else if (Math.abs(opInput) > deadRange) {
-            System.out.println("Operator control");
             manualOut = opInput;
         }
 
-        //if (getHeight() <= ELEV_MAX.value || getHeight() >= ELEV_MIN.value) {
-
-//            System.out.println("Manual output: " + manualOut);
             elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
-            System.out.println("Encoder: " + elevEnc.getDistance());
-           System.out.println("Link Arm: " + Robot.linkArm.getArmEncoderValue());
-        System.out.println(elevSlave1.getMotorOutputPercent());
-        System.out.println(elevMotorMain.getMotorOutputPercent());
-        System.out.println(elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
-        //}
-        System.out.println();
+
     }
 
 
@@ -202,15 +190,12 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveToHighScale() {
 
-        System.out.println("HIGH SCALE METHOD: " + scaleHighValue);
 
         if(getHeight() > scaleHighValue){
-            System.out.println("DOWN");
             elevMotorMain.set(ControlMode.PercentOutput, -0.5);
         }
 
         else if(getHeight() < scaleHighValue){
-            System.out.println("UP");
             elevMotorMain.set(ControlMode.PercentOutput, 0.5);
         }
     }
@@ -218,13 +203,10 @@ public final class Elevator extends Subsystem implements Sendable {
     public boolean checkHighScale(){
 
         if(getHeight() >= (scaleHighValue - 20) && getHeight() <= (scaleHighValue + 20)){
-            System.out.println("\nENCODER: " + getHeight());
-            System.out.println("FINISHED: SCALE HIGH\n");
             return true;
         }
 
         else {
-            System.out.println("UNFINISHED ENCODER: " + getHeight());
             return false;
         }
     }
@@ -249,8 +231,6 @@ public final class Elevator extends Subsystem implements Sendable {
     public boolean checkMidScale(){
 
         if(getHeight() >= (scaleMidValue - 20) && getHeight() <= (scaleMidValue + 20)){
-            System.out.println("\nENCODER: " + getHeight());
-            System.out.println("FINISHED: SCALE MID\n");
             return true;
         }
 
@@ -279,8 +259,6 @@ public final class Elevator extends Subsystem implements Sendable {
     public boolean checkLowScale(){
 
         if(getHeight() >= (scaleLowValue - 20) && getHeight() <= (scaleLowValue + 20)){
-            System.out.println("\nENCODER: " + getHeight());
-            System.out.println("FINISHED: SCALE LOW\n");
             return true;
         }
 
@@ -309,8 +287,6 @@ public final class Elevator extends Subsystem implements Sendable {
     public boolean checkSwitch(){
 
         if(getHeight() >= (switchValue - 20) && getHeight() <= (switchValue + 20)){
-            System.out.println("\nENCODER: " + getHeight());
-            System.out.println("FINISHED: SWITCH\n");
             return true;
         }
 
@@ -339,8 +315,6 @@ public final class Elevator extends Subsystem implements Sendable {
     public boolean checkGround(){
 
         if(getHeight() >= (groundValue) && getHeight() <= (groundValue + 20)){
-            System.out.println("\nENCODER: " + getHeight());
-            System.out.println("FINISHED: GROUND\n");
             return true;
         }
 
@@ -369,8 +343,6 @@ public final class Elevator extends Subsystem implements Sendable {
     public boolean checkDefault(){
 
         if(getHeight() >= (defaultValue) && getHeight() <= (defaultValue + 20)){
-            System.out.println("\nENCODER: " + getHeight());
-            System.out.println("FINISHED: DEFAULT\n");
             return true;
         }
 

@@ -2,6 +2,7 @@ package ca._4976.powerup.subsystems;
 
 import ca._4976.powerup.commands.ListenableCommand;
 import ca._4976.powerup.Robot;
+import ca._4976.powerup.subsystems.CubeHandler;
 import ca._4976.powerup.commands.SaveProfile;
 import ca._4976.powerup.data.Initialization;
 import ca._4976.powerup.data.Moment;
@@ -36,6 +37,8 @@ public final class Motion extends Subsystem implements Sendable {
     private boolean isRunning = false;
     private boolean isRecording = false;
 
+    public CubeHandler cubeHandler = new CubeHandler();
+
     public ListenableCommand[] commands = new ListenableCommand[0];
     public ArrayList<Integer> report = new ArrayList<>();
 
@@ -64,7 +67,7 @@ public final class Motion extends Subsystem implements Sendable {
 
     public synchronized void run() {
 
-        if (commands.length == 0) {
+        if (commands.length == 0 || cubeHandler.recordIntake) {
 
             commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
             Initialization.commands = null;
@@ -85,10 +88,11 @@ public final class Motion extends Subsystem implements Sendable {
 
             isRecording = true;
 
-            double timing = 1e+9 / 200;
+            double timing = 1e+9 / 243;
             long lastTick = System.nanoTime() - (long) timing;
 
             ArrayList<Moment> moments = new ArrayList<>();
+
 
             while (isRecording && ds.isEnabled()) {
 
@@ -126,7 +130,7 @@ public final class Motion extends Subsystem implements Sendable {
 
             isRunning = true;
 
-            double timing = 1e+9 / 200;
+            double timing = 1e+9 / 243;
             long lastTick = System.nanoTime() - (long) timing;
 
             int interval = 0;
@@ -150,7 +154,6 @@ public final class Motion extends Subsystem implements Sendable {
                     final Moment moment = profile.moments[interval];
 
                     use(drive.getEncoderPosition(), it -> {
-
                         error[0] = moment.position[0] - it[0];
                         error[1] = moment.position[1] - it[1];
                     });
@@ -162,7 +165,6 @@ public final class Motion extends Subsystem implements Sendable {
                     integral[1] += error[1];
 
                     use(drive.getEncoderRate(), it -> {
-
                         derivative[0] = (error[0] - lastError[0]) / (1.0/200) - it[0];
                         derivative[1] = (error[1] - lastError[1]) / (1.0/200) - it[1];
                     });

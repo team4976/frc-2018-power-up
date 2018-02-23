@@ -105,7 +105,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
-        double elevatorAffectedDrive = (1-(Robot.elevator.getHeight()/1620))*forward;
+        double elevatorAffectedDrive = (1.125-(Robot.elevator.getHeight()/3240))*forward;
         ///
         // Saves the joystick value as a power of 2 while still keeping the sign
         double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
@@ -133,7 +133,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      */
     @Override public void run() {
 
-        double timing = 1e+9 / 200; // Stores the time between ticks in ns
+        double timing = 1e+9 / 243; // Stores the time between ticks in ns
         long lastTick = System.nanoTime() - (long) timing; // Stores the time of when the last tick started
 
         while (ramping) { // Loop when ramping is enabled

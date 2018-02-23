@@ -3,6 +3,7 @@ package ca._4976.powerup;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.Drive;
 import ca._4976.powerup.subsystems.Motion;
+import ca._4976.powerup.subsystems.CubeHandler;
 import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.ElevEncoderReset;
 import ca._4976.powerup.commands.RecordProfile;
@@ -69,6 +70,8 @@ public final class Robot extends IterativeRobot {
     }
 
     @Override public void disabledInit() {
+
+        cubeHandler.disableGripper();
         motion.stop();
     }
 

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DriverStop extends ListenableCommand {
     @Override
     protected void execute() {
-        System.out.println("Executing the stoppng");
+        System.out.println("Executing the stop");
         Robot.cubeHandler.stop();
     }
     @Override

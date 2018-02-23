@@ -10,7 +10,6 @@ public final class Moment {
     public final Double[] output, position, velocity;
 
     public Moment(Integer[] commands, Double[] output, Double[] position, Double velocity[]) {
-
         this.commands = commands;
         this.output = output;
         this.position = position;

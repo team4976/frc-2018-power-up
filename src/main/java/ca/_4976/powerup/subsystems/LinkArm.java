@@ -54,7 +54,7 @@ public final class LinkArm extends Subsystem implements Sendable {
             armReset.setPersistent();
             armMin.setPersistent();
 
-            motorSpeed = motorOut.getDouble(0.5);
+            motorSpeed = motorOut.getDouble(0.7);
             
             armHighValue = armHigh.getDouble(0);
             armMidValue = armMid.getDouble(0);
@@ -93,15 +93,12 @@ public final class LinkArm extends Subsystem implements Sendable {
      */
     public void moveArmHigh(){
 
-        System.out.println("HIGH SCALE ARM METHOD: " + armHighValue);
-        
+
         if(getArmEncoderValue() > armHighValue){
-            System.out.println("DOWN ARM");
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
         else if(getArmEncoderValue() < armHighValue){
-            System.out.println("UP ARM");
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
         }
     }
@@ -109,28 +106,22 @@ public final class LinkArm extends Subsystem implements Sendable {
     public boolean checkArmHigh(){
         
         if(getArmEncoderValue() >= (armHighValue - 200) && getArmEncoderValue() <= (armHighValue + 200)){
-            System.out.println("\nENCODER: " + getArmEncoderValue());
-            System.out.println("FINISHED: ARM SCALE HIGH\n");
             return true;
         }
 
         else {
-            System.out.println("UNFINISHED ARM ENCODER: " + getArmEncoderValue());
             return false;
         }
     }
 
     public void moveArmMid(){
 
-        System.out.println("MID SCALE ARM METHOD: " + armMidValue);
 
         if(getArmEncoderValue() > armMidValue){
-            System.out.println("DOWN ARM");
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
         else if(getArmEncoderValue() < armMidValue){
-            System.out.println("UP ARM");
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
         }
     }
@@ -138,28 +129,20 @@ public final class LinkArm extends Subsystem implements Sendable {
     public boolean checkArmMid(){
 
         if(getArmEncoderValue() >= (armMidValue - 200) && getArmEncoderValue() <= (armMidValue + 200)){
-            System.out.println("\nENCODER: " + getArmEncoderValue());
-            System.out.println("FINISHED: ARM SCALE MID\n");
             return true;
         }
 
         else {
-            System.out.println("UNFINISHED ARM ENCODER: " + getArmEncoderValue());
             return false;
         }
     }
 
     public void moveArmReset(){
-
-        System.out.println("RESET ARM METHOD: " + armResetValue);
-
         if(getArmEncoderValue() > armResetValue){
-            System.out.println("DOWN ARM");
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
         else if(getArmEncoderValue() < armResetValue){
-            System.out.println("UP ARM");
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
         }
     }
@@ -167,28 +150,23 @@ public final class LinkArm extends Subsystem implements Sendable {
     public boolean checkArmReset(){
 
         if(getArmEncoderValue() >= (armResetValue - 200) && getArmEncoderValue() <= (armResetValue + 200)){
-            System.out.println("\nENCODER: " + getArmEncoderValue());
-            System.out.println("FINISHED: ARM RESET\n");
+
             return true;
         }
 
         else {
-            System.out.println("UNFINISHED ARM ENCODER: " + getArmEncoderValue());
             return false;
         }
     }
 
     public void moveArmMinimum(){
 
-        System.out.println("Min ARM METHOD: " + armMinValue);
 
         if(getArmEncoderValue() > armMinValue){
-            System.out.println("DOWN ARM");
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
         else if(getArmEncoderValue() < armMinValue){
-            System.out.println("UP ARM");
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
         }
     }
@@ -196,13 +174,11 @@ public final class LinkArm extends Subsystem implements Sendable {
     public boolean checkArmMinimum(){
 
         if(getArmEncoderValue() >= (armMinValue - 200) && getArmEncoderValue() <= (armMinValue + 200)){
-            System.out.println("\nENCODER: " + getArmEncoderValue());
-            System.out.println("FINISHED: ARM Min\n");
+
             return true;
         }
 
         else {
-            System.out.println("UNFINISHED ARM ENCODER: " + getArmEncoderValue());
             return false;
         }
     }

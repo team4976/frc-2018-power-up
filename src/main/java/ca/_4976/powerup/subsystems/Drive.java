@@ -133,7 +133,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
      */
     @Override public void run() {
 
-        double timing = 1e+9 / 243; // Stores the time between ticks in ns
+        double timing = 1e+9 / 200; // Stores the time between ticks in ns
         long lastTick = System.nanoTime() - (long) timing; // Stores the time of when the last tick started
 
         while (ramping) { // Loop when ramping is enabled

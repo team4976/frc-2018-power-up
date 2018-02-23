@@ -57,7 +57,6 @@ public final class Motion extends Subsystem implements Sendable {
     public synchronized void record() {
 
         if (commands.length == 0) {
-
             commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
             Initialization.commands = null;
         }
@@ -88,7 +87,7 @@ public final class Motion extends Subsystem implements Sendable {
 
             isRecording = true;
 
-            double timing = 1e+9 / 243;
+            double timing = 1e+9 / 200;
             long lastTick = System.nanoTime() - (long) timing;
 
             ArrayList<Moment> moments = new ArrayList<>();
@@ -130,7 +129,7 @@ public final class Motion extends Subsystem implements Sendable {
 
             isRunning = true;
 
-            double timing = 1e+9 / 243;
+            double timing = 1e+9 / 200;
             long lastTick = System.nanoTime() - (long) timing;
 
             int interval = 0;

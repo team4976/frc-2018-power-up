@@ -15,8 +15,6 @@ public class DriverIntake extends ListenableCommand {
     @Override
     protected void execute() {
 //        will continue to grab until the current draw spikes
-        System.out.println(Robot.cubeHandler.grabberI.getOutputCurrent());
-        System.out.println(Robot.cubeHandler.grabberI.getMotorOutputPercent());
         Robot.cubeHandler.grab();
     }
 

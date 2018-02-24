@@ -2,7 +2,6 @@ package ca._4976.powerup.subsystems;
 
 import ca._4976.powerup.commands.ListenableCommand;
 import ca._4976.powerup.Robot;
-import ca._4976.powerup.subsystems.CubeHandler;
 import ca._4976.powerup.commands.SaveProfile;
 import ca._4976.powerup.data.Initialization;
 import ca._4976.powerup.data.Moment;
@@ -37,8 +36,6 @@ public final class Motion extends Subsystem implements Sendable {
     private boolean isRunning = false;
     private boolean isRecording = false;
 
-    public CubeHandler cubeHandler = new CubeHandler();
-
     public ListenableCommand[] commands = new ListenableCommand[0];
     public ArrayList<Integer> report = new ArrayList<>();
 
@@ -57,6 +54,7 @@ public final class Motion extends Subsystem implements Sendable {
     public synchronized void record() {
 
         if (commands.length == 0) {
+
             commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
             Initialization.commands = null;
         }
@@ -66,7 +64,7 @@ public final class Motion extends Subsystem implements Sendable {
 
     public synchronized void run() {
 
-        if (commands.length == 0 || cubeHandler.recordIntake) {
+        if (commands.length == 0) {
 
             commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
             Initialization.commands = null;
@@ -144,7 +142,7 @@ public final class Motion extends Subsystem implements Sendable {
             builder.append("Motion Profile Log: ").append(profile.name).append(" ").append(profile.version).append('\n');
             builder.append("Left Output,Right Output,,Left Error,Right Error\n");
 
-            while (isRunning && interval < profile.moments.length && ds.isEnabled()) {
+            while (isRunning && interval < profile.moments.length && ds.isEnabled()) {  
 
                 if (System.nanoTime() - lastTick >= timing)  {
 

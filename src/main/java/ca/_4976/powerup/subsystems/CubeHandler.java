@@ -2,6 +2,7 @@
 package ca._4976.powerup.subsystems;
 
 
+import ca._4976.powerup.commands.ResetGrab;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -15,20 +16,19 @@ import static ca.qormix.library.Lazy.use;
 public final class CubeHandler extends Subsystem implements Sendable {
     public final TalonSRX grabberI = new TalonSRX(0);
 
-    public boolean returnRunIntake = false;
-    public boolean normalSpead = true;
-    public boolean recordIntake = false;
-    boolean kill = false;
+    public boolean runIntake = false;
+    private boolean normalSpead = true;
 
     private double speedFast, notFast, grabCurrent;
     public CubeHandler(){
         use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
+
             NetworkTableEntry fullSpeed = it.getEntry("Full Speed");
             NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
             NetworkTableEntry current = it.getEntry("Current");
 
-            fullSpeed.setDefaultDouble(0.6);
-            slowSpeed.setDefaultDouble(0.3);
+            fullSpeed.setDefaultDouble(.65);
+            slowSpeed.setDefaultDouble(0.25);
             current.setDefaultDouble(25);
             speedFast=fullSpeed.getDouble(0);
             notFast=slowSpeed.getDouble(0);
@@ -37,54 +37,37 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
 
     @Override
-    protected void initDefaultCommand() {
-
-    }
+    protected void initDefaultCommand() {}
 
 
     public void grab() {//grabs cube
-        recordIntake = true;
-        System.out.println("Grabbing");
-        if (grabberI.getOutputCurrent() > grabCurrent && !kill){
-            grabberI.set(ControlMode.PercentOutput, notFast);
-            normalSpead = false;
-        } else if (normalSpead == true && !kill){
+        System.out.println(grabberI.getMotorOutputPercent());
+        System.out.println(grabberI.getOutputCurrent());
+        if (normalSpead){
+            System.out.println("my boi is to grab me");
             grabberI.set(ControlMode.PercentOutput, speedFast);
-        } else {
-            grabberI.set(ControlMode.PercentOutput, 0);
+            if (grabberI.getOutputCurrent() > grabCurrent){
+                normalSpead = false;
+            }
         }
-        kill = false;
-
+        else {
+            grabberI.set(ControlMode.PercentOutput, notFast);
+            runIntake = true;
+        }
+    }
+    public void resetGrab() {
+        runIntake=false;
     }
     public void stop(){//Stops the grabber motors
-        System.out.println("STopping");
-        kill = true;
-        returnRunIntake = true;
-        normalSpead = true;
+        System.out.println("no longer moving");
         grabberI.set(ControlMode.PercentOutput, 0);
-
+        runIntake=true;
+        normalSpead = true;
     }
     public void release() {//Releases cube from bot
-        System.out.println("Releasinbg");
-        if (!kill){
-            grabberI.set(ControlMode.PercentOutput, -speedFast);
-        } else {
-            grabberI.set(ControlMode.PercentOutput, 0);
-        }
-        returnRunIntake = true;
+        System.out.println("ejection is in effect");
+        runIntake = true;
         normalSpead = true;
-        kill = false;
-
-    }
-
-    public void disableGripper(){
-        grabberI.set(ControlMode.PercentOutput, 0);
-        kill = true;
-        returnRunIntake = true;
-        normalSpead = true;
-    }
-
-    public boolean checkCurrent(){
-        return returnRunIntake;
+        grabberI.set(ControlMode.PercentOutput, -speedFast);
     }
 }

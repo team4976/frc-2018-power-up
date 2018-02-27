@@ -27,9 +27,9 @@ public final class CubeHandler extends Subsystem implements Sendable {
             NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
             NetworkTableEntry current = it.getEntry("Current");
 
-            fullSpeed.setDefaultDouble(.65);
+            fullSpeed.setDefaultDouble(1);
             slowSpeed.setDefaultDouble(0.25);
-            current.setDefaultDouble(25);
+            current.setDefaultDouble(35);
             speedFast=fullSpeed.getDouble(0);
             notFast=slowSpeed.getDouble(0);
             grabCurrent=current.getDouble(0);

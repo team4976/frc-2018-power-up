@@ -23,8 +23,9 @@ public final class OI {
 //        new JoystickButton(driver, 4).whenPressed(new Transmission());
         new JoystickButton(driver, 1).whenPressed(new DriverIntake());
         new JoystickButton(driver, 2).whenPressed(new DriverEject());
-        new JoystickButton(driver, 3).whenPressed(new DriverStop());
         new JoystickButton(driver, 2).whenReleased(new DriverStop());
+        new JoystickButton(driver, 3).whenPressed(new DriverStop());
+
 //        new JoystickButton(driver, 3).whenReleased(new ResetGrab());
 
 //        new JoystickButton(driver, 7).whenPressed(new Transmission());
@@ -54,7 +55,7 @@ public final class OI {
         new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
 //        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid());
 //
-//        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
+        new JoystickButton(operator, 3).whenPressed(new ElevatorGround());
 //        new JoystickButton(operator, 5).whenPressed(new ArmDefault());
 //        //Right dpad
 //        if(operator.getPOV() >= 88 && operator.getPOV() <= 92){

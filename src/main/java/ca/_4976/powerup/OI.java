@@ -25,7 +25,7 @@ public final class OI {
         new JoystickButton(driver, 2).whenPressed(new DriverEject());
         new JoystickButton(driver, 3).whenPressed(new DriverStop());
         new JoystickButton(driver, 2).whenReleased(new DriverStop());
-        new JoystickButton(driver, 3).whenReleased(new ResetGrab());
+//        new JoystickButton(driver, 3).whenReleased(new ResetGrab());
 
 //        new JoystickButton(driver, 7).whenPressed(new Transmission());
 //

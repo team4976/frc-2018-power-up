@@ -103,6 +103,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     public void arcadeDrive(Joystick joy) {
 
+
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
         double elevatorAffectedDrive = (1.125-(Robot.elevator.getHeight()/3240))*forward;

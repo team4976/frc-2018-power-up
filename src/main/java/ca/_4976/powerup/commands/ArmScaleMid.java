@@ -10,6 +10,12 @@ public class ArmScaleMid extends ListenableCommand{
 
     @Override
     protected void initialize(){
+
+    }
+
+    @Override
+    protected void execute(){
+        System.out.println("Arm high ran");
         Robot.linkArm.moveArmMid();
     }
 

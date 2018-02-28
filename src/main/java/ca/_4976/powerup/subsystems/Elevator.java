@@ -180,9 +180,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
             elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
 
-        for (int i = 0; i < 100; i++) {
-            System.out.println(Robot.elevator.elevEnc.getDistance());
-        }
+
 
     }
 

@@ -53,14 +53,12 @@ public final class Robot extends IterativeRobot {
 
     private final RecordProfile recordProfile = new RecordProfile();
     private final RunProfile runProfile = new RunProfile();
-    private final ElevEncoderReset elevReset = new ElevEncoderReset();
 
     @Override public void robotInit() {
 
         oi = new OI();
 
-//        elevReset.start();
-
+        linkArm.resetArmEncoder();
         new DefaultGear().start();
 
         SmartDashboard.putData(drive);

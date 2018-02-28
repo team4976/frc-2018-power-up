@@ -7,6 +7,7 @@ Made by Cameron, Jacob, Ethan, Zach
 import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.MoveArm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -21,47 +22,14 @@ public final class LinkArm extends Subsystem implements Sendable {
     //Motor inside linkarm carriage - raises/lowers arm
     private final TalonSRX armMotor = new TalonSRX(4);
 
-    //LinkArm encoder
-    private Encoder armEnc = new Encoder(6,7);
-
-    private double motorSpeed;
+    private double motorSpeed = 0.5;
     private double armHighValue;
-    private double armMidValue;
+    private double armMidValue = 3978;
     private double armResetValue;
     private double armMinValue;
 
     public LinkArm(){
-        use(NetworkTableInstance.getDefault().getTable("Link Arm"), armTable -> {
-
-//            NetworkTableEntry p = armTable.getEntry("P");
-//            NetworkTableEntry i = armTable.getEntry("I");
-//            NetworkTableEntry d = armTable.getEntry("D");
-
-            NetworkTableEntry armHigh = armTable.getEntry("45 - High");
-            NetworkTableEntry armMid = armTable.getEntry("30 - Mid");
-            NetworkTableEntry armReset = armTable.getEntry("0 - Reset");
-            NetworkTableEntry armMin = armTable.getEntry("Minimum");
-
-            NetworkTableEntry motorOut = armTable.getEntry("Manual Output");
-
-//            p.setPersistent();
-//            i.setPersistent();
-//            d.setPersistent();
-
-            armHigh.setPersistent();
-            armMid.setPersistent();
-            motorOut.setPersistent();
-            armReset.setPersistent();
-            armMin.setPersistent();
-
-            motorSpeed = motorOut.getDouble(0.7);
-            
-            armHighValue = armHigh.getDouble(0);
-            armMidValue = armMid.getDouble(0);
-            armResetValue = armReset.getDouble(0);
-            armMinValue = armMin.getDouble(0);
-            
-        });
+        armMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     }
 
     @Override
@@ -72,6 +40,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     //move linkage arm
     public void moveLinkArm(){
 
+        System.out.println("Arm  encoder: " + getArmEncoderValue());
         double armOut = Robot.oi.operator.getRawAxis(5);
 
         //dead zone
@@ -80,13 +49,21 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
         else {
-            armMotor.set(ControlMode.PercentOutput,0.5 * armOut);
+            armMotor.set(ControlMode.PercentOutput, armOut);
         }
     }
-    
+
     public double getArmEncoderValue(){
-        return armEnc.getDistance();
+        double value = armMotor.getSensorCollection().getQuadraturePosition();
+
+        //System.out.println("Arm encoder: " + value);
+        return -value;
     }
+
+    public void resetArmEncoder(){
+        armMotor.getSensorCollection().setQuadraturePosition(0,0);
+    }
+
 
     /**
      * LinkArm presets and accompanying check methods
@@ -116,12 +93,17 @@ public final class LinkArm extends Subsystem implements Sendable {
 
     public void moveArmMid(){
 
+        System.out.println("Move arm mid");
 
         if(getArmEncoderValue() > armMidValue){
+
+            System.out.println("MID UP");
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
         else if(getArmEncoderValue() < armMidValue){
+
+            System.out.println("MID DOWN");
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
         }
     }
@@ -129,6 +111,8 @@ public final class LinkArm extends Subsystem implements Sendable {
     public boolean checkArmMid(){
 
         if(getArmEncoderValue() >= (armMidValue - 200) && getArmEncoderValue() <= (armMidValue + 200)){
+
+            System.out.println("Arm mid reached");
             return true;
         }
 

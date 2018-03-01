@@ -20,13 +20,16 @@ import static ca.qormix.library.Lazy.use;
 public final class LinkArm extends Subsystem implements Sendable {
 
     //Motor inside linkarm carriage - raises/lowers arm
-    private final TalonSRX armMotor = new TalonSRX(4);
+    public final TalonSRX armMotor = new TalonSRX(4);
 
     private double motorSpeed = 0.5;
+    private double holdingSpeed = -0.1; //compensate for reversal of motor
     private double armHighValue;
-    private double armMidValue = 3978;
-    private double armResetValue;
+    private double armMidValue = 2700;
+    private double armResetValue = 0;
     private double armMinValue;
+
+    private boolean holdSpeedSet = false;
 
     public LinkArm(){
         armMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -41,17 +44,37 @@ public final class LinkArm extends Subsystem implements Sendable {
     public void moveLinkArm(){
 
         System.out.println("Arm  encoder: " + getArmEncoderValue());
+
         double armOut = Robot.oi.operator.getRawAxis(5);
+        double motorOut;
 
         //dead zone
-        if (Math.abs(armOut) <= 0.03) {
-            armMotor.set(ControlMode.PercentOutput, 0);
+        if (Math.abs(armOut) <= 0.12) {
+            if(holdSpeedSet) {
+                motorOut = holdingSpeed;
+            }
+
+            else {
+                motorOut = 0;
+            }
         }
 
         else {
-            armMotor.set(ControlMode.PercentOutput, armOut);
+            holdSpeedSet = false;
+            System.out.println("Arm output: " + armMotor.getMotorOutputPercent());
+            motorOut = armOut;
         }
+
+        armMotor.set(ControlMode.PercentOutput, motorOut);
+
+
     }
+
+    public void setHoldingSpeed(){
+        armMotor.set(ControlMode.PercentOutput, holdingSpeed);
+        holdSpeedSet = true;
+    }
+
 
     public double getArmEncoderValue(){
         double value = armMotor.getSensorCollection().getQuadraturePosition();
@@ -70,8 +93,8 @@ public final class LinkArm extends Subsystem implements Sendable {
      */
     public void moveArmHigh(){
 
-
         if(getArmEncoderValue() > armHighValue){
+            //System.out.println("Arm encoder: " + getArmEncoderValue());
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
@@ -82,7 +105,7 @@ public final class LinkArm extends Subsystem implements Sendable {
 
     public boolean checkArmHigh(){
         
-        if(getArmEncoderValue() >= (armHighValue - 200) && getArmEncoderValue() <= (armHighValue + 200)){
+        if(getArmEncoderValue() >= (armHighValue - 200) && getArmEncoderValue() <= (armHighValue + 400)){
             return true;
         }
 
@@ -113,6 +136,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         if(getArmEncoderValue() >= (armMidValue - 200) && getArmEncoderValue() <= (armMidValue + 200)){
 
             System.out.println("Arm mid reached");
+
             return true;
         }
 
@@ -133,7 +157,7 @@ public final class LinkArm extends Subsystem implements Sendable {
 
     public boolean checkArmReset(){
 
-        if(getArmEncoderValue() >= (armResetValue - 200) && getArmEncoderValue() <= (armResetValue + 200)){
+        if(getArmEncoderValue() <= (armResetValue + 200)){
 
             return true;
         }

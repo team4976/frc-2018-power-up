@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ArmDefault extends ListenableCommand {
 
     @Override
-    protected void initialize(){
+    protected void execute(){
         Robot.linkArm.moveArmReset();
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.linkArm.checkArmReset();
+        return Robot.elevator.testInputs() || Robot.linkArm.checkArmReset();
     }
 }

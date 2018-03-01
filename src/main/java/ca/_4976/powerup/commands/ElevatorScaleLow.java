@@ -23,7 +23,7 @@ public class ElevatorScaleLow extends ListenableCommand {
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkLowScale();
+        return Robot.elevator.testInputs() || Robot.elevator.checkLowScale();
     }
 
     @Override

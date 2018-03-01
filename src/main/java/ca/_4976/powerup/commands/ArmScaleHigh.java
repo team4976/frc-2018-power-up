@@ -15,6 +15,8 @@ public class ArmScaleHigh extends ListenableCommand{
 
     @Override
     protected boolean isFinished() {
-        return Robot.linkArm.checkArmHigh();
+        return Robot.elevator.testInputs() || Robot.linkArm.checkArmHigh();
     }
+
+
 }

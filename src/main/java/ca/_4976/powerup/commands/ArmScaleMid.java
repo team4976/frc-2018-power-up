@@ -9,11 +9,6 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ArmScaleMid extends ListenableCommand{
 
     @Override
-    protected void initialize(){
-
-    }
-
-    @Override
     protected void execute(){
         System.out.println("Arm high ran");
         Robot.linkArm.moveArmMid();
@@ -21,6 +16,15 @@ public class ArmScaleMid extends ListenableCommand{
 
     @Override
     protected boolean isFinished() {
-        return Robot.linkArm.checkArmMid();
+        return Robot.elevator.testInputs() || Robot.linkArm.checkArmMid();
+    }
+
+    @Override
+    protected void end(){
+        Robot.linkArm.setHoldingSpeed();
+        for(int i = 0; i < 100; i++){
+            System.out.println("Holding speed ran: Motor at: "
+                    + Robot.linkArm.armMotor.getMotorOutputPercent());
+        }
     }
 }

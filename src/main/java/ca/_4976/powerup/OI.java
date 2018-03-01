@@ -53,9 +53,10 @@ public final class OI {
 //        new JoystickButton(operator, 3).whenPressed(new ArmScaleMid());
 //
         new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
-        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid());
+        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid()); //change to 30
 //
         new JoystickButton(operator, 3).whenPressed(new ElevatorGround());
+        new JoystickButton(operator, 3).whenPressed(new ArmDefault());
 //        new JoystickButton(operator, 5).whenPressed(new ArmDefault());
 //        //Right dpad
 //        if(operator.getPOV() >= 88 && operator.getPOV() <= 92){

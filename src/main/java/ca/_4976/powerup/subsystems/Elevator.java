@@ -98,8 +98,8 @@ public final class Elevator extends Subsystem implements Sendable {
             d.setDouble(d.getDouble(0));
 
             //Preset initial values
-            scaleHigh.setDouble(scaleHigh.getDouble(1621.75)); // Real Value
-            scaleMid.setDouble(scaleMid.getDouble(9536.85));
+            scaleHigh.setDouble(scaleHigh.getDouble(1700)); // Real Value 2100
+            scaleMid.setDouble(scaleMid.getDouble(1800));
             scaleLow.setDouble(scaleLow.getDouble(1220.5)); // Real Value
             switchs.setDouble(switchs.getDouble(1733.97));
             defaulted.setDouble(defaulted.getDouble(3000.0));
@@ -160,6 +160,8 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
+        System.out.println("Elevator encoder: " + getHeight());
+
         double deadRange = 0.09;
         double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
@@ -179,11 +181,35 @@ public final class Elevator extends Subsystem implements Sendable {
         }
 
             elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
-
-
-
     }
 
+    /**
+     * Input test
+     *
+     * Used to determine if manual control is present that should override a preset
+     */
+    public boolean testInputs(){
+
+        double deadRange = 0.09;
+        double drInput = -Robot.oi.driver.getRawAxis(5);
+        double opInput = -Robot.oi.operator.getRawAxis(1);
+
+        if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
+            return false;
+        }
+
+        else if (Math.abs(drInput) > deadRange) {
+            return true;
+        }
+
+        else if (Math.abs(opInput) > deadRange) {
+            return true;
+        }
+
+        else {
+            return false;
+        }
+    }
 
     /**
      * High scale

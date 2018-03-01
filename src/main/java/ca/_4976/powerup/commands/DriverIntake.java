@@ -27,6 +27,7 @@ public class DriverIntake extends ListenableCommand {
 
     @Override
     protected boolean isFinished() {
+        //return Robot.cubeHandler.runIntake;
         return Robot.cubeHandler.runIntake;
     }
 }

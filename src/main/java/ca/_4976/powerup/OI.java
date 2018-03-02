@@ -44,13 +44,14 @@ public final class OI {
 //        new JoystickButton(operator, 6).whenReleased(new StopForks());
 
         //Presets
+
         //High scale
         new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
-        new JoystickButton(operator, 4).whenPressed(new Arm45()); //change to 30
+        new JoystickButton(operator, 4).whenPressed(new Arm45());
 
         //Mid scale
         new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
-        new JoystickButton(operator, 3).whenPressed(new Arm45());
+        new JoystickButton(operator, 3).whenPressed(new Arm30());
 
         //Low scale
         new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
@@ -66,8 +67,8 @@ public final class OI {
 
         //Cube - arm first levels then dips
         new JoystickButton(operator, 6).whenPressed(new ElevatorCube());
-        new JoystickButton(operator, 6).whenPressed(new ArmLevel());
-        new JoystickButton(operator, 6).whenReleased(new ArmCube());
+        new JoystickButton(operator, 6).whenReleased(new ArmLevel());
+        new JoystickButton(operator, 6).whenPressed(new ArmCube());
 
 
     }

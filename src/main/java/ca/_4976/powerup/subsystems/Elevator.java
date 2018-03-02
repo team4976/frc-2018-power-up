@@ -60,7 +60,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //Preset initial values
         scaleHighValue = 1700; // Real Value 2100
-        scaleMidValue = 1800;
+        scaleMidValue = 1500; // Real Value 1800
         scaleLowValue = 1220.5; // Real Value 1700
         switchValue = 0;
         defaultValue = 770;
@@ -108,7 +108,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
         System.out.println("Elevator encoder: " + getHeight());
 
-        double deadRange = 0.12;
+        double deadRange = 0.15;
         double driverInput = -Robot.oi.driver.getRawAxis(5);
         double operatorInput = -Robot.oi.operator.getRawAxis(1);
         double manualOut = elevMotorMain.getMotorOutputPercent();
@@ -146,7 +146,7 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public boolean testInputs(){
 
-        double deadRange = 0.10;
+        double deadRange = 0.15;
         double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
 
@@ -297,11 +297,11 @@ public final class Elevator extends Subsystem implements Sendable {
         if(!defaultStarted) {
 
             if (getHeight() > defaultValue) {
-                elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
             }
 
             else if (getHeight() < defaultValue) {
-                elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+                elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
             }
         }
     }

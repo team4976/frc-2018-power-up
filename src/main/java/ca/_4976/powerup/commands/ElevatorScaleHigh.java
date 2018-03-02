@@ -13,13 +13,15 @@ public class ElevatorScaleHigh extends ListenableCommand {
 
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: SCALE HIGH\n");
+        Robot.elevator.moveToHighScale();
+        Robot.elevator.presetEnabled = true;
+        Robot.elevator.scaleHighStarted = true;
     }
 
     @Override
     protected void execute(){
         System.out.println("HIGH SCALE COMMAND");
-        Robot.elevator.moveToHighScale();
+//        Robot.elevator.moveToHighScale();
     }
 
     @Override
@@ -29,6 +31,8 @@ public class ElevatorScaleHigh extends ListenableCommand {
 
     @Override
     protected void end(){
+        Robot.elevator.presetEnabled= false;
+        Robot.elevator.scaleHighStarted = false;
         Robot.elevator.stop();
     }
 }

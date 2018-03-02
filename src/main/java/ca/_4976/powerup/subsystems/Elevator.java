@@ -33,7 +33,7 @@ public final class Elevator extends Subsystem implements Sendable {
     // PID controller for the elevator subsystem
     private PIDController elevatorPID;
 
-    // NetworkTable assigned inputTest value
+    // Preset values
     private double motorOutput;
     private double scaleHighValue;
     private double scaleMidValue;
@@ -42,20 +42,9 @@ public final class Elevator extends Subsystem implements Sendable {
     private double defaultValue;
     private double groundValue;
 
-
-    /**
-     * Elevator presets
-     *
-     * Encoder values from excel sheet (Elevator Distance Chart.xlsx)
-     */
-    /*ELEV_MAX(16000.00), //slightly rounded down
-    SCALE_HIGH(12137.81), //45
-    SCALE_MID(9536.85),   //30
-    SCALE_LOW(6935.89),   //0
-    SWITCH(1733.97),      //0
-    DEFAULT - raise slightly //lowest
-    GROUND(0),            //0
-    ELEV_MIN(0);*/
+    // Preset start/stop control booleans
+    public boolean presetEnabled = false;
+    public boolean scaleHighStarted = false;
 
     public Elevator() {
 
@@ -100,9 +89,9 @@ public final class Elevator extends Subsystem implements Sendable {
             //Preset initial values
             scaleHigh.setDouble(scaleHigh.getDouble(1700)); // Real Value 2100
             scaleMid.setDouble(scaleMid.getDouble(1800));
-            scaleLow.setDouble(scaleLow.getDouble(1220.5)); // Real Value
-            switchs.setDouble(switchs.getDouble(1733.97));
-            defaulted.setDouble(defaulted.getDouble(3000.0));
+            scaleLow.setDouble(scaleLow.getDouble(1220.5)); // Real Value 1700
+            switchs.setDouble(switchs.getDouble(0));
+            defaulted.setDouble(defaulted.getDouble(770));
             ground.setDouble(ground.getDouble(0)); // Real Value
 
             scaleHighValue = scaleHigh.getDouble(12137.81);
@@ -162,25 +151,34 @@ public final class Elevator extends Subsystem implements Sendable {
 
         System.out.println("Elevator encoder: " + getHeight());
 
-        double deadRange = 0.09;
-        double drInput = -Robot.oi.driver.getRawAxis(5);
-        double opInput = -Robot.oi.operator.getRawAxis(1);
+        double deadRange = 0.12;
+        double driverInput = -Robot.oi.driver.getRawAxis(5);
+        double operatorInput = -Robot.oi.operator.getRawAxis(1);
         double manualOut = elevMotorMain.getMotorOutputPercent();
 
+        boolean driverFlag = false;
+        boolean operatorFlag = false;
 
-        if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
+        if (Math.abs(driverInput) <= deadRange &&
+                Math.abs(operatorInput) <= deadRange &&
+                !presetEnabled) {
+            System.out.println("DEAD ZONE");
             manualOut = 0;
         }
 
-        else if (Math.abs(drInput) > deadRange) {
-            manualOut = drInput;
+        else if (Math.abs(driverInput) > deadRange) {
+            driverFlag = true;
+            manualOut = driverInput;
         }
 
-        else if (Math.abs(opInput) > deadRange) {
-            manualOut = opInput;
+        else if (Math.abs(operatorInput) > deadRange) {
+            operatorFlag = true;
+            manualOut = operatorInput;
         }
 
+        if(driverFlag || operatorFlag) {
             elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
+        }
     }
 
     /**
@@ -190,7 +188,7 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public boolean testInputs(){
 
-        double deadRange = 0.09;
+        double deadRange = 0.12;
         double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
 
@@ -218,13 +216,18 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveToHighScale() {
 
+        System.out.println("HIGH BOOL: " + scaleHighStarted);
 
-        if(getHeight() > scaleHighValue){
-            elevMotorMain.set(ControlMode.PercentOutput, -0.5);
-        }
+        if(scaleHighStarted == false) {
+            if (getHeight() > scaleHighValue) {
+                elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+            } else if (getHeight() < scaleHighValue) {
+                elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+            }
 
-        else if(getHeight() < scaleHighValue){
-            elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+            for(int i = 0; i < 50; i++){
+                System.out.println("MOTORS SET: " + elevMotorMain.getMotorOutputPercent());
+            }
         }
     }
 

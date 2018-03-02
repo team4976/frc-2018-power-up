@@ -9,9 +9,6 @@ import ca._4976.powerup.commands.MoveArm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -23,11 +20,14 @@ public final class LinkArm extends Subsystem implements Sendable {
     public final TalonSRX armMotor = new TalonSRX(4);
 
     private double motorSpeed = 0.5;
-    private double holdingSpeed = -0.1; //compensate for reversal of motor
+    private double holdingPower = -0.1; //compensate for reversal of motor
+
     private double armHighValue;
-    private double armMidValue = 2700;
+    private double arm30Value = 2445;
+    private double armMaxValue = 4800;
+    private double arm45Value = 2700;
     private double armResetValue = 0;
-    private double armMinValue;
+    private double armDefault2Value = -2081;
 
     private boolean holdSpeedSet = false;
 
@@ -51,7 +51,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         //dead zone
         if (Math.abs(armOut) <= 0.12) {
             if(holdSpeedSet) {
-                motorOut = holdingSpeed;
+                motorOut = holdingPower;
             }
 
             else {
@@ -71,7 +71,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     }
 
     public void setHoldingSpeed(){
-        armMotor.set(ControlMode.PercentOutput, holdingSpeed);
+        armMotor.set(ControlMode.PercentOutput, holdingPower);
         holdSpeedSet = true;
     }
 
@@ -118,13 +118,13 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         System.out.println("Move arm mid");
 
-        if(getArmEncoderValue() > armMidValue){
+        if(getArmEncoderValue() > arm45Value){
 
             System.out.println("MID UP");
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
-        else if(getArmEncoderValue() < armMidValue){
+        else if(getArmEncoderValue() < arm45Value){
 
             System.out.println("MID DOWN");
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
@@ -133,7 +133,7 @@ public final class LinkArm extends Subsystem implements Sendable {
 
     public boolean checkArmMid(){
 
-        if(getArmEncoderValue() >= (armMidValue - 200) && getArmEncoderValue() <= (armMidValue + 200)){
+        if(getArmEncoderValue() >= (arm45Value - 200) && getArmEncoderValue() <= (arm45Value + 200)){
 
             System.out.println("Arm mid reached");
 
@@ -170,18 +170,18 @@ public final class LinkArm extends Subsystem implements Sendable {
     public void moveArmMinimum(){
 
 
-        if(getArmEncoderValue() > armMinValue){
+        if(getArmEncoderValue() > armDefault2Value){
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
         }
 
-        else if(getArmEncoderValue() < armMinValue){
+        else if(getArmEncoderValue() < armDefault2Value){
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
         }
     }
 
     public boolean checkArmMinimum(){
 
-        if(getArmEncoderValue() >= (armMinValue - 200) && getArmEncoderValue() <= (armMinValue + 200)){
+        if(getArmEncoderValue() >= (armDefault2Value - 200) && getArmEncoderValue() <= (armDefault2Value + 200)){
 
             return true;
         }

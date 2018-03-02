@@ -7,27 +7,22 @@ import ca._4976.powerup.Robot;
  */
 public class ElevatorGround extends ListenableCommand {
 
-    public ElevatorGround(){
-        willRunWhenDisabled();
-    }
-
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: GROUND\n");
-    }
-
-    @Override
-    protected void execute(){
         Robot.elevator.moveToGround();
+        Robot.elevator.presetEnabled = true;
+        Robot.elevator.groundStarted = true;
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkGround();
+        return Robot.elevator.testInputs() || Robot.elevator.checkGround();
     }
 
     @Override
     protected void end(){
+        Robot.elevator.presetEnabled= false;
+        Robot.elevator.groundStarted = false;
         Robot.elevator.stop();
     }
 }

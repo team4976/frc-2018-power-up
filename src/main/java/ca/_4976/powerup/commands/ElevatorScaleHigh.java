@@ -9,6 +9,9 @@ public class ElevatorScaleHigh extends ListenableCommand {
 
     @Override
     protected void initialize(){
+        for(int i = 0; i < 200; i++){
+            System.out.println("SCALE HIGH COMM");
+        }
         Robot.elevator.moveToHighScale();
         Robot.elevator.presetEnabled = true;
         Robot.elevator.scaleHighStarted = true;
@@ -16,6 +19,7 @@ public class ElevatorScaleHigh extends ListenableCommand {
 
     @Override
     protected boolean isFinished() {
+        System.out.println("Scale high running");
         return Robot.elevator.testInputs() || Robot.elevator.checkHighScale();
     }
 

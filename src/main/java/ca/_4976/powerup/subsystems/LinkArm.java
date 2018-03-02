@@ -28,12 +28,10 @@ public final class LinkArm extends Subsystem implements Sendable {
     private double arm45Value = 2700;
     private double arm30Value = 2445;
     private double armLevelValue = 0;
-    private double armDefault2Value = -2081;
+    private double armDefault2Value = -2100;
 
     //Preset tolerance
     private double tolerance;
-    private boolean holdSpeedSet = false;
-
 
     public LinkArm(){
         armMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -49,27 +47,17 @@ public final class LinkArm extends Subsystem implements Sendable {
     //move linkage arm
     public void moveLinkArm(){
 
-        //System.out.println("Arm  encoder: " + getArmEncoderValue());
+        System.out.println("Arm encoder: " + getArmEncoderValue());
 
         double armOut = Robot.oi.operator.getRawAxis(5);
         double motorOut;
 
         //dead zone
-        if (Math.abs(armOut) <= 0.12) {
+        if (Math.abs(armOut) <= 0.15) {
             motorOut = holdingPower;
-
-//            if(holdSpeedSet) {
-//                motorOut = holdingPower;
-//            }
-//
-//            else {
-//                motorOut = 0;
-//            }
         }
 
         else {
-//            holdSpeedSet = false;
-            System.out.println("Arm output: " + armMotor.getMotorOutputPercent());
             motorOut = armOut;
         }
 
@@ -80,7 +68,6 @@ public final class LinkArm extends Subsystem implements Sendable {
 
     public void setHoldingSpeed(){
         armMotor.set(ControlMode.PercentOutput, holdingPower);
-//        holdSpeedSet = true;
     }
 
 

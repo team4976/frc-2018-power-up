@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class ElevatorCube extends ListenableCommand {
 
+    private int executeCount = 0;
+
     @Override
     protected void initialize(){
         Robot.elevator.moveToDefault();
@@ -16,7 +18,13 @@ public class ElevatorCube extends ListenableCommand {
     }
 
     @Override
+    protected void execute(){
+        executeCount++;
+    }
+
+    @Override
     protected boolean isFinished() {
+        System.out.println("Cube count: " + executeCount);
         return Robot.elevator.testInputs() || Robot.elevator.checkDefault();
     }
 

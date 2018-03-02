@@ -24,6 +24,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
     public boolean runIntakeReverse = false;
 
     private double speedFast, notFast, grabCurrent;
+
     public CubeHandler(){
         use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
 

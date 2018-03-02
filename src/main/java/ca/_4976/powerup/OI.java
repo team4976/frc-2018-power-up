@@ -69,7 +69,5 @@ public final class OI {
         new JoystickButton(operator, 6).whenPressed(new ElevatorCube());
         new JoystickButton(operator, 6).whenReleased(new ArmLevel());
         new JoystickButton(operator, 6).whenPressed(new ArmCube());
-
-
     }
 }

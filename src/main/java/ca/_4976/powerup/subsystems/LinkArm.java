@@ -43,7 +43,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     //move linkage arm
     public void moveLinkArm(){
 
-        System.out.println("Arm  encoder: " + getArmEncoderValue());
+        //System.out.println("Arm  encoder: " + getArmEncoderValue());
 
         double armOut = Robot.oi.operator.getRawAxis(5);
         double motorOut;

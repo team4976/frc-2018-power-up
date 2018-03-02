@@ -57,6 +57,7 @@ public final class Robot extends IterativeRobot {
 
 
     @Override public void robotInit() {
+        //rename the sucky reet thiung
 
         oi = new OI();
 

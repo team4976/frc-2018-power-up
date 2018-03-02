@@ -31,9 +31,9 @@ public final class CubeHandler extends Subsystem implements Sendable {
             NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
             NetworkTableEntry current = it.getEntry("Current");
 
-            fullSpeed.setDefaultDouble(1);
-            slowSpeed.setDefaultDouble(0.25);
-            current.setDefaultDouble(35);
+            fullSpeed.setDefaultDouble(-0.75);
+            slowSpeed.setDefaultDouble(0);
+            current.setDefaultDouble(15);
             speedFast=fullSpeed.getDouble(0);
             notFast=slowSpeed.getDouble(0);
             grabCurrent=current.getDouble(0);
@@ -45,33 +45,45 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
 
     public void grab() {//grabs cube
-        runIntake = false;
-        boolean currentDrawDigital = currentDraw.get();
-        if (grabberI.getOutputCurrent()>grabCurrent){
+        if(normalSpead == true) {
+
             grabberI.set(ControlMode.PercentOutput, speedFast);
-            runIntake=false;
-            if (grabCurrent<grabberI.getOutputCurrent()){
+            if (grabberI.getOutputCurrent() > grabCurrent) {
+                grabberI.set(ControlMode.PercentOutput, speedFast);
+                runIntake = false;
                 normalSpead = false;
             }
         }
-        else {
+        if (normalSpead == false) {
             grabberI.set(ControlMode.PercentOutput, notFast);
+
+            for (int i = 0; i < 1000; i++) {
+                System.out.println("Im slow now");
+            }
             runIntake = true;
+
         }
     }
      public void resetGrab() {
-        runIntake=false;
+        runIntake=true;
     }
     public void stop(){//Stops the grabber motors
         System.out.println("no longer moving");
-        grabberI.set(ControlMode.PercentOutput, 0);
-        runIntake=true;
-        normalSpead = true;
+
+            grabberI.set(ControlMode.PercentOutput, 0);
+
+
+
     }
     public void release() {//Releases cube from bot
         System.out.println("ejection is in effect");
         runIntake = true;
         normalSpead = true;
         grabberI.set(ControlMode.PercentOutput, -speedFast);
+    }
+
+    public void boolReset(){
+        runIntake=true;
+        normalSpead = true;
     }
 }

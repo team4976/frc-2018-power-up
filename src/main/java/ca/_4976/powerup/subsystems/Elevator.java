@@ -149,7 +149,7 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
-        System.out.println("Elevator encoder: " + getHeight());
+        //System.out.println("Elevator encoder: " + getHeight());
 
         double deadRange = 0.12;
         double driverInput = -Robot.oi.driver.getRawAxis(5);
@@ -162,7 +162,7 @@ public final class Elevator extends Subsystem implements Sendable {
         if (Math.abs(driverInput) <= deadRange &&
                 Math.abs(operatorInput) <= deadRange &&
                 !presetEnabled) {
-            System.out.println("DEAD ZONE");
+            //System.out.println("DEAD ZONE");
             manualOut = 0;
         }
 
@@ -216,7 +216,7 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveToHighScale() {
 
-        System.out.println("HIGH BOOL: " + scaleHighStarted);
+        //System.out.println("HIGH BOOL: " + scaleHighStarted);
 
         if(scaleHighStarted == false) {
             if (getHeight() > scaleHighValue) {
@@ -226,7 +226,7 @@ public final class Elevator extends Subsystem implements Sendable {
             }
 
             for(int i = 0; i < 50; i++){
-                System.out.println("MOTORS SET: " + elevMotorMain.getMotorOutputPercent());
+                //System.out.println("MOTORS SET: " + elevMotorMain.getMotorOutputPercent());
             }
         }
     }

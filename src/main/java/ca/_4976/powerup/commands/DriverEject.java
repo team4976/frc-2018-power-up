@@ -8,13 +8,19 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class DriverEject extends ListenableCommand{
     @Override
-    public void execute() {
-        System.out.println("executing the ejection");
-        Robot.cubeHandler.release();
-       //CHANGE ID AFTER
+    protected void initialize() {
+        Robot.cubeHandler.runIntakeReverse = true;
+        Robot.cubeHandler.runIntakeForwards = false;
     }
+
+
+    @Override
+    public void execute() {
+        Robot.cubeHandler.release();
+    }
+
     @Override protected boolean isFinished() {
-        return true;
+        return Robot.cubeHandler.runIntakeReverse;
     }
 
 }

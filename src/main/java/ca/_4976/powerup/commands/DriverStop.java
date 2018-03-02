@@ -5,9 +5,15 @@ import edu.wpi.first.wpilibj.command.Command;
 
 //stops the motors from turning after the B button has been released
 public class DriverStop extends ListenableCommand {
+
+    @Override
+    protected void initialize() {
+        Robot.cubeHandler.runIntakeForwards = false;
+        Robot.cubeHandler.runIntakeReverse = false;
+    }
+
     @Override
     protected void execute() {
-        System.out.println("Executing the stop");
         Robot.cubeHandler.stop();
     }
     @Override

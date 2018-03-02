@@ -43,31 +43,31 @@ public final class OI {
 //        new JoystickButton(operator, 6).whenReleased(new StopForks());
 
         //Presets
-//        new JoystickButton(operator, 1).whenPressed(new ElevatorSwitch());
-//        new JoystickButton(operator, 1).whenPressed(new ArmDefault());
-//
-//        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
-//        new JoystickButton(operator, 2).whenPressed(new ArmDefault());
-//
-//        new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
-//        new JoystickButton(operator, 3).whenPressed(new ArmScaleMid());
-//
+        //High scale
         new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
-        new JoystickButton(operator, 4).whenPressed(new ArmScaleMid()); //change to 30
-//
-        new JoystickButton(operator, 3).whenPressed(new ElevatorGround());
-        new JoystickButton(operator, 3).whenPressed(new ArmDefault());
-//        new JoystickButton(operator, 5).whenPressed(new ArmDefault());
-//        //Right dpad
-//        if(operator.getPOV() >= 88 && operator.getPOV() <= 92){
-//            new ElevatorGround();
-//            new ArmDefault();
-//        }
-//
-//        //Down dpad
-//        if(operator.getPOV() >= 178 && operator.getPOV() <= 182){
-//            new ElevatorReset();
-//            new ArmMinimum();
-//        }
+        new JoystickButton(operator, 4).whenPressed(new Arm45()); //change to 30
+
+        //Mid scale
+        new JoystickButton(operator, 3).whenPressed(new ElevatorScaleMid());
+        new JoystickButton(operator, 3).whenPressed(new Arm45());
+
+        //Low scale
+        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
+        new JoystickButton(operator, 2).whenPressed(new ArmLevel());
+
+        //Switch
+        new JoystickButton(operator, 5).whenPressed(new ElevatorSwitch());
+        new JoystickButton(operator, 5).whenPressed(new Arm45());
+
+        //Ground
+        new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
+        new JoystickButton(operator, 1).whenPressed(new ArmLevel());
+
+        //Cube - arm first levels then dips
+        new JoystickButton(operator, 6).whenPressed(new ElevatorCube());
+        new JoystickButton(operator, 6).whenPressed(new ArmLevel());
+        new JoystickButton(operator, 6).whenReleased(new ArmCube());
+
+
     }
 }

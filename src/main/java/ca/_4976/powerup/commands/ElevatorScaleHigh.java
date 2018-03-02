@@ -7,21 +7,11 @@ import ca._4976.powerup.Robot;
  */
 public class ElevatorScaleHigh extends ListenableCommand {
 
-    public ElevatorScaleHigh(){
-        willRunWhenDisabled();
-    }
-
     @Override
     protected void initialize(){
         Robot.elevator.moveToHighScale();
         Robot.elevator.presetEnabled = true;
         Robot.elevator.scaleHighStarted = true;
-    }
-
-    @Override
-    protected void execute(){
-        System.out.println("HIGH SCALE COMMAND");
-//        Robot.elevator.moveToHighScale();
     }
 
     @Override

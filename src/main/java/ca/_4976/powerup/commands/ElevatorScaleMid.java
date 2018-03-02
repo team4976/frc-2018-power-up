@@ -7,27 +7,22 @@ import ca._4976.powerup.Robot;
  */
 public class ElevatorScaleMid extends ListenableCommand {
 
-    public ElevatorScaleMid(){
-        willRunWhenDisabled();
-    }
-
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: SCALE MID\n");
-    }
-
-    @Override
-    protected void execute(){
         Robot.elevator.moveToMidScale();
+        Robot.elevator.presetEnabled = true;
+        Robot.elevator.scaleMidStarted = true;
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkMidScale();
+        return Robot.elevator.testInputs() || Robot.elevator.checkMidScale();
     }
 
     @Override
     protected void end(){
+        Robot.elevator.presetEnabled= false;
+        Robot.elevator.scaleMidStarted = false;
         Robot.elevator.stop();
     }
 }

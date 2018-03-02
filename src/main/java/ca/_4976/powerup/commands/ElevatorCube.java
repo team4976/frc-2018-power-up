@@ -6,29 +6,24 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * Created by 4976 on 2018-02-17.
  */
-public class ElevatorReset extends ListenableCommand {
-
-    public ElevatorReset(){
-        willRunWhenDisabled();
-    }
+public class ElevatorCube extends ListenableCommand {
 
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: DEFAULT\n");
-    }
-
-    @Override
-    protected void execute(){
         Robot.elevator.moveToDefault();
+        Robot.elevator.presetEnabled = true;
+        Robot.elevator.defaultStarted = true;
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkDefault();
+        return Robot.elevator.testInputs() || Robot.elevator.checkDefault();
     }
 
     @Override
     protected void end(){
+        Robot.elevator.presetEnabled= false;
+        Robot.elevator.defaultStarted = false;
         Robot.elevator.stop();
     }
 }

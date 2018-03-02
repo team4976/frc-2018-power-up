@@ -7,27 +7,22 @@ import ca._4976.powerup.Robot;
  */
 public class ElevatorSwitch extends ListenableCommand {
 
-    public ElevatorSwitch(){
-        willRunWhenDisabled();
-    }
-
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: SWITCH\n");
-    }
-
-    @Override
-    protected void execute(){
         Robot.elevator.moveToSwitch();
+        Robot.elevator.presetEnabled = true;
+        Robot.elevator.switchStarted = true;
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.checkSwitch();
+        return Robot.elevator.testInputs() || Robot.elevator.checkSwitch();
     }
 
     @Override
     protected void end(){
+        Robot.elevator.presetEnabled= false;
+        Robot.elevator.switchStarted = false;
         Robot.elevator.stop();
     }
 }

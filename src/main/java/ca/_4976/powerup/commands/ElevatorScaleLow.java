@@ -7,18 +7,11 @@ import ca._4976.powerup.Robot;
  */
 public class ElevatorScaleLow extends ListenableCommand {
 
-    public ElevatorScaleLow(){
-        willRunWhenDisabled();
-    }
-
     @Override
     protected void initialize(){
-        System.out.println("\nSTART: SCALE LOW\n");
-    }
-
-    @Override
-    protected void execute(){
         Robot.elevator.moveToLowScale();
+        Robot.elevator.presetEnabled = true;
+        Robot.elevator.scaleLowStarted = true;
     }
 
     @Override
@@ -28,6 +21,8 @@ public class ElevatorScaleLow extends ListenableCommand {
 
     @Override
     protected void end(){
+        Robot.elevator.presetEnabled= false;
+        Robot.elevator.scaleLowStarted = false;
         Robot.elevator.stop();
     }
 }

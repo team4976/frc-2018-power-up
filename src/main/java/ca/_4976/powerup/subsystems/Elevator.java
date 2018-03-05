@@ -106,7 +106,7 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
-        System.out.println("Elevator encoder: " + elevEnc.getDistance());
+//         System.out.println("Elevator encoder: " + elevEnc.getDistance());
 
         double deadRange = 0.15;
         double driverInput = -Robot.oi.driver.getRawAxis(5);
@@ -147,14 +147,11 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public boolean testInputs(){
 
-        System.out.println("INPUT TEST RAN");
-
         double deadRange = 0.15;
         double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
 
         if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
-            System.out.println("ITEST DEAD ZONE");
             return false;
         }
 

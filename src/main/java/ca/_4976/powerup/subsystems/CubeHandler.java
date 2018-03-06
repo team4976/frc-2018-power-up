@@ -23,7 +23,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
     public boolean currentFlag = false;
 
-    private double speedFast, notFast, grabCurrent;
+    private double speedFast, notFast, grabCurrent, Spit;
 
     public CubeHandler(){
         use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
@@ -31,10 +31,13 @@ public final class CubeHandler extends Subsystem implements Sendable {
             NetworkTableEntry fullSpeed = it.getEntry("Full Speed");
             NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
             NetworkTableEntry current = it.getEntry("Current");
+            NetworkTableEntry spit = it.getEntry("Spit");
 
-            fullSpeed.setDefaultDouble(-0.75);
-            slowSpeed.setDefaultDouble(0);
-            current.setDefaultDouble(15);
+            fullSpeed.setDefaultDouble(-1);
+            slowSpeed.setDefaultDouble(-0.5);
+            current.setDefaultDouble(7);
+            spit.setDefaultDouble(1);
+            Spit=fullSpeed.getDouble(0);
             speedFast=fullSpeed.getDouble(0);
             notFast=slowSpeed.getDouble(0);
             grabCurrent=current.getDouble(0);
@@ -66,7 +69,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
     public void spitGear(){
         currentFlag = true;
-        grabberI.set(PercentOutput, 0.7);
+        grabberI.set(PercentOutput, Spit);
     }
 
 }

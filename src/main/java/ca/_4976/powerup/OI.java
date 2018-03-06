@@ -21,14 +21,11 @@ public final class OI {
         new JoystickButton(driver,8).whenPressed(new RecordProfile());
         new JoystickButton(driver,7).whenPressed(new RunProfile());
 //        new JoystickButton(driver, 4).whenPressed(new Transmission());
-        new JoystickButton(driver, 1).whenReleased(new DriverIntake());
 
-        new JoystickButton(driver, 2).whenPressed(new DriverEject());
-        new JoystickButton(driver, 2).whenReleased(new DriverStop());
-
-        new JoystickButton(driver, 3).whenPressed(new DriverStop());
-
-
+        new JoystickButton(driver, 1).whenPressed(new IntakeGear());
+        new JoystickButton(driver, 3).whenPressed(new StopGear());
+        new JoystickButton(driver, 2).whenPressed(new SpitGear());
+        new JoystickButton(driver, 2).whenReleased(new StopGear());
 //        new JoystickButton(driver, 7).whenPressed(new Transmission());
 //
 //        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());

@@ -72,7 +72,6 @@ public final class Robot extends IterativeRobot {
 
     @Override public void disabledInit() {
 
-        cubeHandler.stop();
         motion.stop();
     }
 

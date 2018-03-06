@@ -4,6 +4,7 @@ package ca._4976.powerup.subsystems;
 
 import ca._4976.powerup.Robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -65,7 +66,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
     public void spitGear(){
         currentFlag = true;
-        grabberI.set(PercentOutput, -0.7);
+        grabberI.set(PercentOutput, 0.7);
     }
 
 }

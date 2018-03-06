@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Sendable;
@@ -36,6 +37,8 @@ public final class Elevator extends Subsystem implements Sendable {
     // Preset values
     private double presetOutput;
     private double tolerance;
+
+    private double elevMaxValue;
     private double scaleHighValue;
     private double scaleMidValue;
     private double scaleLowValue;
@@ -59,6 +62,7 @@ public final class Elevator extends Subsystem implements Sendable {
         elevSustainableFreeLegalUnionizedLaborer.follow(elevMotorMain);
 
         //Preset initial values
+        elevMaxValue = 1800; //Real value will be higher
         scaleHighValue = 1700; // Real Value 2100
         scaleMidValue = 1500; // Real Value 1800
         scaleLowValue = 1220.5; // Real Value 1700
@@ -73,15 +77,15 @@ public final class Elevator extends Subsystem implements Sendable {
         tolerance = 50;
     }
 
-    /*TODO -> Limit switch testing
-    Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
+    /*//TODO -> Limit switch testing
+    //Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(4);
 
     //Limit switch near bottom of the first stage of the elevator. Switch normally held closed (false/low)
     private final DigitalInput limitSwitchMin = new DigitalInput(5);
 
     //Switch states need to be verified logically and codewise
-    */
+*/
 
     @Override
     protected void initDefaultCommand() {
@@ -111,12 +115,14 @@ public final class Elevator extends Subsystem implements Sendable {
         double deadRange = 0.15;
         double driverInput = -Robot.oi.driver.getRawAxis(5);
         double operatorInput = -Robot.oi.operator.getRawAxis(1);
+        double oobInput = 0; // value used for out of bounds processing
         double manualOut = 0;
 
         boolean deadZoneFlag = false;
         boolean driverFlag = false;
         boolean operatorFlag = false;
 
+        //Input processing
         if (Math.abs(driverInput) <= deadRange &&
                 Math.abs(operatorInput) <= deadRange &&
                 !presetEnabled) {
@@ -135,6 +141,22 @@ public final class Elevator extends Subsystem implements Sendable {
             manualOut = operatorInput;
         }
 
+        //Output processing
+        if(driverFlag){
+            oobInput = driverInput;
+        }
+
+        else if(operatorFlag){
+            oobInput = operatorInput;
+        }
+
+        //OOB
+        if((oobInput < 0 && getHeight() < groundValue) ||
+                (oobInput > 0 && getHeight() > elevMaxValue)){
+            manualOut = 0;
+        }
+
+        //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
             elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
         }

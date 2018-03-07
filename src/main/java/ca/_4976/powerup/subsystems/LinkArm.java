@@ -20,7 +20,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     public final TalonSRX armMotor = new TalonSRX(4);
 
     //Motor values
-    private double motorSpeed = 0.3;
+    private double motorSpeed = 0.5;
     private double holdingPower = -0.1; //compensate for reversal of motor
 
     //Preset values
@@ -36,7 +36,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     public LinkArm(){
         armMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
-        tolerance = 100;
+        tolerance = 200;
     }
 
     @Override

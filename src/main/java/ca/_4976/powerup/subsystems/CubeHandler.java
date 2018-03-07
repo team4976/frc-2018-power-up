@@ -18,7 +18,7 @@ import static com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput;
 import static com.ctre.phoenix.motorcontrol.ControlMode.Position;
 
 //Main superclass that holds all the methods used by the commands
-public final class CubeHandler extends Subsystem implements Sendable {
+    public final class CubeHandler extends Subsystem implements Sendable {
     public final TalonSRX grabberI = new TalonSRX(0);
 
     public boolean currentFlag = false;
@@ -33,9 +33,9 @@ public final class CubeHandler extends Subsystem implements Sendable {
             NetworkTableEntry current = it.getEntry("Current");
             NetworkTableEntry spit = it.getEntry("Spit");
 
-            fullSpeed.setDefaultDouble(-0.5);
-            slowSpeed.setDefaultDouble(-0.1);
-            current.setDefaultDouble(12);
+            fullSpeed.setDefaultDouble(-0.6);
+            slowSpeed.setDefaultDouble(-0.2);
+            current.setDefaultDouble(20);
             spit.setDefaultDouble(1);
             Spit=fullSpeed.getDouble(0);
             speedFast=fullSpeed.getDouble(0);
@@ -61,9 +61,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
 
     public void gearCurrent(){
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(grabberI.getOutputCurrent());
-        }
+
         if (grabberI.getOutputCurrent() > grabCurrent){
             grabberI.set(PercentOutput, notFast);
             currentFlag = true;

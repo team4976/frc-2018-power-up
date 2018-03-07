@@ -36,6 +36,8 @@ public final class Robot extends IterativeRobot {
     public final static Elevator elevator = new Elevator();
     public final static LinkArm linkArm = new LinkArm();
 
+    public final static DPadStuff dPadStuff = new DPadStuff();
+
     public final static Ramp ramp = new Ramp();
     public final static Climber climber = new Climber();
 

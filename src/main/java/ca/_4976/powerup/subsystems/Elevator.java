@@ -82,10 +82,16 @@ public final class Elevator extends Subsystem implements Sendable {
     private final DigitalInput limitSwitchMax = new DigitalInput(4);
 
     //Limit switch near bottom of the first stage of the elevator. Switch normally held closed (false/low)
-    private final DigitalInput limitSwitchMin = new DigitalInput(5);
+    private final DigitalInput limitSwitchMin = new DigitalInput(6); //REAL NUMBER
 
     //Switch states need to be verified logically and codewise
+
+
 */
+//    private final DigitalInput sw1 = new DigitalInput(6);
+//    private final DigitalInput sw2 = new DigitalInput(7);
+//    private final DigitalInput sw3 = new DigitalInput(8);
+//    private final DigitalInput sw4 = new DigitalInput(9);
 
     @Override
     protected void initDefaultCommand() {
@@ -110,7 +116,16 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
-//         System.out.println("Elevator encoder: " + elevEnc.getDistance());
+
+//        System.out.println("1: " + sw1.get());
+//        System.out.println("2: " + sw2.get());
+//        System.out.println("3: " + sw3.get());
+//        System.out.println("4: " + sw4.get());
+//
+//        System.out.println("\n\nSHEEP\n\n");
+
+
+        System.out.println("Elevator encoder: " + elevEnc.getDistance());
 
         double deadRange = 0.15;
         double driverInput = -Robot.oi.driver.getRawAxis(5);
@@ -121,6 +136,11 @@ public final class Elevator extends Subsystem implements Sendable {
         boolean deadZoneFlag = false;
         boolean driverFlag = false;
         boolean operatorFlag = false;
+
+
+        //if(limitMin){
+        // resetEnocder();
+        // }
 
         //Input processing
         if (Math.abs(driverInput) <= deadRange &&
@@ -150,16 +170,20 @@ public final class Elevator extends Subsystem implements Sendable {
             oobInput = operatorInput;
         }
 
+
         //OOB
-        if((oobInput < 0 && getHeight() < groundValue) ||
+        if(
+                (oobInput < 0 && getHeight() < groundValue) ||
                 (oobInput > 0 && getHeight() > elevMaxValue)){
             manualOut = 0;
         }
+
 
         //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
             elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
         }
+
     }
 
     /**

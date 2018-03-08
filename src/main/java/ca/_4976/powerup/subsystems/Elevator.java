@@ -5,6 +5,7 @@ Made by Cameron, Jacob, Ethan, Zach
 */
 
 import ca._4976.powerup.Robot;
+import ca._4976.powerup.commands.ArmCustom;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -29,10 +30,6 @@ public final class Elevator extends Subsystem implements Sendable {
 
     // Encoder on elevator
     public final Encoder elevEnc = new Encoder(4, 5);
-
-    //TODO -> PID
-    // PID controller for the elevator subsystem
-    private PIDController elevatorPID;
 
     // Preset values
     private double presetOutput;
@@ -79,20 +76,12 @@ public final class Elevator extends Subsystem implements Sendable {
         tolerance = 50;
     }
 
-    //TODO -> Limit switch testing
     //Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(6);
 
-    //Limit switch near bottom of the first stage of the elevator. Switch normally held closed (false/low)
+    //Limit switch near bottom of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMin = new DigitalInput(7); //REAL NUMBER
 
-    //Switch states need to be verified logically and codewise
-
-
-//    private final DigitalInput sw1 = new DigitalInput(6);
-//    private final DigitalInput sw2 = new DigitalInput(7);
-//    private final DigitalInput sw3 = new DigitalInput(8);
-//    private final DigitalInput sw4 = new DigitalInput(9);
 
     @Override
     protected void initDefaultCommand() {
@@ -187,6 +176,12 @@ public final class Elevator extends Subsystem implements Sendable {
             }
 
             elevMotorMain.set(ControlMode.PercentOutput, manualOut * variableOutputMultiplier);
+
+            //TODO - TEST THIS
+            //Arm/Elevator proportional movement
+            if(getHeight() < 740){
+                new ArmCustom(-2.838 * getHeight()).start();
+            }
         }
     }
 

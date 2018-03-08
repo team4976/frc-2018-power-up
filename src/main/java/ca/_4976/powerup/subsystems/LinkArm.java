@@ -119,9 +119,9 @@ public final class LinkArm extends Subsystem implements Sendable {
     /**
      * Custom preset idk does a thing maybe
      */
-    public void moveCustom(double value){
+    public void moveCustom(double customValue){
 
-        value = customValue;
+        this.customValue = customValue;
 
         if(getArmEncoderValue() > customValue){
             armMotor.set(ControlMode.PercentOutput, motorSpeed);

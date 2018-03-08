@@ -17,10 +17,8 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-import static ca.qormix.library.Lazy.use;
-
 /**
- * THIS IS THE SECOND ELEVATOR BRANCH - USED FOR PROPORTIONAL ELEVATOR/ARM MOTION
+ * This is the second elevator branch - used for proportional elevator/arm motion
  */
 public final class Elevator extends Subsystem implements Sendable {
 

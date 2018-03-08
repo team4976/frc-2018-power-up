@@ -33,6 +33,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     private double arm30Value = 2445;
     private double armLevelValue = 0;
     private double armDefault2Value = -2100;
+    public double customValue;
 
     //Preset tolerance
     private double tolerance;
@@ -104,6 +105,42 @@ public final class LinkArm extends Subsystem implements Sendable {
     public void resetArmEncoder(){
         armMotor.getSensorCollection().setQuadraturePosition(0,0);
     }
+
+
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Custom preset idk does a thing maybe
+     */
+    public void moveCustom(){
+
+        if(getArmEncoderValue() > customValue){
+            armMotor.set(ControlMode.PercentOutput, motorSpeed);
+        }
+
+        else if(getArmEncoderValue() < customValue){
+            armMotor.set(ControlMode.PercentOutput, -motorSpeed);
+        }
+    }
+
+    public boolean checkCustom(){
+        return getArmEncoderValue() >= (arm30Value - tolerance) && getArmEncoderValue() <= (arm30Value + tolerance);
+    }
+
+
+
+    //////////////////////////////////
+
+
+
+
 
 
     /**

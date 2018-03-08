@@ -14,6 +14,7 @@ public class DPadStuff extends Subsystem  {
     protected void initDefaultCommand() {
         setDefaultCommand(new DPad());
     }
+
     public void getDpadPos(){
         if (Robot.oi.operator.getPOV() == 0){
             new ElevatorScaleLow().start();

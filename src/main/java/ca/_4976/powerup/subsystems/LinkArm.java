@@ -21,7 +21,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     public final TalonSRX armMotor = new TalonSRX(4);
 
     //Motor values
-    private double motorSpeed = 0.5;
+    private double motorSpeed = 0.75;
     private double holdingPower = -0.1; //compensate for reversal of motor
 
     private final DigitalInput armSwitchMax = new DigitalInput(8);

@@ -19,7 +19,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 import static ca.qormix.library.Lazy.use;
 
-
+/**
+ * THIS IS THE SECOND ELEVATOR BRANCH - USED FOR PROPORTIONAL ELEVATOR/ARM MOTION
+ */
 public final class Elevator extends Subsystem implements Sendable {
 
     // Elevator motors
@@ -38,7 +40,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private double presetOutput;
     private double tolerance;
     private double variableOutputMultiplier;
-    private final double constOutputMultp = 0.85;
+    private final double constOutputMultp = 1;
 
     private double elevMaxValue;
     private double scaleHighValue;
@@ -179,7 +181,7 @@ public final class Elevator extends Subsystem implements Sendable {
         //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
             if((getHeight() > elevMaxValue - 200) || (getHeight() < groundValue + 150)){
-                variableOutputMultiplier = 0.4;
+                variableOutputMultiplier = 0.3;
             }
 
             else{

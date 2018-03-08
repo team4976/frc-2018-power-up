@@ -37,6 +37,8 @@ public final class Elevator extends Subsystem implements Sendable {
     // Preset values
     private double presetOutput;
     private double tolerance;
+    private double variableOutputMultiplier;
+    private final double constOutputMultp = 0.85;
 
     private double elevMaxValue;
     private double scaleHighValue;
@@ -62,7 +64,7 @@ public final class Elevator extends Subsystem implements Sendable {
         elevSustainableFreeLegalUnionizedLaborer.follow(elevMotorMain);
 
         //Preset initial values
-        elevMaxValue = 1800; //Real value will be higher
+        elevMaxValue = 2300; //Real value will be higher
         scaleHighValue = 1700; // Real Value 2100
         scaleMidValue = 1500; // Real Value 1800
         scaleLowValue = 1220.5; // Real Value 1700
@@ -77,17 +79,16 @@ public final class Elevator extends Subsystem implements Sendable {
         tolerance = 50;
     }
 
-    /*//TODO -> Limit switch testing
+    //TODO -> Limit switch testing
     //Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
-    private final DigitalInput limitSwitchMax = new DigitalInput(4);
+    private final DigitalInput limitSwitchMax = new DigitalInput(6);
 
     //Limit switch near bottom of the first stage of the elevator. Switch normally held closed (false/low)
-    private final DigitalInput limitSwitchMin = new DigitalInput(6); //REAL NUMBER
+    private final DigitalInput limitSwitchMin = new DigitalInput(7); //REAL NUMBER
 
     //Switch states need to be verified logically and codewise
 
 
-*/
 //    private final DigitalInput sw1 = new DigitalInput(6);
 //    private final DigitalInput sw2 = new DigitalInput(7);
 //    private final DigitalInput sw3 = new DigitalInput(8);
@@ -117,30 +118,30 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveElevator() {
 
 
-//        System.out.println("1: " + sw1.get());
-//        System.out.println("2: " + sw2.get());
-//        System.out.println("3: " + sw3.get());
-//        System.out.println("4: " + sw4.get());
-//
-//        System.out.println("\n\nSHEEP\n\n");
-
-
-        System.out.println("Elevator encoder: " + elevEnc.getDistance());
-
         double deadRange = 0.15;
         double driverInput = -Robot.oi.driver.getRawAxis(5);
         double operatorInput = -Robot.oi.operator.getRawAxis(1);
         double oobInput = 0; // value used for out of bounds processing
         double manualOut = 0;
 
+        boolean maxFlag  = !limitSwitchMax.get();
+        boolean minFlag = !limitSwitchMin.get();
+
         boolean deadZoneFlag = false;
         boolean driverFlag = false;
         boolean operatorFlag = false;
 
 
-        //if(limitMin){
-        // resetEnocder();
-        // }
+        System.out.println();
+        System.out.println("Elevator encoder: " + elevEnc.getDistance());
+        System.out.println("Max switch (6): " + maxFlag);
+        System.out.println("Min switch (7): " + minFlag);
+        System.out.println();
+
+        //Reset encoder at bottom
+        if(minFlag){
+            resetEncoder();
+        }
 
         //Input processing
         if (Math.abs(driverInput) <= deadRange &&
@@ -170,20 +171,23 @@ public final class Elevator extends Subsystem implements Sendable {
             oobInput = operatorInput;
         }
 
-
-        //OOB
-        if(
-                (oobInput < 0 && getHeight() < groundValue) ||
-                (oobInput > 0 && getHeight() > elevMaxValue)){
+        //Limit switches
+        if((maxFlag && oobInput >= 0) ||(minFlag && oobInput <= 0)){
             manualOut = 0;
         }
 
-
         //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
-            elevMotorMain.set(ControlMode.PercentOutput, manualOut * 0.75);
-        }
+            if((getHeight() > elevMaxValue - 200) || (getHeight() < groundValue + 150)){
+                variableOutputMultiplier = 0.4;
+            }
 
+            else{
+                variableOutputMultiplier = constOutputMultp;
+            }
+
+            elevMotorMain.set(ControlMode.PercentOutput, manualOut * variableOutputMultiplier);
+        }
     }
 
     /**
@@ -196,6 +200,12 @@ public final class Elevator extends Subsystem implements Sendable {
         double deadRange = 0.15;
         double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
+
+        System.out.println("Max switch: " + limitSwitchMax.get());
+        System.out.println("Min switch: " + limitSwitchMin.get());
+//        if(limitSwitchMax.get() || limitSwitchMin.get()){
+//            return true;
+//        }
 
         if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
             return false;

@@ -9,6 +9,7 @@ import ca._4976.powerup.commands.MoveArm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -22,6 +23,9 @@ public final class LinkArm extends Subsystem implements Sendable {
     //Motor values
     private double motorSpeed = 0.5;
     private double holdingPower = -0.1; //compensate for reversal of motor
+
+    private final DigitalInput armSwitchMax = new DigitalInput(8);
+    private final DigitalInput armSwitchMin = new DigitalInput(9);
 
     //Preset values
     private double armHighValue = 4800;
@@ -49,11 +53,23 @@ public final class LinkArm extends Subsystem implements Sendable {
 
 //         System.out.println("Arm encoder: " + getArmEncoderValue());
 
+        boolean maxFlag = !armSwitchMax.get();
+        boolean minFlag = !armSwitchMin.get();
+
         double armOut = Robot.oi.operator.getRawAxis(5);
         double motorOut;
 
+        System.out.println();
+        System.out.println("Arm max (8): " + maxFlag);
+        System.out.println("Arm min (9): " + minFlag);
+        System.out.println();
+
+        if(maxFlag && armOut <= 0 || minFlag && armOut >= 0){
+            motorOut = 0;
+        }
+
         //dead zone
-        if (Math.abs(armOut) <= 0.15) {
+        else if (Math.abs(armOut) <= 0.15) {
             motorOut = holdingPower;
         }
 

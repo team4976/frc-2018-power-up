@@ -27,7 +27,7 @@ public class DPadStuff extends Subsystem  {
 
         else if (Robot.oi.operator.getPOV() == 90){
             
-            new ArmCustom(1000);
+            new ArmCustom(100000);
 
             System.out.println("right");
         }

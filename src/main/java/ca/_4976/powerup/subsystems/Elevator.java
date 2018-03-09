@@ -180,7 +180,12 @@ public final class Elevator extends Subsystem implements Sendable {
             //TODO - TEST THIS
             //Arm/Elevator proportional movement
             if(getHeight() < 740){
-                new ArmCustom(-2.838 * getHeight()).start();
+
+                if(Robot.oi.operator.getRawAxis(5) > 0) {
+                    Robot.linkArm.armMotor.set(ControlMode.PercentOutput, 0);
+                }
+
+                //new ArmCustom(-2.838 * getHeight()).start();
             }
         }
     }
@@ -198,11 +203,12 @@ public final class Elevator extends Subsystem implements Sendable {
 
         System.out.println("Max switch: " + limitSwitchMax.get());
         System.out.println("Min switch: " + limitSwitchMin.get());
-//        if(limitSwitchMax.get() || limitSwitchMin.get()){
-//            return true;
-//        }
 
-        if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
+        if(limitSwitchMax.get() || limitSwitchMin.get()){
+            return true;
+        }
+
+        else if (Math.abs(drInput) <= deadRange && Math.abs(opInput) <= deadRange) {
             return false;
         }
 

@@ -22,7 +22,7 @@ public final class LinkArm extends Subsystem implements Sendable {
 
     //Motor values
     private double motorSpeed = 0.75;
-    private double holdingPower = -0.1; //compensate for reversal of motor
+    private double holdingPower = 0;//0.1; //compensate for reversal of motor
 
     private final DigitalInput armSwitchMax = new DigitalInput(8);
     private final DigitalInput armSwitchMin = new DigitalInput(9);
@@ -30,7 +30,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     //Preset values
     private double armHighValue = 4800;
     private double arm45Value = 2700;
-    private double arm30Value = 2445;
+    private double arm30Value = 2445;//2445
     private double armLevelValue = 0;
     private double armDefault2Value = -2100;
     public double customValue;
@@ -52,7 +52,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     //move linkage arm
     public void moveLinkArm(){
 
-//         System.out.println("Arm encoder: " + getArmEncoderValue());
+        System.out.println("Arm encoder: " + getArmEncoderValue());
 
         boolean maxFlag = !armSwitchMax.get();
         boolean minFlag = !armSwitchMin.get();
@@ -64,6 +64,10 @@ public final class LinkArm extends Subsystem implements Sendable {
         System.out.println("Arm max (8): " + maxFlag);
         System.out.println("Arm min (9): " + minFlag);
         System.out.println();
+
+        if(minFlag){
+            resetArmEncoder();
+        }
 
         if(maxFlag && armOut <= 0 || minFlag && armOut >= 0){
             motorOut = 0;

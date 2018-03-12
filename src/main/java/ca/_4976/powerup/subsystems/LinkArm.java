@@ -225,7 +225,8 @@ public final class LinkArm extends Subsystem implements Sendable {
         
         return getArmEncoderValue() >= (arm30Value - tolerance) && getArmEncoderValue() <= (arm30Value + tolerance);
     }
-    
+
+
     
     
     

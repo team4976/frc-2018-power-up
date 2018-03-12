@@ -8,18 +8,19 @@ import ca._4976.powerup.Robot;
 public class Arm45 extends ListenableCommand{
 
     @Override
-    protected void execute(){
+    protected void initialize(){
         System.out.println("Arm 45 ran");
         Robot.linkArm.moveArm45();
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.testInputs() || Robot.linkArm.checkArm45();
+        return Robot.elevator.testInputs() || Robot.linkArm.testArmInput() || Robot.linkArm.checkArm45();
     }
 
     @Override
     protected void end(){
+        Robot.linkArm.resetArmFlags();
         Robot.linkArm.setHoldingSpeed();
     }
 }

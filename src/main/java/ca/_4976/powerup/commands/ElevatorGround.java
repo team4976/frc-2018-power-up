@@ -10,8 +10,6 @@ public class ElevatorGround extends ListenableCommand {
     @Override
     protected void initialize(){
         Robot.elevator.moveToGround();
-        Robot.elevator.presetEnabled = true;
-        Robot.elevator.groundStarted = true;
     }
 
     @Override
@@ -21,8 +19,7 @@ public class ElevatorGround extends ListenableCommand {
 
     @Override
     protected void end(){
-        Robot.elevator.presetEnabled= false;
-        Robot.elevator.groundStarted = false;
+        Robot.elevator.resetPresetFlags();
         Robot.elevator.stop();
     }
 }

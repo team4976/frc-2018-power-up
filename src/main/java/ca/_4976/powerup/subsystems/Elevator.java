@@ -5,21 +5,20 @@ Made by Cameron, Jacob, Ethan, Zach
 */
 
 import ca._4976.powerup.Robot;
-import ca._4976.powerup.commands.ArmCustom;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
+import static ca.qormix.library.Lazy.use;
+
 /**
- * This is the second elevator branch - used for proportional elevator/arm motion
+ * This is the second elevator branch, made for streamlining and bulletproofing
+ * existing code, as well as adding extra functionality.
  */
 public final class Elevator extends Subsystem implements Sendable {
 
@@ -29,31 +28,34 @@ public final class Elevator extends Subsystem implements Sendable {
     private final WPI_TalonSRX elevSustainableFreeLegalUnionizedLaborer = new WPI_TalonSRX(8);
 
     // Encoder on elevator
-    public final Encoder elevEnc = new Encoder(4, 5);
+    public final Encoder elevEncoder = new Encoder(4, 5);
 
     // Preset values
     private double presetOutput;
     private double tolerance;
-    private double variableOutputMultiplier;
-    private final double constOutputMultp = 1;
+    private double speedMultiplier;
+    private final double normalSpeed = 0.85;
+    private final double slowSpeed = 0.4;
+    private double target;
 
-    private double elevMaxValue;
-    private double scaleHighValue;
-    private double scaleMidValue;
-    private double scaleLowValue;
-    private double switchValue;
-    private double defaultValue;
-    private double groundValue;
+    public double elevMaxValue = 2300,
+    scaleHighValue = 2100,
+    scaleMidValue = 1800,
+    scaleLowValue = 1700,
+    defaultValue = 770,
+    groundValue = 0;
+
+    boolean scaleMidStarted;
+    boolean scaleLowStarted;
+    boolean switchStarted;
+    boolean groundStarted;
+    boolean defaultStarted;
 
     // Preset start/stop control booleans
     public boolean presetEnabled = false;
 
-    public boolean scaleHighStarted = false;
-    public boolean scaleMidStarted = false;
-    public boolean scaleLowStarted = false;
-    public boolean switchStarted = false;
-    public boolean defaultStarted = false;
-    public boolean groundStarted = false;
+    public boolean elevPresetUp = false;
+    public boolean elevPresetDown = false;
 
     public Elevator() {
 
@@ -62,25 +64,21 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //Preset initial values
         elevMaxValue = 2300; //Real value will be higher
-        scaleHighValue = 1700; // Real Value 2100
-        scaleMidValue = 1500; // Real Value 1800
-        scaleLowValue = 1220.5; // Real Value 1700
-        switchValue = 0;
+        scaleHighValue = 2100; // Real Value 2100
+         // Real Value 1800
+        scaleLowValue = 1700; // Real Value 1700
         defaultValue = 770;
         groundValue = 0; // Real Value
 
         //Output value for presets
-        presetOutput = 0.5;
+        presetOutput = normalSpeed;
 
         //Preset tolerance
         tolerance = 50;
     }
 
-    //Limit switch near top of the first stage of the elevator. Switch normally held open (high/true)
     private final DigitalInput limitSwitchMax = new DigitalInput(6);
-
-    //Limit switch near bottom of the first stage of the elevator. Switch normally held open (high/true)
-    private final DigitalInput limitSwitchMin = new DigitalInput(7); //REAL NUMBER
+    private final DigitalInput limitSwitchMin = new DigitalInput(7);
 
 
     @Override
@@ -92,11 +90,11 @@ public final class Elevator extends Subsystem implements Sendable {
      * Reads encoders to return current height of the elevator with reference to it's zero point
      */
     public double getHeight() {
-        return elevEnc.getDistance();
+        return elevEncoder.getDistance();
     }
 
     public void resetEncoder(){
-        elevEnc.reset();
+        elevEncoder.reset();
     }
 
 
@@ -107,25 +105,18 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveElevator() {
 
 
-        double deadRange = 0.15;
-        double driverInput = -Robot.oi.driver.getRawAxis(5);
-        double operatorInput = -Robot.oi.operator.getRawAxis(1);
-        double oobInput = 0; // value used for out of bounds processing
-        double manualOut = 0;
+        double deadRange = 0.15,
+        driverInput = -Robot.oi.driver.getRawAxis(5),
+        operatorInput = -Robot.oi.operator.getRawAxis(1),
+        oobInput = 0, // value used for out of bounds processing
+        manualOut = 0;
 
-        boolean maxFlag  = !limitSwitchMax.get();
-        boolean minFlag = !limitSwitchMin.get();
+        boolean maxFlag  = !limitSwitchMax.get(),
+        minFlag = !limitSwitchMin.get();
 
-        boolean deadZoneFlag = false;
-        boolean driverFlag = false;
-        boolean operatorFlag = false;
-
-
-        System.out.println();
-        System.out.println("Elevator encoder: " + elevEnc.getDistance());
-        System.out.println("Max switch (6): " + maxFlag);
-        System.out.println("Min switch (7): " + minFlag);
-        System.out.println();
+        boolean deadZoneFlag = false,
+        driverFlag = false,
+        operatorFlag = false;
 
         //Reset encoder at bottom
         if(minFlag){
@@ -134,8 +125,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //Input processing
         if (Math.abs(driverInput) <= deadRange &&
-                Math.abs(operatorInput) <= deadRange &&
-                !presetEnabled) {
+                Math.abs(operatorInput) <= deadRange) {
 
             deadZoneFlag = true;
             manualOut = 0;
@@ -167,28 +157,24 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
-            if((getHeight() > elevMaxValue - 200) || (getHeight() < groundValue + 150)){
-                variableOutputMultiplier = 0.3;
+
+            if((getHeight() > elevMaxValue - 300 && oobInput > 0) ||
+                    (getHeight() < groundValue + 300  && oobInput < 0))
+            {
+                speedMultiplier = slowSpeed;
             }
 
-            else{
-                variableOutputMultiplier = constOutputMultp;
+            else {
+                speedMultiplier = normalSpeed;
             }
 
-            elevMotorMain.set(ControlMode.PercentOutput, manualOut * variableOutputMultiplier);
-
-            //TODO - TEST THIS
-            //Arm/Elevator proportional movement
-            if(getHeight() < 740){
-
-                if(Robot.oi.operator.getRawAxis(5) > 0) {
-                    Robot.linkArm.armMotor.set(ControlMode.PercentOutput, 0);
-                }
-
-                //new ArmCustom(-2.838 * getHeight()).start();
-            }
+            elevMotorMain.set(ControlMode.PercentOutput, manualOut * speedMultiplier);
         }
     }
+
+
+    //********************************************************************/
+
 
     /**
      * Input test
@@ -204,7 +190,7 @@ public final class Elevator extends Subsystem implements Sendable {
         System.out.println("Max switch: " + limitSwitchMax.get());
         System.out.println("Min switch: " + limitSwitchMin.get());
 
-        if(limitSwitchMax.get() || limitSwitchMin.get()){
+        if(limitSwitchMax.get() && elevPresetUp || limitSwitchMin.get() && elevPresetDown){
             return true;
         }
 
@@ -225,6 +211,92 @@ public final class Elevator extends Subsystem implements Sendable {
         }
     }
 
+
+    //********************************************************************/
+
+
+    /**
+     * Reset motion flags
+     */
+    public void resetPresetFlags(){
+
+        if(elevPresetUp){
+            elevPresetUp = false;
+        }
+
+        if(elevPresetDown){
+            elevPresetDown = false;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    //////////////////////////////////
+
+
+
+
+
+
+
+
+    /**
+     * CUSTOM PRESET - VERY EXPERIMENTAL
+     */
+    public void moveToTarget(double target){
+
+        this.target = target;
+
+        if(!elevPresetDown || !elevPresetUp) {
+            if (getHeight() > target) {
+                elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
+                elevPresetDown = true;
+            } else if (getHeight() < target) {
+                elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
+                elevPresetUp = true;
+            }
+        }
+    }
+
+    public boolean checkTarget(){
+
+        if(getHeight() >= target - (2 * tolerance) || getHeight() <= target + (2 * tolerance)){
+
+            if(elevPresetUp){
+                elevMotorMain.set(ControlMode.PercentOutput, 0.4);
+            }
+
+            else if(elevPresetDown){
+                elevMotorMain.set(ControlMode.PercentOutput, -0.4);
+            }
+        }
+
+        return getHeight() >= (target - tolerance) && getHeight() <= (target + tolerance);
+    }
+
+
+
+
+
+
+    //////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
     /**
      * High scale
      *
@@ -232,21 +304,35 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveToHighScale() {
 
-        if(!scaleHighStarted) {
-
+        if(!elevPresetDown || !elevPresetUp) {
             if (getHeight() > scaleHighValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
-            }
-
-            else if (getHeight() < scaleHighValue) {
+                elevPresetDown = true;
+            } else if (getHeight() < scaleHighValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
+                elevPresetUp = true;
             }
         }
     }
 
     public boolean checkHighScale(){
+
+        if(getHeight() >= scaleHighValue - (2 * tolerance) || getHeight() <= scaleHighValue + (2 * tolerance)){
+
+            if(elevPresetUp){
+                elevMotorMain.set(ControlMode.PercentOutput, 0.4);
+            }
+
+            else if(elevPresetDown){
+                elevMotorMain.set(ControlMode.PercentOutput, -0.4);
+            }
+        }
+
         return getHeight() >= (scaleHighValue - tolerance) && getHeight() <= (scaleHighValue + tolerance);
     }
+
+
+    //********************************************************************/
 
 
     /**
@@ -273,6 +359,9 @@ public final class Elevator extends Subsystem implements Sendable {
     }
 
 
+    //********************************************************************/
+
+
     /**
      * Low scale
      *
@@ -297,28 +386,7 @@ public final class Elevator extends Subsystem implements Sendable {
     }
 
 
-    /**
-     * Switch
-     *
-     * Move and check method
-     */
-    public void moveToSwitch() {
-
-        if(!switchStarted) {
-
-            if (getHeight() > switchValue) {
-                elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
-            }
-
-            else if (getHeight() < switchValue) {
-                elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
-            }
-        }
-    }
-
-    public boolean checkSwitch(){
-        return getHeight() >= (switchValue - tolerance) && getHeight() <= (switchValue + tolerance);
-    }
+    //********************************************************************/
 
 
     /**
@@ -328,21 +396,35 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveToGround() {
 
-        if(!groundStarted) {
-
+        if(!elevPresetDown || !elevPresetUp) {
             if (getHeight() > groundValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
-            }
-
-            else if (getHeight() < groundValue) {
+                elevPresetDown = true;
+            } else if (getHeight() < groundValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
+                elevPresetUp = true;
             }
         }
     }
 
     public boolean checkGround(){
-        return getHeight() <= (groundValue + tolerance);
+
+        if(getHeight() >= groundValue - (2 * tolerance) || getHeight() <= groundValue + (2 * tolerance)){
+
+            if(elevPresetUp){
+                elevMotorMain.set(ControlMode.PercentOutput, 0.4);
+            }
+
+            else if(elevPresetDown){
+                elevMotorMain.set(ControlMode.PercentOutput, -0.3);
+            }
+        }
+
+        return getHeight() >= (groundValue - tolerance) && getHeight() <= (groundValue + tolerance);
     }
+
+
+    //********************************************************************/
 
 
     /**
@@ -368,12 +450,23 @@ public final class Elevator extends Subsystem implements Sendable {
         return getHeight() >= (defaultValue - tolerance) && getHeight() <= (defaultValue + tolerance);
     }
 
+
+    //********************************************************************/
+
+
     /**
      * Simply runs motors for use in Climber subsystem & commands
      */
     public void climb(){
         elevMotorMain.set(ControlMode.PercentOutput, -0.5);
     }
+
+    public void down(){
+        elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+    }
+
+
+    //********************************************************************/
 
 
     /**

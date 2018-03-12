@@ -5,16 +5,18 @@ import ca._4976.powerup.Robot;
 /**
  * Created by 4976 on 2018-02-15.
  */
-public class ElevatorScaleHigh extends ListenableCommand {
+public class ElevatorTarget extends ListenableCommand {
 
     @Override
     protected void initialize(){
-        Robot.elevator.moveToHighScale();
+//        Robot.elevator.moveToTarget(Robot.elevator.groundValue);
+//        Robot.elevator.moveToTarget(Robot.elevator.scaleHighValue);
+        Robot.elevator.moveToTarget(400);
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.testInputs() || Robot.elevator.checkHighScale();
+        return Robot.elevator.testInputs() || Robot.elevator.checkTarget();
     }
 
     @Override

@@ -1,0 +1,43 @@
+ELEVATOR LOGIC - V3
+
+IMPORTANT - ALL PRESETS ARE AND WILL BE CALIBRATED WITH THE ELEVATOR AT BOTTOM AND ARM AT MAX AS ZERO 
+
+ALL LIMIT SWITCHES MUST WORK ALL THE TIME, UNDER ANY CIRCUMSTANCE. Even if the arm or elevator were zeroed at the wrong place and presets malfunction,
+limit switches must always work!! - Caveat - If the switches happen to break, they must fail UNSAFE. They must not restrict motion if failed.
+
+Slow band when moving up into max range, and down into ground range, not vice versa for either. //done
+
+Enable elevator presets that move upwards if min switch is pressed, and presets that move down if max is, not vice versa for either. //done
+
+Enable linkarm presets that move upwards if min switch is pressed, and presets that move down if max is, not vice versa for either. //done
+
+Zero elevator at min switch, arm at max. //done
+
+If elevator manual override, stop both elevator and arm. If arm override, just stop arm. //done
+
+Add interlock between arm and elevator. Prevent elevator from moving down while arm is in a position that would be dangerous. 
+Likewise, prevent the arm from moving down into the bot. The position this will be at is determined by the height of the elevator.
+Adjust arm soft and hard stop zones accordingly.
+
+
+TO BE TESTED
+--------------------------------------------------------------------------------
+
+ELEVATOR
+- Added soft zone upon approaching preset. Does it work? If so, is it too fast? Slow? Tune.
+- Added parameter based preset method. Does it work? Feed various values. See if behaviour is exactly the same. If so, REMOVE ALL OTHER PRESET METHODS
+and clean up code oodles.
+- Revamped flag system. Does it work? Should enable upward presets to be used while the bottom limit switch is pressed, and vice versa, but while still stopping
+at the appropriate limit.
+- Added climb/down commands on shoulder buttons. Test.
+--------------------------------------------------------------------------------
+
+LINK-ARM
+- Added downward speed adjustment. Does it work? Is it too fast? Slow? Tune.
+- - Revamped flag system. Does it work? Should enable upward presets to be used while the bottom limit switch is pressed, and vice versa, but while still stopping
+at the appropriate limit.
+- - Added parameter based preset method. Does it work? Feed various values. See if behaviour is exactly the same. If so, REMOVE ALL OTHER PRESET METHODS
+and clean up code oodles.
+
+
+

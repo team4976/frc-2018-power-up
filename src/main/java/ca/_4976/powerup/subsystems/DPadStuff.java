@@ -2,9 +2,8 @@ package ca._4976.powerup.subsystems;
 
 import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.Arm30;
-import ca._4976.powerup.commands.ArmCustom;
 import ca._4976.powerup.commands.DPad;
-import ca._4976.powerup.commands.ElevatorScaleLow;
+import ca._4976.powerup.commands.ElevatorTarget;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -27,7 +26,7 @@ public class DPadStuff extends Subsystem  {
 
         else if (Robot.oi.operator.getPOV() == 90){
             
-            new ArmCustom(100000);
+            new ElevatorTarget().start();
 
             System.out.println("right");
         }

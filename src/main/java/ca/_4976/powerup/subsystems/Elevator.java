@@ -178,7 +178,7 @@ public final class Elevator extends Subsystem implements Sendable {
                     if(oobInput > 0 || Robot.oi.operator.getRawAxis(5) < 0){
                         break;
                     }
-                    Robot.linkArm.setArmSpeed(-0.8);
+                    Robot.linkArm.setArmSpeed(-1);
                 }
 
                 Robot.linkArm.setHoldingSpeed();

@@ -5,6 +5,7 @@ Made by Cameron, Jacob, Ethan, Zach
 */
 
 import ca._4976.powerup.Robot;
+import ca._4976.powerup.commands.ArmTarget;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -34,7 +35,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private double presetOutput;
     private double tolerance;
     private double speedMultiplier;
-    private final double normalSpeed = 0.85;
+    private final double normalSpeed = 0.9;
     private final double slowSpeed = 0.4;
     private double target;
 
@@ -61,14 +62,6 @@ public final class Elevator extends Subsystem implements Sendable {
 
         elevSlave1.follow(elevMotorMain);
         elevSustainableFreeLegalUnionizedLaborer.follow(elevMotorMain);
-
-        //Preset initial values
-        elevMaxValue = 2300; //Real value will be higher
-        scaleHighValue = 2100; // Real Value 2100
-         // Real Value 1800
-        scaleLowValue = 1700; // Real Value 1700
-        defaultValue = 770;
-        groundValue = 0; // Real Value
 
         //Output value for presets
         presetOutput = normalSpeed;
@@ -97,6 +90,10 @@ public final class Elevator extends Subsystem implements Sendable {
         elevEncoder.reset();
     }
 
+    public boolean getSwitches(){
+        return !limitSwitchMax.get() || !limitSwitchMin.get();
+    }
+
 
     /**
      * Driver input overrides operator input. Only executes a movement initiated by the operator
@@ -104,19 +101,24 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
+        System.out.println("MANUAL: ELEVATOR ENCODER: " + getHeight());
 
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),
         oobInput = 0, // value used for out of bounds processing
-        manualOut = 0;
+        motorOut = 0,
+        armHeight = Robot.linkArm.getArmEncoderValue(),
+        dynamicLimit,
+        armTarget;
 
         boolean maxFlag  = !limitSwitchMax.get(),
-        minFlag = !limitSwitchMin.get();
-
-        boolean deadZoneFlag = false,
+        minFlag = !limitSwitchMin.get(),
+        elevatorLimitReached = getHeight() < 750,
+        deadZoneFlag = false,
         driverFlag = false,
-        operatorFlag = false;
+        operatorFlag = false,
+        multiSet = false;
 
         //Reset encoder at bottom
         if(minFlag){
@@ -128,17 +130,17 @@ public final class Elevator extends Subsystem implements Sendable {
                 Math.abs(operatorInput) <= deadRange) {
 
             deadZoneFlag = true;
-            manualOut = 0;
+            motorOut = 0;
         }
 
         else if (Math.abs(driverInput) > deadRange) {
             driverFlag = true;
-            manualOut = driverInput;
+            motorOut = driverInput;
         }
 
         else if (Math.abs(operatorInput) > deadRange) {
             operatorFlag = true;
-            manualOut = operatorInput;
+            motorOut = operatorInput;
         }
 
         //Output processing
@@ -152,23 +154,48 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //Limit switches
         if((maxFlag && oobInput >= 0) ||(minFlag && oobInput <= 0)){
-            manualOut = 0;
+            motorOut = 0;
         }
+
+
+        //Elevator slow and stop bands (below limit)
+        if(elevatorLimitReached){
+
+            dynamicLimit = (armHeight + 3450.1)/-3.6503;
+            armTarget = -3.6503 * getHeight() - 3450.1; //excel charted
+
+            if(getHeight() < dynamicLimit + 300
+                    && oobInput < 0
+                    && !deadZoneFlag
+                    && armHeight < -3660
+                    && getHeight() != 0){
+
+                System.out.println("DYNAMIC ARM MOVE STARTED AT: " + armTarget);
+
+                //TODO GEARBOX ON ARM FIX
+                /*while(Robot.linkArm.getArmEncoderValue() < armTarget) {
+                    Robot.linkArm.setArmSpeed(-0.6);
+                }
+
+                Robot.linkArm.setHoldingSpeed();*/
+            }
+        }
+
 
         //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
 
             if((getHeight() > elevMaxValue - 300 && oobInput > 0) ||
-                    (getHeight() < groundValue + 300  && oobInput < 0))
+                    (getHeight() < groundValue + 300  && oobInput < 0) && !multiSet)
             {
                 speedMultiplier = slowSpeed;
             }
 
-            else {
+            else if(!multiSet){
                 speedMultiplier = normalSpeed;
             }
 
-            elevMotorMain.set(ControlMode.PercentOutput, manualOut * speedMultiplier);
+            elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
         }
     }
 
@@ -187,10 +214,16 @@ public final class Elevator extends Subsystem implements Sendable {
         double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
 
-        System.out.println("Max switch: " + limitSwitchMax.get());
-        System.out.println("Min switch: " + limitSwitchMin.get());
+        boolean maxFlag = !limitSwitchMax.get();
+        boolean minFlag = !limitSwitchMin.get();
 
-        if(limitSwitchMax.get() && elevPresetUp || limitSwitchMin.get() && elevPresetDown){
+        System.out.println("\n\nELEVATOR INPUT");
+        System.out.println("Max switch: " + maxFlag);
+        System.out.println("Min switch: " + minFlag + "\n\n");
+
+
+        if((maxFlag && elevPresetUp) || (minFlag && elevPresetDown)){
+            System.out.println("LIMIT CANCELLED PRESET");
             return true;
         }
 
@@ -256,10 +289,17 @@ public final class Elevator extends Subsystem implements Sendable {
         this.target = target;
 
         if(!elevPresetDown || !elevPresetUp) {
-            if (getHeight() > target) {
+
+            if (getHeight() > target
+                    && limitSwitchMin.get()
+                    ) {
                 elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
                 elevPresetDown = true;
-            } else if (getHeight() < target) {
+            }
+
+            else if (getHeight() < target
+                    && limitSwitchMax.get()
+                    ) {
                 elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
                 elevPresetUp = true;
             }
@@ -268,14 +308,16 @@ public final class Elevator extends Subsystem implements Sendable {
 
     public boolean checkTarget(){
 
-        if(getHeight() >= target - (2 * tolerance) || getHeight() <= target + (2 * tolerance)){
+        if(getHeight() >= target - (3 * tolerance) || getHeight() <= target + (3 * tolerance)){
 
             if(elevPresetUp){
+                System.out.println("UP");
                 elevMotorMain.set(ControlMode.PercentOutput, 0.4);
             }
 
             else if(elevPresetDown){
-                elevMotorMain.set(ControlMode.PercentOutput, -0.4);
+                System.out.println("DOWN");
+                elevMotorMain.set(ControlMode.PercentOutput, -0.3);
             }
         }
 
@@ -320,10 +362,12 @@ public final class Elevator extends Subsystem implements Sendable {
         if(getHeight() >= scaleHighValue - (2 * tolerance) || getHeight() <= scaleHighValue + (2 * tolerance)){
 
             if(elevPresetUp){
+                System.out.println("HIGH SLOW UP");
                 elevMotorMain.set(ControlMode.PercentOutput, 0.4);
             }
 
             else if(elevPresetDown){
+                System.out.println("HIGH SLOW DOWN");
                 elevMotorMain.set(ControlMode.PercentOutput, -0.4);
             }
         }
@@ -342,14 +386,16 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveToMidScale() {
 
-        if(!scaleMidStarted) {
+        if(!elevPresetUp || !elevPresetDown){
 
             if (getHeight() > scaleMidValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
+                elevPresetDown = true;
             }
 
             else if (getHeight() < scaleMidValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
+                elevPresetUp = true;
             }
         }
     }
@@ -369,14 +415,16 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveToLowScale() {
 
-        if(!scaleLowStarted) {
+        if(!elevPresetDown || !elevPresetUp) {
 
             if (getHeight() > scaleLowValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
+                elevPresetDown = true;
             }
 
             else if (getHeight() < scaleLowValue) {
                 elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
+                elevPresetUp = true;
             }
         }
     }
@@ -397,10 +445,13 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveToGround() {
 
         if(!elevPresetDown || !elevPresetUp) {
-            if (getHeight() > groundValue) {
+
+            if (getHeight() > groundValue && limitSwitchMin.get()) {
                 elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
                 elevPresetDown = true;
-            } else if (getHeight() < groundValue) {
+            }
+
+            else if (getHeight() < groundValue && limitSwitchMax.get()) {
                 elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
                 elevPresetUp = true;
             }
@@ -420,7 +471,7 @@ public final class Elevator extends Subsystem implements Sendable {
             }
         }
 
-        return getHeight() >= (groundValue - tolerance) && getHeight() <= (groundValue + tolerance);
+        return getHeight() >= (groundValue - tolerance) && getHeight() <= groundValue + 5;
     }
 
 

@@ -14,7 +14,6 @@ public class ElevatorCube extends ListenableCommand {
     protected void initialize(){
         Robot.elevator.moveToDefault();
         Robot.elevator.presetEnabled = true;
-        Robot.elevator.defaultStarted = true;
     }
 
     @Override
@@ -31,7 +30,6 @@ public class ElevatorCube extends ListenableCommand {
     @Override
     protected void end(){
         Robot.elevator.presetEnabled= false;
-        Robot.elevator.defaultStarted = false;
         Robot.elevator.stop();
     }
 }

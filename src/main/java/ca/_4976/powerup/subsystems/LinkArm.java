@@ -23,22 +23,21 @@ public final class LinkArm extends Subsystem implements Sendable {
     //Motor values
     private double motorSpeed = 0.4;
     private double armSpeedMultiplier;
-    private final double armConstSpeed = 0.65;
-    private double holdingPower = -0.1; //compensate for reversal of motor
+    private final double armConstSpeed = 0.8;
+    private double holdingPower = -0.05; //compensate for reversal of motor
 
     private final DigitalInput armSwitchMax = new DigitalInput(8);
     private final DigitalInput armSwitchMin = new DigitalInput(9);
 
     //Preset values
-    private double offset = 3700;
-    private double armHighValue = 3700 - offset; //0
-    private double arm45Value = 2700 - offset; //-1000
-    private double arm30Value = 2445 - offset; //-1255
-    private double armLevelValue = 0 - offset; //-3700
-    private double armDefault2Value = -2100 - offset; //-5800
+    public double armHighValue = 0,
+    arm45Value = -800,
+    arm30Value = -1660,
+    armLevelValue = -3700,
+    armMinValue = -5800;
 
-    public boolean armPresetUp = false;
-    public boolean armPresetDown = false;
+    private boolean armPresetUp = false;
+    private boolean armPresetDown = false;
 
     //Preset tolerance
     private double tolerance;
@@ -54,29 +53,40 @@ public final class LinkArm extends Subsystem implements Sendable {
         setDefaultCommand(new MoveArm());
     }
 
-    //move linkage arm
+    /**
+     * Provides manual control over the linkage arm
+     *
+     * Motion limited proportional to elevator height past a certain point
+     */
     public void moveLinkArm(){
 
-        double deadRange = 0.15;
+        double deadRange = 0.15,
+        elevatorHeight = Robot.elevator.getHeight(),
+        dynamicLimit,
+        armInput = Robot.oi.operator.getRawAxis(5),
+        motorOut;
 
-        boolean maxFlag = !armSwitchMax.get();
-        boolean minFlag = !armSwitchMin.get();
+        boolean elevatorLimitReached = Robot.elevator.getHeight() < 750,
+        maxFlag = !armSwitchMax.get(),
+        minFlag = !armSwitchMin.get(),
+        deadFlag = false,
+        multiSet = false;
 
-//        System.out.println("Arm encoder: " + getArmEncoderValue());
+        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
 //        System.out.println("Arm max: " + maxFlag);
 //        System.out.println("Arm min: " + minFlag);
 
-        double armInput = Robot.oi.operator.getRawAxis(5);
-        double motorOut;
 
         //Reset encoder
         if(maxFlag){
             resetArmEncoder();
+            System.out.println("ARM RESET - ENCODER AT: " + getArmEncoderValue());
         }
 
         //Dead zone
         if (Math.abs(armInput) <= deadRange) {
-            motorOut = holdingPower;
+            setHoldingSpeed();
+            deadFlag = true;
         }
 
         //Limit switches
@@ -84,12 +94,11 @@ public final class LinkArm extends Subsystem implements Sendable {
             motorOut = 0;
         }
 
-
         //Normal
         else {
             //Downward speed adjustment
             if(armInput > 0){
-                motorOut = 0.6 * armInput;
+                motorOut = 0.7 * armInput;
             }
 
             else{
@@ -98,30 +107,54 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
 
-        //Arm slow bands
-        if((//Robot.elevator.getHeight() < 750 &&
-                getArmEncoderValue() < armLevelValue //2.838 * Robot.elevator.getHeight()
-                        - offset + 400)) {
+
+        //Arm slow and stop bands (below limit)
+        if(elevatorLimitReached){
+
+            dynamicLimit = elevatorHeight != 0
+                    ? (-3.6503 * elevatorHeight) - 3450.1 //excel charted
+                    : armLevelValue;
+
+
+            if(getArmEncoderValue() < dynamicLimit + 2000 && armInput > 0 && !deadFlag){
+
+                if(getArmEncoderValue() <= dynamicLimit){
+                    motorOut = 0;
+                }
+
+                else{
+                    armSpeedMultiplier = Math.abs(((getArmEncoderValue() - dynamicLimit) / 10000) * 3);
+                    multiSet = true;
+                }
+            }
+        }
+
+        //Arm slow bands (above limit)
+        if(getArmEncoderValue() < armMinValue + 1500 && armInput > 0 && !deadFlag && !multiSet) {
+            armSpeedMultiplier = 0.2;
+        }
+
+        else if(getArmEncoderValue() > armHighValue - 1500 && armInput < 0 && !deadFlag){
             armSpeedMultiplier = 0.3;
         }
 
-        if( getArmEncoderValue() > armHighValue - 400){
-            armSpeedMultiplier = 0.3;
-        }
-
-        else{
+        else if(!deadFlag && !multiSet){
             armSpeedMultiplier = armConstSpeed;
         }
 
-        armMotor.set(ControlMode.PercentOutput, motorOut * armSpeedMultiplier);
 
-
+        if(!deadFlag) {
+            armMotor.set(ControlMode.PercentOutput, motorOut * armSpeedMultiplier);
+        }
     }
 
     public void setHoldingSpeed(){
         armMotor.set(ControlMode.PercentOutput, holdingPower);
     }
 
+    public void setArmSpeed(double speed){
+        armMotor.set(ControlMode.PercentOutput, speed);
+    }
 
     /**
      * Gets the negative value of the linkage arm encoder
@@ -199,31 +232,19 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         this.target = target;
         
-        if(getArmEncoderValue() > target){
+        if(getArmEncoderValue() > target && armSwitchMin.get() && Robot.elevator.getSwitches()) {
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
             armPresetDown = true;
         }
 
-        else if(getArmEncoderValue() < target){
+        else if(getArmEncoderValue() < target && armSwitchMax.get() && Robot.elevator.getSwitches()){
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
             armPresetUp = true;
         }
     }
 
     public boolean checkArmTarget(){
-
-        if(getArmEncoderValue() >= target - (2 * tolerance) || getArmEncoderValue() <= target + (2 * tolerance)){
-
-            if(armPresetUp){
-                armMotor.set(ControlMode.PercentOutput, -0.4);
-            }
-
-            else if(armPresetDown){
-                armMotor.set(ControlMode.PercentOutput, 0.3);
-            }
-        }
-        
-        return getArmEncoderValue() >= (arm30Value - tolerance) && getArmEncoderValue() <= (arm30Value + tolerance);
+        return getArmEncoderValue() >= (target - tolerance) && getArmEncoderValue() <= (target + tolerance);
     }
 
 
@@ -284,10 +305,12 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         if(getArmEncoderValue() > arm45Value){
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
+            armPresetDown = true;
         }
 
         else if(getArmEncoderValue() < arm45Value){
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
+            armPresetUp = true;
         }
     }
 

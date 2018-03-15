@@ -1,5 +1,19 @@
 ELEVATOR LOGIC - V3
 
+TESTED
+-------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------
 IMPORTANT - ALL PRESETS ARE AND WILL BE CALIBRATED WITH THE ELEVATOR AT BOTTOM AND ARM AT MAX AS ZERO 
 
 ALL LIMIT SWITCHES MUST WORK ALL THE TIME, UNDER ANY CIRCUMSTANCE. Even if the arm or elevator were zeroed at the wrong place and presets malfunction,
@@ -38,6 +52,23 @@ LINK-ARM
 at the appropriate limit.
 - - Added parameter based preset method. Does it work? Feed various values. See if behaviour is exactly the same. If so, REMOVE ALL OTHER PRESET METHODS
 and clean up code oodles.
+
+
+
+ELEAVTOR PRESET VALUES
+elevMaxValue = 2300,
+scaleHighValue = 2100,
+scaleMidValue = 1800,
+scaleLowValue = 1700,
+defaultValue = 770,
+groundValue = 0;
+
+
+
+2000 -> 0.2 = 2000/10000
+-1660 - -3660 = 1940/10000 = 
+
+
 
 
 

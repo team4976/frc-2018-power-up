@@ -1,9 +1,7 @@
 package ca._4976.powerup.subsystems;
 
 import ca._4976.powerup.Robot;
-import ca._4976.powerup.commands.Arm30;
-import ca._4976.powerup.commands.DPad;
-import ca._4976.powerup.commands.ElevatorTarget;
+import ca._4976.powerup.commands.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -19,24 +17,20 @@ public class DPadStuff extends Subsystem  {
     public void getDpadPos(){
         if (Robot.oi.operator.getPOV() == 0){
 
-            new Arm30().start();
-
-            System.out.println("up");
+            new ElevatorScaleLow().start();
+            new ArmTarget(Robot.linkArm.armLevelValue).start();
         }
 
         else if (Robot.oi.operator.getPOV() == 90){
-            
-            new ElevatorTarget().start();
 
-            System.out.println("right");
+            new ElevatorTarget(Robot.elevator.scaleLowValue).start();
+            new ArmTarget(Robot.linkArm.armLevelValue).start();
         }
 
         else if (Robot.oi.operator.getPOV() == 180){
-            System.out.println("down");
         }
 
         else if (Robot.oi.operator.getPOV() == 270){
-            System.out.println("left");
         }
     }
 }

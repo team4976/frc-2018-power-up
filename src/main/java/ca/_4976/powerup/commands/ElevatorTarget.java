@@ -7,11 +7,16 @@ import ca._4976.powerup.Robot;
  */
 public class ElevatorTarget extends ListenableCommand {
 
+    private double target;
+
+    public ElevatorTarget(double target){
+        requires(Robot.elevator);
+        this.target = target;
+    }
+
     @Override
     protected void initialize(){
-//        Robot.elevator.moveToTarget(Robot.elevator.groundValue);
-//        Robot.elevator.moveToTarget(Robot.elevator.scaleHighValue);
-        Robot.elevator.moveToTarget(400);
+        Robot.elevator.moveToTarget(target);
     }
 
     @Override

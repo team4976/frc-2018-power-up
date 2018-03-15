@@ -7,6 +7,10 @@ import ca._4976.powerup.Robot;
  */
 public class ElevatorScaleHigh extends ListenableCommand {
 
+    public ElevatorScaleHigh(){
+        requires(Robot.elevator);
+    }
+
     @Override
     protected void initialize(){
         Robot.elevator.moveToHighScale();

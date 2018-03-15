@@ -18,7 +18,7 @@ import static ca.qormix.library.Lazy.use;
 public final class LinkArm extends Subsystem implements Sendable {
 
     //Motor inside linkarm carriage - raises/lowers arm
-    public final TalonSRX armMotor = new TalonSRX(4);
+    private final TalonSRX armMotor = new TalonSRX(4);
 
     //Motor values
     private double motorSpeed = 0.4;
@@ -53,6 +53,49 @@ public final class LinkArm extends Subsystem implements Sendable {
         setDefaultCommand(new MoveArm());
     }
 
+    public void setHoldingSpeed(){
+        armMotor.set(ControlMode.PercentOutput, holdingPower);
+    }
+
+    public boolean getArmMaxSwitch(){
+        return !armSwitchMax.get();
+    }
+
+    public void setArmSpeed(double speed){
+        armMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    /**
+     * Gets the negative value of the linkage arm encoder
+     *
+     * @return -arm encoder value
+     */
+    public double getArmEncoderValue(){
+        return -(armMotor.getSensorCollection().getQuadraturePosition());
+    }
+
+
+    /**
+     * Resets the arm encoder to its 0 position
+     */
+    public void resetArmEncoder(){
+        armMotor.getSensorCollection().setQuadraturePosition(0,0);
+    }
+
+
+    /**
+     * Reset arm preset flags
+     */
+    public void resetArmFlags(){
+        if(armPresetUp){
+            armPresetUp = false;
+        }
+
+        if(armPresetDown){
+            armPresetDown = false;
+        }
+    }
+
     /**
      * Provides manual control over the linkage arm
      *
@@ -72,7 +115,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         deadFlag = false,
         multiSet = false;
 
-        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
+//        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
 //        System.out.println("Arm max: " + maxFlag);
 //        System.out.println("Arm min: " + minFlag);
 
@@ -113,12 +156,12 @@ public final class LinkArm extends Subsystem implements Sendable {
 
             dynamicLimit = elevatorHeight != 0
                     ? (-3.6503 * elevatorHeight) - 3450.1 //excel charted
-                    : armLevelValue;
+                    : -3850;
 
 
             if(getArmEncoderValue() < dynamicLimit + 2000 && armInput > 0 && !deadFlag){
 
-                if(getArmEncoderValue() <= dynamicLimit){
+                if(getArmEncoderValue() <= dynamicLimit && elevatorHeight != 0){
                     motorOut = 0;
                 }
 
@@ -130,7 +173,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
         //Arm slow bands (above limit)
-        if(getArmEncoderValue() < armMinValue + 1500 && armInput > 0 && !deadFlag && !multiSet) {
+        if(getArmEncoderValue() < armMinValue + 1000 && armInput > 0 && !deadFlag && !multiSet) {
             armSpeedMultiplier = 0.2;
         }
 
@@ -148,44 +191,6 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
     }
 
-    public void setHoldingSpeed(){
-        armMotor.set(ControlMode.PercentOutput, holdingPower);
-    }
-
-    public void setArmSpeed(double speed){
-        armMotor.set(ControlMode.PercentOutput, speed);
-    }
-
-    /**
-     * Gets the negative value of the linkage arm encoder
-     *
-     * @return -arm encoder value
-     */
-    public double getArmEncoderValue(){
-        return -(armMotor.getSensorCollection().getQuadraturePosition());
-    }
-
-
-    /**
-     * Resets the arm encoder to its 0 position
-     */
-    public void resetArmEncoder(){
-        armMotor.getSensorCollection().setQuadraturePosition(0,0);
-    }
-
-
-    /**
-     * Reset arm preset flags
-     */
-    public void resetArmFlags(){
-        if(armPresetUp){
-            armPresetUp = false;
-        }
-
-        if(armPresetDown){
-            armPresetDown = false;
-        }
-    }
 
 
     /**
@@ -232,12 +237,12 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         this.target = target;
         
-        if(getArmEncoderValue() > target && armSwitchMin.get() && Robot.elevator.getSwitches()) {
+        if(getArmEncoderValue() > target && armSwitchMin.get()) {
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
             armPresetDown = true;
         }
 
-        else if(getArmEncoderValue() < target && armSwitchMax.get() && Robot.elevator.getSwitches()){
+        else if(getArmEncoderValue() < target && armSwitchMax.get()){
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
             armPresetUp = true;
         }

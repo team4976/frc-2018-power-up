@@ -18,7 +18,7 @@ public class ElevatorGround extends ListenableCommand {
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.testInputs() || Robot.elevator.checkGround();
+        return Robot.elevator.testInputs(true) || Robot.elevator.checkGround();
     }
 
     @Override

@@ -17,14 +17,17 @@ public class ArmTarget extends ListenableCommand {
     @Override
     protected void initialize(){
         Robot.linkArm.moveArmTarget(target);
+        System.out.println("STARTING");
+    }
+
+    @Override
+    protected void execute(){
+        System.out.println("STILL GOINVG");
     }
 
     @Override
     protected boolean isFinished() {
-        for(int i = 0; i < 10; i++) {
-            System.out.println("\n\n\n\nARM TARGET STARTED AT: " + target + "\n\n\n\n");
-        }
-        return Robot.elevator.testInputs() || Robot.linkArm.testArmInput() || Robot.linkArm.checkArmTarget();
+        return Robot.elevator.testInputs(false) || Robot.linkArm.testArmInput() || Robot.linkArm.checkArmTarget();
     }
 
     @Override

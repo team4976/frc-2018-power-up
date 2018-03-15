@@ -22,10 +22,10 @@ public final class OI {
         new JoystickButton(driver,7).whenPressed(new RunProfile());
 //        new JoystickButton(driver, 4).whenPressed(new Transmission());
 
-        new JoystickButton(driver, 1).whenPressed(new IntakeGear());
-        new JoystickButton(driver, 3).whenPressed(new StopGear());
-        new JoystickButton(driver, 2).whenPressed(new SpitGear());
-        new JoystickButton(driver, 2).whenReleased(new StopGear());
+        new JoystickButton(driver, 1).whenPressed(new CubeCube());
+        new JoystickButton(driver, 3).whenPressed(new CancelCubeCube());
+        new JoystickButton(driver, 2).whileHeld(new SpitCubeCube());
+        new JoystickButton(driver, 2).whenReleased(new CancelCubeCube());
 //        new JoystickButton(driver, 7).whenPressed(new Transmission());
 //
 //        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
@@ -48,18 +48,15 @@ public final class OI {
 
         //Mid scale
         new JoystickButton(operator, 3).whileHeld(new ElevatorTarget(Robot.elevator.scaleMidValue));
-        new JoystickButton(operator, 3).whileHeld(new ArmTarget(
-                Robot.linkArm.arm30Value));
+        new JoystickButton(operator, 3).whileHeld(new ArmTarget(Robot.linkArm.arm30Value));
 
         //Low scale
         new JoystickButton(operator, 2).whileHeld(new ElevatorTarget(Robot.elevator.scaleLowValue));
         new JoystickButton(operator, 2).whileHeld(new ArmTarget(Robot.linkArm.armLevelValue));
 
         //Switch
-//        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
-        new JoystickButton(operator, 5).whenPressed(new ArmTarget(
-                -10000//Robot.linkArm.arm45Value
-        ));
+        new JoystickButton(operator, 5).whileHeld(new ElevatorGround());
+        new JoystickButton(operator, 5).whileHeld(new ArmTarget(Robot.linkArm.arm45Value));
 
         //Ground
         new JoystickButton(operator, 1).whileHeld(new ElevatorGround());

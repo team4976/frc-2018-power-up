@@ -20,7 +20,6 @@ public abstract class ListenableCommand extends Command {
 
         id = Initialization.commands.size();
         Initialization.commands.add(this);
-            System.out.println("Command added to array");
     }
 
     @Override public void start() {

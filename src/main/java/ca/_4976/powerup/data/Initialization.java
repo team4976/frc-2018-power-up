@@ -2,6 +2,8 @@ package ca._4976.powerup.data;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+import ca._4976.powerup.commands.ListenableCommand;
+
 import java.util.ArrayList;
 
 /**
@@ -11,5 +13,5 @@ import java.util.ArrayList;
  */
 public final class Initialization {
 
-    public static ArrayList<Command> commands = new ArrayList<>();
+    public static ArrayList<ListenableCommand> commands = new ArrayList<>();
 }

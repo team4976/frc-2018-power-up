@@ -45,7 +45,7 @@ public final class Profile {
 
                     if (moment.commands.length > 0) builder.append(",");
 
-                    for (int command : moment.commands) builder.append(",").append(Robot.motion.commands[command].getName());
+                    for (int command : moment.commands) builder.append(",").append(Robot.motion.getCommands()[command].getName());
                 }
 
                 return builder.toString();
@@ -66,7 +66,7 @@ public final class Profile {
 
                         for (int i = 0; i < moment.commands.length; i++) {
 
-                            builder.append("\"").append(Robot.motion.commands[moment.commands[i]].getName()).append("\"");
+                            builder.append("\"").append(Robot.motion.getCommands()[moment.commands[i]].getName()).append("\"");
                             if (i < moment.commands.length - 1) builder.append(", ");
                         }
 
@@ -109,16 +109,18 @@ public final class Profile {
 
                     for (int c = 0; c < commands.length; c++) {
 
-                        for (int x = 0; x < Robot.motion.commands.length; x++) {
-
-                            if (split[c + 9].equals(Robot.motion.commands[x].getName())) {
-
-                                commands[c] = x;
-                                break;
+                        for (int x = 0; x < Robot.motion.getCommands().length; x++) {
+                            try {
+                                if (split[c + 9].equals(Robot.motion.getCommands()[x].getName())) {
+                                    commands[c] = x;
+                                    break;
+                                }
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("error");
                             }
+
                         }
                     }
-
 
                     moments.add(new Moment(
                             commands,
@@ -131,9 +133,9 @@ public final class Profile {
                 String[] split = lines[0].split(": ")[1].split(" ");
 
                 return new Profile(
-                       split[0],
-                       split[1],
-                       moments.toArray(new Moment[moments.size()])
+                        split[0],
+                        split[1],
+                        moments.toArray(new Moment[moments.size()])
                 );
 
             case JSON:

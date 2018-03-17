@@ -5,9 +5,9 @@ import ca._4976.powerup.Robot;
 /**
  * Created by 4976 on 2018-02-15.
  */
-public class ElevatorScaleLow extends ListenableCommand {
+public class ElevatorSL extends ListenableCommand {
 
-    public ElevatorScaleLow(){
+    public ElevatorSL(){
         requires(Robot.elevator);
     }
 

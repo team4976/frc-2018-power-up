@@ -51,7 +51,7 @@ public final class OI {
         new JoystickButton(operator, 3).whenPressed(new ArmTarget(Robot.linkArm.arm30Value));
 
         //Low scale
-        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
+        new JoystickButton(operator, 2).whenPressed(new ElevatorSL());
         new JoystickButton(operator, 2).whenPressed(new ArmLevel());
 
         //Switch

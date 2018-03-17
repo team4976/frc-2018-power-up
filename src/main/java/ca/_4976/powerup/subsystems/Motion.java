@@ -35,7 +35,7 @@ public final class Motion extends Subsystem implements Sendable {
     private boolean isRunning = false;
     private boolean isRecording = false;
 
-    public ListenableCommand[] commands = null;
+    private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
     private double p = 0, i = 0, d = 0;

@@ -82,7 +82,7 @@ public final class Robot extends IterativeRobot {
     @Override public void autonomousInit() {
 
         new LoadProfile("auto.csv").start();
-        System.out.println("Here");
+        System.out.println("here");
         new RunProfile().start();
     }
 
@@ -91,8 +91,6 @@ public final class Robot extends IterativeRobot {
         Scheduler.getInstance().run();
         log();
     }
-
-
 
     @Override public void teleopPeriodic(){
         new DefaultGear().start();

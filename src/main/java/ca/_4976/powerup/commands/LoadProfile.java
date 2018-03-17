@@ -5,6 +5,7 @@ import ca._4976.powerup.data.Profile;
 import edu.wpi.first.wpilibj.command.Command;
 
 import java.io.*;
+import java.sql.SQLOutput;
 
 /**
  *  This command allows loading motion profiles from the rio's file system
@@ -21,7 +22,6 @@ public final class LoadProfile extends Command {
      */
     public LoadProfile(String file) {
 
-        requires(Robot.motion);
         this.file = file;
     }
 
@@ -34,11 +34,15 @@ public final class LoadProfile extends Command {
 
             StringBuilder builder = new StringBuilder();
 
-            for (String line = reader.readLine(); !line.equals(""); line = reader.readLine()) builder.append(line);
+            for (String line = reader.readLine(); line!= null; line = reader.readLine()) builder.append(line).append("\n");
 
             //CVS is currently the only format implemented
-            Profile.deserialize(builder.toString(), Profile.Format.CSV);
+            Profile profile = Profile.deserialize(builder.toString(), Profile.Format.CSV);
+
+            Robot.motion.profile = Profile.deserialize(builder.toString(), Profile.Format.CSV);
             reader.close();
+
+            System.out.println("Successfully loaded " + file + " runs for " + profile.moments.length / 200.0 + " seconds");
 
         } catch (IOException e) { e.printStackTrace(); }
     }

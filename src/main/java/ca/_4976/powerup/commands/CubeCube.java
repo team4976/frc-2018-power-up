@@ -25,7 +25,7 @@ public class CubeCube extends ListenableCommand{
 
     @Override
     protected boolean isFinished(){
-        if(Robot.cubeHandler.getAButtonCount() != 2 && !Robot.motion.isRecording()) {
+        if(Robot.cubeHandler.getAButtonCount() != 2) {
             return Robot.cubeHandler.currentFlag;
         }
 
@@ -37,7 +37,7 @@ public class CubeCube extends ListenableCommand{
     @Override
     protected void end(){
 
-        if(Robot.cubeHandler.getAButtonCount() == 2){// && Robot.cubeHandler.currentFlag){
+        if(Robot.cubeHandler.getAButtonCount() == 2  && !Robot.motion.isRecording()){
             new AutoCube().start();
         }
 

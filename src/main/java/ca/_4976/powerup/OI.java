@@ -51,8 +51,8 @@ public final class OI {
         new JoystickButton(operator, 3).whenPressed(new ArmTarget(Robot.linkArm.arm30Value));
 
         //Low scale
-        new JoystickButton(operator, 2).whenPressed(new ElevatorTarget(Robot.elevator.scaleLowValue));
-        new JoystickButton(operator, 2).whenPressed(new ArmTarget(Robot.linkArm.armLevelValue));
+        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
+        new JoystickButton(operator, 2).whenPressed(new ArmLevel());
 
         //Switch
         new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
@@ -60,7 +60,7 @@ public final class OI {
 
         //Ground
         new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
-        new JoystickButton(operator, 1).whenPressed(new ArmTarget(Robot.linkArm.armLevelValue));
+        new JoystickButton(operator, 1).whenPressed(new ArmLevel());
 
         //Cube - arm first levels then dips
 //        new JoystickButton(operator, 6).whenPressed(new ElevatorCube());

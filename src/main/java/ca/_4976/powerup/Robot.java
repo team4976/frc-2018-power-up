@@ -8,6 +8,7 @@ import ca._4976.powerup.commands.DefaultGear;
 import ca._4976.powerup.commands.ElevEncoderReset;
 import ca._4976.powerup.commands.RecordProfile;
 import ca._4976.powerup.commands.RunProfile;
+import ca._4976.powerup.commands.LoadProfile;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.*;
 import edu.wpi.first.networktables.NetworkTable;
@@ -77,11 +78,20 @@ public final class Robot extends IterativeRobot {
         motion.stop();
     }
 
+
+    @Override public void autonomousInit() {
+
+        new LoadProfile("auto.csv").start();
+        System.out.println("Here");
+        new RunProfile().start();
+    }
+
     @Override public void autonomousPeriodic(){
-        runProfile.start();
+      //  runProfile.start();
         Scheduler.getInstance().run();
         log();
     }
+
 
 
     @Override public void teleopPeriodic(){

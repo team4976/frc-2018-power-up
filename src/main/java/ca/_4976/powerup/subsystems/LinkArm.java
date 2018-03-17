@@ -115,7 +115,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         deadFlag = false,
         multiSet = false;
 
-//        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
+        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
 //        System.out.println("Arm max: " + maxFlag);
 //        System.out.println("Arm min: " + minFlag);
 
@@ -337,13 +337,14 @@ public final class LinkArm extends Subsystem implements Sendable {
     }
 
     public boolean checkArmLevel(){
-        return getArmEncoderValue() >= (armLevelValue - tolerance) && getArmEncoderValue() <= (armLevelValue + (0.3 * tolerance));
+        return getArmEncoderValue() >= (armLevelValue - tolerance) && getArmEncoderValue() <= (armLevelValue + tolerance);
     }
 
     /**
      * Automatic motion after intaking cube
      */
     public void moveArmCube(){
+
 
         if(getArmEncoderValue() > armHighValue){
             armMotor.set(ControlMode.PercentOutput, motorSpeed);

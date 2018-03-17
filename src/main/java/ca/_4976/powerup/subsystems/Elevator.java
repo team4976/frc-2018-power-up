@@ -169,15 +169,17 @@ public final class Elevator extends Subsystem implements Sendable {
                     && oobInput < 0
                     && !deadZoneFlag
                     && armHeight < -Robot.linkArm.armLevelValue
-                    && getHeight() != 0){
+                    && getHeight() != 0)
+            {
 
-//                System.out.println("DYNAMIC ARM MOVE STARTED AT: " + armTarget);
+                speedMultiplier = normalSpeed * 0.5;
+                multiSet = true;
 
-                //TODO GEARBOX ON ARM FIX
                 while(Robot.linkArm.getArmEncoderValue() < armTarget) {
                     if(oobInput > 0 || Robot.oi.operator.getRawAxis(5) < 0){
                         break;
                     }
+
                     Robot.linkArm.setArmSpeed(-1);
                 }
 

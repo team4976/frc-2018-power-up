@@ -43,24 +43,24 @@ public final class OI {
         //Presets
 
         //High scale
-        new JoystickButton(operator, 4).whileHeld(new ElevatorTarget(Robot.elevator.scaleHighValue));
-        new JoystickButton(operator, 4).whileHeld(new ArmTarget(Robot.linkArm.arm45Value));
+        new JoystickButton(operator, 4).whenPressed(new ElevatorTarget(Robot.elevator.scaleHighValue));
+        new JoystickButton(operator, 4).whenPressed(new ArmTarget(Robot.linkArm.arm45Value));
 
         //Mid scale
-        new JoystickButton(operator, 3).whileHeld(new ElevatorTarget(Robot.elevator.scaleMidValue));
-        new JoystickButton(operator, 3).whileHeld(new ArmTarget(Robot.linkArm.arm30Value));
+        new JoystickButton(operator, 3).whenPressed(new ElevatorTarget(Robot.elevator.scaleMidValue));
+        new JoystickButton(operator, 3).whenPressed(new ArmTarget(Robot.linkArm.arm30Value));
 
         //Low scale
-        new JoystickButton(operator, 2).whileHeld(new ElevatorTarget(Robot.elevator.scaleLowValue));
-        new JoystickButton(operator, 2).whileHeld(new ArmTarget(Robot.linkArm.armLevelValue));
+        new JoystickButton(operator, 2).whenPressed(new ElevatorTarget(Robot.elevator.scaleLowValue));
+        new JoystickButton(operator, 2).whenPressed(new ArmTarget(Robot.linkArm.armLevelValue));
 
         //Switch
-        new JoystickButton(operator, 5).whileHeld(new ElevatorGround());
-        new JoystickButton(operator, 5).whileHeld(new ArmTarget(Robot.linkArm.arm45Value));
+        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
+        new JoystickButton(operator, 5).whenPressed(new ArmTarget(Robot.linkArm.arm45Value));
 
         //Ground
-        new JoystickButton(operator, 1).whileHeld(new ElevatorGround());
-        new JoystickButton(operator, 1).whileHeld(new ArmTarget(Robot.linkArm.armLevelValue));
+        new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
+        new JoystickButton(operator, 1).whenPressed(new ArmTarget(Robot.linkArm.armLevelValue));
 
         //Cube - arm first levels then dips
 //        new JoystickButton(operator, 6).whenPressed(new ElevatorCube());

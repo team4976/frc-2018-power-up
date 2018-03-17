@@ -6,8 +6,11 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Climber extends Subsystem {
 
+    //TODO - COMMENTED OUT CLIMBERSHIFT SOLENOID - CONFLICT WITH DRIVE
+
     //Solenoid used to change the elevator from high to low gear and vice-versa
-    private final DoubleSolenoid climbingShift = new DoubleSolenoid(10,3,2);
+//    private final DoubleSolenoid climbingShift = new DoubleSolenoid(10,3,2);
+
     //Solenoid used to deploy the guides for climbing
     private final DoubleSolenoid guides = new DoubleSolenoid(10,0,6);
     //Variable to show whether in high gear or low gear
@@ -21,11 +24,11 @@ public class Climber extends Subsystem {
     //Also toggles the guides used for climbing
     public void activateClimber(){
         if(lowGearElevator == false) {
-            climbingShift.set(DoubleSolenoid.Value.kForward);
+//            climbingShift.set(DoubleSolenoid.Value.kForward);
             guides.set(DoubleSolenoid.Value.kReverse);
             lowGearElevator = true;
         } else if (lowGearElevator == true){
-            climbingShift.set(DoubleSolenoid.Value.kReverse);
+//            climbingShift.set(DoubleSolenoid.Value.kReverse);
             guides.set(DoubleSolenoid.Value.kForward);
             lowGearElevator = false;
         }

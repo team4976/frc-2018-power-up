@@ -21,12 +21,11 @@ public class CubeCube extends ListenableCommand{
         System.out.println("A COUNT EXEC: " + Robot.cubeHandler.getAButtonCount());
 
         Robot.cubeHandler.cubeCurrent();
-
     }
 
     @Override
     protected boolean isFinished(){
-        if(Robot.cubeHandler.getAButtonCount() != 2) {
+        if(Robot.cubeHandler.getAButtonCount() != 2 && !Robot.motion.isRecording()) {
             return Robot.cubeHandler.currentFlag;
         }
 

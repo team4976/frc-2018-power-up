@@ -7,7 +7,6 @@ public class AutoCube extends CommandGroup {
 
     public AutoCube(){
         addSequential(new ArmTarget(Robot.linkArm.armHighValue));
-//        addSequential(new ArmCube());
         addSequential(new CancelCubeCube());
     }
 }

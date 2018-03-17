@@ -21,7 +21,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     private final TalonSRX armMotor = new TalonSRX(4);
 
     //Motor values
-    private double motorSpeed = 0.4;
+    private double motorSpeed = 0.7;
     private double armSpeedMultiplier;
     private final double armConstSpeed = 0.8;
     private double holdingPower = -0.05; //compensate for reversal of motor
@@ -174,11 +174,11 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         //Arm slow bands (above limit)
         if(getArmEncoderValue() < armMinValue + 1000 && armInput > 0 && !deadFlag && !multiSet) {
-            armSpeedMultiplier = 0.2;
+            armSpeedMultiplier = 0.6;
         }
 
         else if(getArmEncoderValue() > armHighValue - 1500 && armInput < 0 && !deadFlag){
-            armSpeedMultiplier = 0.3;
+            armSpeedMultiplier = 0.6;
         }
 
         else if(!deadFlag && !multiSet){
@@ -337,7 +337,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     }
 
     public boolean checkArmLevel(){
-        return getArmEncoderValue() >= (armLevelValue - tolerance) && getArmEncoderValue() <= (armLevelValue + tolerance);
+        return getArmEncoderValue() >= (armLevelValue - tolerance) && getArmEncoderValue() <= (armLevelValue + (0.3 * tolerance));
     }
 
     /**

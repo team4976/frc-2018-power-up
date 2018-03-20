@@ -18,8 +18,6 @@ public class CubeCube extends ListenableCommand{
 
     @Override
     protected void execute(){
-        System.out.println("A COUNT EXEC: " + Robot.cubeHandler.getAButtonCount());
-
         Robot.cubeHandler.cubeCurrent();
     }
 

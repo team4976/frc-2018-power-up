@@ -34,11 +34,12 @@ public final class Motion extends Subsystem implements Sendable {
     private Drive drive = Robot.drive;
     private boolean isRunning = false;
     private boolean isRecording = false;
+    public int momentCounter;
 
     private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
-    private double p = 0, i = 0, d = 0;
+    private double p = 0.127, i = 0, d = 0;
 
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Motion");
     private final NetworkTableEntry leftError = table.getEntry("Left Error");
@@ -159,6 +160,8 @@ public final class Motion extends Subsystem implements Sendable {
 
                 if (System.nanoTime() - lastTick >= timing)  {
 
+
+                    momentCounter++;
                     lastTick = System.nanoTime();
 
                     final Moment moment = profile.moments[interval];
@@ -199,7 +202,14 @@ public final class Motion extends Subsystem implements Sendable {
                     builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
                     builder.append(error[0]).append(",").append(error[1]).append(",,");
 
-                    for (int command : moment.commands) commands[command].start();
+                    try{
+                        for (int command : moment.commands) {
+                            commands[command].start();
+                        }
+
+                    } catch (NullPointerException   exception){
+                        System.out.println("Array out of bound caught");
+                    }
 
                     interval++;
                 }

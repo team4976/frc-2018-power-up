@@ -120,7 +120,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         deadFlag = false,
         multiSet = false;
 
-        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
+//        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
 //        System.out.println("Arm max: " + maxFlag);
 //        System.out.println("Arm min: " + minFlag);
 
@@ -128,7 +128,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         //Reset encoder
         if(maxFlag){
             resetArmEncoder();
-            System.out.println("ARM RESET - ENCODER AT: " + getArmEncoderValue());
+//            System.out.println("ARM RESET - ENCODER AT: " + getArmEncoderValue());
         }
 
         //Dead zone

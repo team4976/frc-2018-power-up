@@ -169,7 +169,7 @@ public final class Elevator extends Subsystem implements Sendable {
                     && oobInput < 0
                     && !deadZoneFlag
                     && armHeight < -Robot.linkArm.armLevelValue
-                    && getHeight() != 0)
+                    && getHeight() > 30)
             {
 
                 speedMultiplier = normalSpeed * 0.5;
@@ -296,16 +296,12 @@ public final class Elevator extends Subsystem implements Sendable {
 
         if(!elevPresetDown || !elevPresetUp) {
 
-            if (getHeight() > target
-                    && limitSwitchMin.get()
-                    ) {
+            if (getHeight() > target && limitSwitchMin.get()) {
                 elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
                 elevPresetDown = true;
             }
 
-            else if (getHeight() < target
-                    && limitSwitchMax.get()
-                    ) {
+            else if (getHeight() < target && limitSwitchMax.get()) {
                 elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
                 elevPresetUp = true;
             }
@@ -314,18 +310,19 @@ public final class Elevator extends Subsystem implements Sendable {
 
     public boolean checkTarget(){
 
-//        if(getHeight() >= target - (3 * tolerance) || getHeight() <= target + (3 * tolerance)){
-//
-//            if(elevPresetUp){
-//                System.out.println("UP");
-//                elevMotorMain.set(ControlMode.PercentOutput, 0.4);
-//            }
-//
-//            else if(elevPresetDown){
-//                System.out.println("DOWN");
-//                elevMotorMain.set(ControlMode.PercentOutput, -0.3);
-//            }
-//        }
+        double motorOut = 0;
+        if(Math.abs(getHeight() - target) < 200){
+
+            if(elevPresetUp){
+                motorOut = slowSpeed;
+            }
+
+            else if(elevPresetDown){
+                motorOut = -slowSpeed;
+            }
+
+            elevMotorMain.set(ControlMode.PercentOutput, motorOut * 0.6);
+        }
 
         return getHeight() >= (target - tolerance) && getHeight() <= (target + tolerance);
     }

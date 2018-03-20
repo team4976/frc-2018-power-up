@@ -5,15 +5,15 @@ import ca._4976.powerup.Robot;
 /**
  * Created by 4976 on 2018-02-17.
  */
-public class ArmLevel extends ListenableCommand {
+public class ArmSwitch extends ListenableCommand{
 
-    public ArmLevel(){
+    public ArmSwitch(){
         requires(Robot.linkArm);
     }
 
     @Override
     protected void initialize(){
-        Robot.linkArm.moveArmTarget(Robot.linkArm.armLevelValue - 200);
+        Robot.linkArm.moveArmTarget(Robot.linkArm.armHighValue);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ArmLevel extends ListenableCommand {
 
     @Override
     protected void end(){
-        System.out.println("Ground ended");
+        System.out.println("Switch ended");
         Robot.linkArm.resetArmFlags();
         Robot.linkArm.setHoldingSpeed();
     }

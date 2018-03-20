@@ -33,11 +33,12 @@ public final class LinkArm extends Subsystem implements Sendable {
     public double armHighValue = 0,
     arm45Value = -800,
     arm30Value = -1660,
-    armLevelValue = -3700,
+    armLevelValue = -3850,
     armMinValue = -5800;
 
     private boolean armPresetUp = false;
     private boolean armPresetDown = false;
+    private boolean slowSet = false;
 
     //Preset tolerance
     private double tolerance;
@@ -45,7 +46,7 @@ public final class LinkArm extends Subsystem implements Sendable {
 
     public LinkArm(){
         armMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-        tolerance = 250;
+        tolerance = 200;
     }
 
     @Override
@@ -93,6 +94,10 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         if(armPresetDown){
             armPresetDown = false;
+        }
+
+        if(slowSet){
+            slowSet = false;
         }
     }
 
@@ -156,7 +161,7 @@ public final class LinkArm extends Subsystem implements Sendable {
 
             dynamicLimit = elevatorHeight != 0
                     ? (-3.6503 * elevatorHeight) - 3450.1 //excel charted
-                    : -3850;
+                    : armLevelValue;
 
 
             if(getArmEncoderValue() < dynamicLimit + 2000 && armInput > 0 && !deadFlag){
@@ -205,6 +210,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         boolean minFlag = !armSwitchMin.get();
 
         if(maxFlag && armPresetUp || minFlag && armPresetDown){
+            System.out.println("arm cancelled");
             return true;
         }
 
@@ -237,19 +243,45 @@ public final class LinkArm extends Subsystem implements Sendable {
 
         this.target = target;
         
-        if(getArmEncoderValue() > target && armSwitchMin.get()) {
+        if(getArmEncoderValue() > target) {
             armMotor.set(ControlMode.PercentOutput, motorSpeed);
             armPresetDown = true;
         }
 
-        else if(getArmEncoderValue() < target && armSwitchMax.get()){
+        else if(getArmEncoderValue() < target){
             armMotor.set(ControlMode.PercentOutput, -motorSpeed);
             armPresetUp = true;
         }
     }
 
     public boolean checkArmTarget(){
-        return getArmEncoderValue() >= (target - tolerance) && getArmEncoderValue() <= (target + tolerance);
+        double motorOut = 0;
+
+        System.out.println("Checking for target at: " + target);
+
+        if(Math.abs(getArmEncoderValue() - target) < 1500){// && !slowSet) {
+
+            if(armPresetUp){
+                motorOut = -motorSpeed;
+            }
+
+            else if(armPresetDown){
+                if(target < 0 - 500){
+                    motorOut = motorSpeed;
+                }
+
+                else {
+                    motorOut = 0.7 * motorSpeed;
+                }
+            }
+
+            System.out.println("ARM SLOW");
+            armSpeedMultiplier = Math.abs(((getArmEncoderValue() - target) / 10000) * 3);
+            armMotor.set(ControlMode.PercentOutput, motorOut * armSpeedMultiplier);
+////            slowSet = true;
+        }
+
+        return getArmEncoderValue() >= (target - tolerance) && getArmEncoderValue() <= (target);
     }
 
 
@@ -337,6 +369,11 @@ public final class LinkArm extends Subsystem implements Sendable {
     }
 
     public boolean checkArmLevel(){
+
+        if(getArmEncoderValue() >= armLevelValue - (2 * tolerance) || getArmEncoderValue() <= armLevelValue + (2 * tolerance)) {
+            armMotor.set(ControlMode.PercentOutput, armMotor.getMotorOutputPercent() * 0.5);
+        }
+
         return getArmEncoderValue() >= (armLevelValue - tolerance) && getArmEncoderValue() <= (armLevelValue + tolerance);
     }
 

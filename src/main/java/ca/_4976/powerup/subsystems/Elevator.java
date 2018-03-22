@@ -10,6 +10,7 @@ import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Sendable;
@@ -30,6 +31,12 @@ public final class Elevator extends Subsystem implements Sendable {
 
     // Encoder on elevator
     public final Encoder elevEncoder = new Encoder(4, 5);
+
+
+    private final DigitalInput limitSwitchMax = new DigitalInput(6);
+    private final DigitalInput limitSwitchMin = new DigitalInput(7);
+
+    private final AnalogInput testSwitch = new AnalogInput(0);
 
     // Preset values
     private double presetOutput;
@@ -69,9 +76,6 @@ public final class Elevator extends Subsystem implements Sendable {
         //Preset tolerance
         tolerance = 150;
     }
-
-    private final DigitalInput limitSwitchMax = new DigitalInput(6);
-    private final DigitalInput limitSwitchMin = new DigitalInput(7);
 
 
     @Override
@@ -121,6 +125,8 @@ public final class Elevator extends Subsystem implements Sendable {
         operatorFlag = false,
         multiSet = false;
 
+//        System.out.println("TEST: " + testSwitch.getValue());
+
         //Reset encoder at bottom
         if(minFlag){
             resetEncoder();
@@ -154,8 +160,12 @@ public final class Elevator extends Subsystem implements Sendable {
         }
 
         //Limit switches
-        if((maxFlag && oobInput >= 0) ||(minFlag && oobInput <= 0)){
+        if(
+                (testSwitch.getValue() < 100 && oobInput >= 0)
+//                (maxFlag && oobInput >= 0)
+                        || (minFlag && oobInput <= 0)){
             motorOut = 0;
+            System.out.println("ELEVATOR STOPPED");
         }
 
 

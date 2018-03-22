@@ -9,6 +9,7 @@ import ca._4976.powerup.commands.MoveArm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -21,7 +22,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     private final TalonSRX armMotor = new TalonSRX(4);
 
     //Motor values
-    private double motorSpeed = 0.7;
+    private double motorSpeed = 0.8;
     private double armSpeedMultiplier;
     private final double armConstSpeed = 0.8;
     private double holdingPower = -0.05; //compensate for reversal of motor
@@ -120,15 +121,16 @@ public final class LinkArm extends Subsystem implements Sendable {
         deadFlag = false,
         multiSet = false;
 
-        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
+//        System.out.println("\n\n\nArm encoder: " + getArmEncoderValue());
 //        System.out.println("Arm max: " + maxFlag);
 //        System.out.println("Arm min: " + minFlag);
+
 
 
         //Reset encoder
         if(maxFlag){
             resetArmEncoder();
-            System.out.println("ARM RESET - ENCODER AT: " + getArmEncoderValue());
+//            System.out.println("ARM RESET - ENCODER AT: " + getArmEncoderValue());
         }
 
         //Dead zone
@@ -138,6 +140,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         }
 
         //Limit switches
+
         if(maxFlag && armInput <= 0 || minFlag && armInput >= 0){
             motorOut = 0;
         }
@@ -163,10 +166,12 @@ public final class LinkArm extends Subsystem implements Sendable {
                     ? (-3.6503 * elevatorHeight) - 3450.1 //excel charted
                     : armLevelValue;
 
+//            System.out.println("Control at: " + dynamicLimit);
 
             if(getArmEncoderValue() < dynamicLimit + 2000 && armInput > 0 && !deadFlag){
 
                 if(getArmEncoderValue() <= dynamicLimit && elevatorHeight != 0){
+                    System.out.println("Motor stopped at: " + getArmEncoderValue());
                     motorOut = 0;
                 }
 
@@ -257,7 +262,8 @@ public final class LinkArm extends Subsystem implements Sendable {
     public boolean checkArmTarget(){
         double motorOut = 0;
 
-        System.out.println("Checking for target at: " + target);
+        System.out.println("\n\nChecking for target at: " + target);
+        System.out.println("Arm encoder during preset: " + getArmEncoderValue() + "\n\n");
 
         if(Math.abs(getArmEncoderValue() - target) < 1500){// && !slowSet) {
 

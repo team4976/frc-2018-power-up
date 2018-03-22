@@ -13,7 +13,7 @@ public class ArmLevel extends ListenableCommand {
 
     @Override
     protected void initialize(){
-        Robot.linkArm.moveArmTarget(Robot.linkArm.armLevelValue - 200);
+        Robot.linkArm.moveArmTarget(Robot.linkArm.armLevelValue - 500);
     }
 
     @Override

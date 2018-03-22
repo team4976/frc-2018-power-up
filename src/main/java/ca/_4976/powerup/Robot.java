@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ import static ca.qormix.library.Lazy.use;
 
 public final class Robot extends IterativeRobot {
 
+    private String gameData = DriverStation.getInstance().getGameSpecificMessage();
     public static OI oi;
     public final static Elevator elevator = new Elevator();
     public final static LinkArm linkArm = new LinkArm();
@@ -52,8 +54,17 @@ public final class Robot extends IterativeRobot {
     public final NetworkTableEntry leftDistance =  table.getEntry("Left Distance");
     public final NetworkTableEntry rightDistance =  table.getEntry("Right Distance");
     public final NetworkTableEntry stopped =  table.getEntry("Is Stopped");
+    public final NetworkTableEntry switchSelect =  table.getEntry("Switch Auto Selected");
+    public final NetworkTableEntry scaleSelected =  table.getEntry("Scale Auto Selected");
+    public final NetworkTableEntry autoSelected =  table.getEntry("Auto Auto Selected");
+    public final NetworkTableEntry leftSelected =  table.getEntry("Left Auto Selected");
+    public final NetworkTableEntry centerSelected =  table.getEntry("Center Auto Selected");
+    public final NetworkTableEntry rightSelected =  table.getEntry("Right auto Selected");
+
+
 
     public final NetworkTableEntry profiles =  table.getEntry("Profiles");
+
 
     private final RecordProfile recordProfile = new RecordProfile();
     private final RunProfile runProfile = new RunProfile();
@@ -71,6 +82,13 @@ public final class Robot extends IterativeRobot {
         SmartDashboard.putData(motion);
 
         Robot.drive.defaultGear();
+
+        switchSelect.setDefaultBoolean(false);
+        scaleSelected.setDefaultBoolean(false);
+        autoSelected.setDefaultBoolean(false);
+        leftSelected.setDefaultBoolean(false);
+        centerSelected.setDefaultBoolean(false);
+        rightSelected.setDefaultBoolean(false);
     }
 
     @Override public void disabledInit() {
@@ -81,9 +99,82 @@ public final class Robot extends IterativeRobot {
 
     @Override public void autonomousInit() {
 
-        new LoadProfile("auto.csv").start();
-        System.out.println("here");
-        new RunProfile().start();
+       char switchPosition = gameData.charAt(0);
+       char scalePosition = gameData.charAt(1);
+
+       if (leftSelected.getBoolean(false)){
+           if(switchSelect.getBoolean(false)){
+               if (switchPosition == 'L'){
+                   new LoadProfile("LeftSelectedSwitchSelectedSwitchLeft.csv").start();
+                   new RunProfile().start();
+               } else if (switchPosition == 'R'){
+                   new LoadProfile("LeftSelectedSwitchSelectedSwitchRight.csv").start();
+                   new RunProfile().start();
+               }
+           } else if (scaleSelected.getBoolean(false)){
+               if (scalePosition == 'L'){
+                   new LoadProfile("LeftSelectedScaleSelectedScaleLeft.csv").start();
+                   new RunProfile().start();
+               } else if (scalePosition == 'R'){
+                   new LoadProfile("LeftSelectedScaleSelectedScaleRight.csv").start();
+                   new RunProfile().start();
+               }
+           } else if (autoSelected.getBoolean(false)){
+               if (scalePosition == 'L') {
+                   new LoadProfile("LeftSelectedScaleSelectedScaleLeftAuto.csv").start();
+                   new RunProfile().start();
+               } else if (switchPosition == 'L'){
+                   new LoadProfile("LeftSelectedSwitchSelectedSwitchLeftAuto.csv").start();
+                   new RunProfile().start();
+               }
+           }
+       } else if (centerSelected.getBoolean(false)){
+           if(switchSelect.getBoolean(false)){
+               if (switchPosition == 'L'){
+                   new LoadProfile("CenterSelectedSwitchSelectedSwitchLeft.csv").start();
+                   new RunProfile().start();
+               } else if (switchPosition == 'R'){
+                   new LoadProfile("CenterSelectedSwitchSelectedSwitchRight.csv").start();
+                   new RunProfile().start();
+               }
+           } else if (scaleSelected.getBoolean(false)){
+               if (scalePosition == 'L'){
+                   new LoadProfile("CenterSelectedScaleSelectedScaleLeft.csv").start();
+                   new RunProfile().start();
+               } else if (scalePosition == 'R'){
+                   new LoadProfile("CenterSelectedScaleSelectedScaleRight.csv").start();
+                   new RunProfile().start();
+               }
+           }
+
+       } else if (rightSelected.getBoolean(false)){
+           if(switchSelect.getBoolean(false)){
+               if (switchPosition == 'L'){
+                   new LoadProfile("RightSelectedSwitchSelectedSwitchLeft.csv").start();
+                   new RunProfile().start();
+               } else if (switchPosition == 'R'){
+                   new LoadProfile("RightSelectedSwitchSelectedSwitchRight.csv").start();
+                   new RunProfile().start();
+               }
+           } else if (scaleSelected.getBoolean(false)){
+               if (scalePosition == 'L'){
+                   new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
+                   new RunProfile().start();
+               } else if (scalePosition == 'R'){
+                   new LoadProfile("RightSelectedScaleSelectedScaleRight.csv").start();
+                   new RunProfile().start();
+               }
+           } else if (autoSelected.getBoolean(false)){
+               if (scalePosition == 'R') {
+                   new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
+                   new RunProfile().start();
+               } else if (switchPosition == 'R'){
+                   new LoadProfile("RightSelectedSwitchSelectedSwitchLeft.csv").start();
+                   new RunProfile().start();
+               }
+           }
+       }
+
     }
 
     @Override public void autonomousPeriodic(){

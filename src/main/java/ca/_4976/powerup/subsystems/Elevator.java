@@ -160,12 +160,9 @@ public final class Elevator extends Subsystem implements Sendable {
         }
 
         //Limit switches
-        if(
-                (testSwitch.getValue() < 100 && oobInput >= 0)
-//                (maxFlag && oobInput >= 0)
-                        || (minFlag && oobInput <= 0)){
+        if((maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)){
             motorOut = 0;
-            System.out.println("ELEVATOR STOPPED");
+          //  System.out.println("ELEVATOR STOPPED");
         }
 
 
@@ -233,13 +230,13 @@ public final class Elevator extends Subsystem implements Sendable {
         boolean maxFlag = !limitSwitchMax.get();
         boolean minFlag = !limitSwitchMin.get();
 
-        System.out.println("\n\nELEVATOR INPUT");
-        System.out.println("Max switch: " + maxFlag);
-        System.out.println("Min switch: " + minFlag + "\n\n");
+//        System.out.println("\n\nELEVATOR INPUT");
+//        System.out.println("Max switch: " + maxFlag);
+//        System.out.println("Min switch: " + minFlag + "\n\n");
 
 
         if(affectedBySwitches && ((maxFlag && elevPresetUp) || (minFlag && elevPresetDown))){
-            System.out.println("LIMIT CANCELLED PRESET");
+          //  System.out.println("LIMIT CANCELLED PRESET");
             return true;
         }
 
@@ -375,23 +372,19 @@ public final class Elevator extends Subsystem implements Sendable {
         if(getHeight() >= scaleHighValue - (2 * tolerance) || getHeight() <= scaleHighValue + (2 * tolerance)){
 
             if(elevPresetUp){
-                System.out.println("HIGH SLOW UP");
+              //  System.out.println("HIGH SLOW UP");
                 elevMotorMain.set(ControlMode.PercentOutput, 0.4);
             }
 
             else if(elevPresetDown){
-                System.out.println("HIGH SLOW DOWN");
+               // System.out.println("HIGH SLOW DOWN");
                 elevMotorMain.set(ControlMode.PercentOutput, -0.4);
             }
         }
 
         return getHeight() >= (scaleHighValue - tolerance) && getHeight() <= (scaleHighValue + tolerance);
     }
-
-
     //********************************************************************/
-
-
     /**
      * Mid scale
      *

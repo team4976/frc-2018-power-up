@@ -171,7 +171,7 @@ public final class LinkArm extends Subsystem implements Sendable {
             if(getArmEncoderValue() < dynamicLimit + 2000 && armInput > 0 && !deadFlag){
 
                 if(getArmEncoderValue() <= dynamicLimit && elevatorHeight != 0){
-                    System.out.println("Motor stopped at: " + getArmEncoderValue());
+                   // System.out.println("Motor stopped at: " + getArmEncoderValue());
                     motorOut = 0;
                 }
 
@@ -215,7 +215,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         boolean minFlag = !armSwitchMin.get();
 
         if(maxFlag && armPresetUp || minFlag && armPresetDown){
-            System.out.println("arm cancelled");
+          //  System.out.println("arm cancelled");
             return true;
         }
 
@@ -262,8 +262,8 @@ public final class LinkArm extends Subsystem implements Sendable {
     public boolean checkArmTarget(){
         double motorOut = 0;
 
-        System.out.println("\n\nChecking for target at: " + target);
-        System.out.println("Arm encoder during preset: " + getArmEncoderValue() + "\n\n");
+//        System.out.println("\n\nChecking for target at: " + target);
+//        System.out.println("Arm encoder during preset: " + getArmEncoderValue() + "\n\n");
 
         if(Math.abs(getArmEncoderValue() - target) < 1500){// && !slowSet) {
 
@@ -281,7 +281,7 @@ public final class LinkArm extends Subsystem implements Sendable {
                 }
             }
 
-            System.out.println("ARM SLOW");
+//            System.out.println("ARM SLOW");
             armSpeedMultiplier = Math.abs(((getArmEncoderValue() - target) / 10000) * 3);
             armMotor.set(ControlMode.PercentOutput, motorOut * armSpeedMultiplier);
 ////            slowSet = true;

@@ -66,12 +66,9 @@ public final class CubeHandler extends Subsystem implements Sendable {
             grabberI.set(PercentOutput, notFast);
             currentFlag = true;
         }
-
-//        System.out.println("\n\n*********THE CURRENT IS " + grabberI.getOutputCurrent());
-//        System.out.println("*********THE COUNTER IS " + intakeCounter + "\n\n");
-
         intakeCounter++;
     }
+
     public void spitGear(){
         grabberI.set(PercentOutput, -Spit);
         currentFlag = false;

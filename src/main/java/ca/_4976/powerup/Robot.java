@@ -34,7 +34,7 @@ import static ca.qormix.library.Lazy.use;
 
 public final class Robot extends IterativeRobot {
 
-    private String gameData = DriverStation.getInstance().getGameSpecificMessage();
+
     public static OI oi;
     public final static Elevator elevator = new Elevator();
     public final static LinkArm linkArm = new LinkArm();
@@ -60,6 +60,7 @@ public final class Robot extends IterativeRobot {
     public final NetworkTableEntry leftSelected =  table.getEntry("Left Auto Selected");
     public final NetworkTableEntry centerSelected =  table.getEntry("Center Auto Selected");
     public final NetworkTableEntry rightSelected =  table.getEntry("Right auto Selected");
+    public final NetworkTableEntry straightSelected =  table.getEntry("Straight auto Selected");
 
 
 
@@ -89,6 +90,7 @@ public final class Robot extends IterativeRobot {
         leftSelected.setDefaultBoolean(false);
         centerSelected.setDefaultBoolean(false);
         rightSelected.setDefaultBoolean(false);
+        straightSelected.setDefaultBoolean(false);
     }
 
     @Override public void disabledInit() {
@@ -99,40 +101,45 @@ public final class Robot extends IterativeRobot {
 
     @Override public void autonomousInit() {
 
-       char switchPosition = gameData.charAt(0);
-       char scalePosition = gameData.charAt(1);
-
-       if (leftSelected.getBoolean(false)){
-           if(switchSelect.getBoolean(false)){
-               if (switchPosition == 'L'){
+        String gameData = DriverStation.getInstance().getGameSpecificMessage();
+        if (gameData!= null){
+            char switchPosition = gameData.charAt(0);
+            char scalePosition = gameData.charAt(1);
+            if (straightSelected.getBoolean(false)){
+                new LoadProfile("DriveStraight.csv").start();
+                new RunProfile().start();
+            } else {
+                if (leftSelected.getBoolean(false)){
+                if(switchSelect.getBoolean(false)){
+                if (switchPosition == 'L'){
                    new LoadProfile("LeftSelectedSwitchSelectedSwitchLeft.csv").start();
                    new RunProfile().start();
-               } else if (switchPosition == 'R'){
+                } else if (switchPosition == 'R'){
                    new LoadProfile("LeftSelectedSwitchSelectedSwitchRight.csv").start();
                    new RunProfile().start();
-               }
-           } else if (scaleSelected.getBoolean(false)){
-               if (scalePosition == 'L'){
-                   new LoadProfile("LeftSelectedScaleSelectedScaleLeft.csv").start();
-                   new RunProfile().start();
-               } else if (scalePosition == 'R'){
-                   new LoadProfile("LeftSelectedScaleSelectedScaleRight.csv").start();
-                   new RunProfile().start();
-               }
-           } else if (autoSelected.getBoolean(false)){
-               if (scalePosition == 'L') {
-                   new LoadProfile("LeftSelectedScaleSelectedScaleLeftAuto.csv").start();
-                   new RunProfile().start();
-               } else if (switchPosition == 'L'){
-                   new LoadProfile("LeftSelectedSwitchSelectedSwitchLeftAuto.csv").start();
-                   new RunProfile().start();
-               }
-           }
-       } else if (centerSelected.getBoolean(false)){
-           if(switchSelect.getBoolean(false)){
-               if (switchPosition == 'L'){
-                   new LoadProfile("CenterSelectedSwitchSelectedSwitchLeft.csv").start();
-                   new RunProfile().start();
+                }
+                } else if (scaleSelected.getBoolean(false)){
+                    if (scalePosition == 'L'){
+                        new LoadProfile("LeftSelectedScaleSelectedScaleLeft.csv").start();
+                        new RunProfile().start();
+                    } else if (scalePosition == 'R'){
+                        new LoadProfile("LeftSelectedScaleSelectedScaleRight.csv").start();
+                        new RunProfile().start();
+                    }
+                } else if (autoSelected.getBoolean(false)){
+                    if (scalePosition == 'L') {
+                        new LoadProfile("LeftSelectedScaleSelectedScaleLeftAuto.csv").start();
+                        new RunProfile().start();
+                    } else if (switchPosition == 'L'){
+                        new LoadProfile("LeftSelectedSwitchSelectedSwitchLeftAuto.csv").start();
+                        new RunProfile().start();
+                    }
+                }
+            } else if (centerSelected.getBoolean(false)){
+                    if(switchSelect.getBoolean(false)){
+                        if (switchPosition == 'L'){
+                         new LoadProfile("CenterSelectedSwitchSelectedSwitchLeft.csv").start();
+                         new RunProfile().start();
                } else if (switchPosition == 'R'){
                    new LoadProfile("CenterSelectedSwitchSelectedSwitchRight.csv").start();
                    new RunProfile().start();
@@ -147,33 +154,38 @@ public final class Robot extends IterativeRobot {
                }
            }
 
-       } else if (rightSelected.getBoolean(false)){
-           if(switchSelect.getBoolean(false)){
+        } else if (rightSelected.getBoolean(false)){
+            if(switchSelect.getBoolean(false)){
                if (switchPosition == 'L'){
                    new LoadProfile("RightSelectedSwitchSelectedSwitchLeft.csv").start();
                    new RunProfile().start();
                } else if (switchPosition == 'R'){
                    new LoadProfile("RightSelectedSwitchSelectedSwitchRight.csv").start();
                    new RunProfile().start();
-               }
-           } else if (scaleSelected.getBoolean(false)){
-               if (scalePosition == 'L'){
-                   new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
-                   new RunProfile().start();
-               } else if (scalePosition == 'R'){
-                   new LoadProfile("RightSelectedScaleSelectedScaleRight.csv").start();
-                   new RunProfile().start();
-               }
-           } else if (autoSelected.getBoolean(false)){
-               if (scalePosition == 'R') {
-                   new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
-                   new RunProfile().start();
-               } else if (switchPosition == 'R'){
-                   new LoadProfile("RightSelectedSwitchSelectedSwitchLeft.csv").start();
-                   new RunProfile().start();
-               }
-           }
-       }
+                }
+    } else if (scaleSelected.getBoolean(false)){
+        if (scalePosition == 'L'){
+            new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
+            new RunProfile().start();
+        } else if (scalePosition == 'R'){
+            new LoadProfile("RightSelectedScaleSelectedScaleRight.csv").start();
+            new RunProfile().start();
+        }
+    } else if (autoSelected.getBoolean(false)){
+        if (scalePosition == 'R') {
+            new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
+            new RunProfile().start();
+        } else if (switchPosition == 'R'){
+            new LoadProfile("RightSelectedSwitchSelectedSwitchLeft.csv").start();
+            new RunProfile().start();
+        }
+    }
+}
+        }} else {
+            System.out.println("Error no field variable found");
+            new LoadProfile("DriveStraight.csv").start();
+            new RunProfile().start();
+        }
 
     }
 
@@ -187,6 +199,11 @@ public final class Robot extends IterativeRobot {
         new DefaultGear().start();
         Scheduler.getInstance().run();
         log();
+        System.out.println("Left output current is " + Robot.drive.leftFront.getOutputCurrent());
+        System.out.println("Right output current is " + Robot.drive.rightFront.getOutputCurrent());
+        if (!Robot.drive.userControlEnabled){
+            System.out.println("User control: " + Robot.drive.userControlEnabled);
+        }
     }
     @Override public void testPeriodic(){
         recordProfile.start();

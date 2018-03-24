@@ -18,7 +18,7 @@ public class ArmCube extends ListenableCommand {
 
     @Override
     protected boolean isFinished() {
-        return Robot.linkArm.testArmInput() || Robot.linkArm.checkArmCube();
+        return Robot.elevator.testInputs(false) || Robot.linkArm.testArmInput() || Robot.linkArm.checkArmTarget();
     }
 
     @Override

@@ -7,12 +7,10 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * This command will toggle the transmission
  */
-public final class Transmission extends ListenableCommand {
-
-    public Transmission() { willRunWhenDisabled(); }
+public final class ShiftLow extends ListenableCommand {
 
     @Override protected void initialize() {
-        Robot.drive.switchGear();
+        Robot.drive.lowGear();
     }
 
     @Override protected boolean isFinished() { return true; }

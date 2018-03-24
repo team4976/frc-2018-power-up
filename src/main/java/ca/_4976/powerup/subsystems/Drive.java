@@ -25,16 +25,15 @@ import static ca.qormix.library.Lazy.using;
 public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // The pneumatic solenoid
-//    private DoubleSolenoid transmission = new DoubleSolenoid(5, 5, 6);
     private DoubleSolenoid transmission = new DoubleSolenoid(10, 3,2);
 
     // The left drive motors pwm pins 0 and 1
-    private VictorSPX leftFront = new VictorSPX(9);
-    private TalonSRX leftRear = new TalonSRX(12);
+    public VictorSPX leftFront = new VictorSPX(9);
+    public TalonSRX leftRear = new TalonSRX(12);
 
     // The right drive motors pwm pins 2 and 3
-    private VictorSPX rightFront = new VictorSPX(11);
-    private TalonSRX rightRear = new TalonSRX(13);
+    public VictorSPX rightFront = new VictorSPX(11);
+    public TalonSRX rightRear = new TalonSRX(13);
 
     // The encoders on the drive system
     private Encoder left = new Encoder(0, 1);
@@ -50,7 +49,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     // Flags
     private boolean ramping = false;
-    private boolean userControlEnabled = true;
+    public boolean userControlEnabled = true;
 
     //state og gear switch
     private boolean gear = false;
@@ -99,19 +98,27 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     /**
      * Applies Zero throttle to the drive motors
      */
-    public void stop() { setTankDrive(0, 0); }
+    public void stop() {   setTankDrive(0, 0); }
 
     public void arcadeDrive(Joystick joy) {
 
 
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
-        double elevatorAffectedDrive = (1.125-(Robot.elevator.getHeight()/3240))*forward;
+        double elevatorAffectedDrive = (1 -(Robot.elevator.getHeight()/3240))*forward;
+
+        if (elevatorAffectedDrive < -1){
+            elevatorAffectedDrive = -1;
+        } else if (elevatorAffectedDrive > 1){
+            elevatorAffectedDrive = 1;
+        }
         ///
         // Saves the joystick value as a power of 2 while still keeping the sign
         double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
 
         arcadeDrive(turn, elevatorAffectedDrive);
+
+
     }
 
     public void arcadeDrive(double turn, double forward) {
@@ -249,17 +256,27 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     public void switchGear(){
         if (gear == false){
             transmission.set(DoubleSolenoid.Value.kForward);
+            gear = true;
+
         }
         else{
-            transmission.set(DoubleSolenoid.Value.kOff);
+            transmission.set(DoubleSolenoid.Value.kReverse);
+            gear = false;
         }
 
-        gear = !gear;
     }
+
+    public void highGear(){
+        transmission.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void lowGear(){ transmission.set(DoubleSolenoid.Value.kReverse);}
+
 
     //set the default state for the gear switch
     public void defaultGear(){
-        gear = false;
-        transmission.set(DoubleSolenoid.Value.kOff);
+//        gear = false;
+//        transmission.set(DoubleSolenoid.Value.kReverse);
+//        System.out.println("default gear called");
     }
 }

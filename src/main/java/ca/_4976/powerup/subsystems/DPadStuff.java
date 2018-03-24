@@ -16,13 +16,9 @@ public class DPadStuff extends Subsystem  {
 
     public void getDpadPos(){
         if (Robot.oi.operator.getPOV() == 0){
-
         }
 
         else if (Robot.oi.operator.getPOV() == 90){
-
-            new ElevatorTarget(Robot.elevator.scaleLowValue).start();
-            new ArmTarget(Robot.linkArm.armLevelValue).start();
         }
 
         else if (Robot.oi.operator.getPOV() == 180){

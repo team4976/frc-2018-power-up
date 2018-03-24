@@ -23,7 +23,6 @@ public class ArmSwitch extends ListenableCommand{
 
     @Override
     protected void end(){
-        System.out.println("Switch ended");
         Robot.linkArm.resetArmFlags();
         Robot.linkArm.setHoldingSpeed();
     }

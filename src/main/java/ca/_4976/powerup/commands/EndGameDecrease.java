@@ -13,7 +13,7 @@ public class EndGameDecrease extends ListenableCommand {
     protected void execute(){
         Robot.climber.endGameDecrease();
         if(Robot.climber.endGameToggle < 2){
-            Robot.elevator.stop();
+            Robot.elevator.holdElevator();
             //endgamedecrease
         }
     }

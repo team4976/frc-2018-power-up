@@ -20,15 +20,17 @@ public final class OI {
 
         new JoystickButton(driver,8).whenPressed(new RecordProfile());
         new JoystickButton(driver,7).whenPressed(new RunProfile());
-//        new JoystickButton(driver, 4).whenPressed(new Transmission());
+       // new JoystickButton(driver, 4).whenPressed(new Transmission());
+        new JoystickButton(driver, 4).whenPressed(new ShiftHigh());
+        new JoystickButton(driver, 4).whenReleased(new ShiftLow());
 
         new JoystickButton(driver, 1).whenPressed(new CubeCube());
         new JoystickButton(driver, 3).whenPressed(new CancelCubeCube());
         new JoystickButton(driver, 2).whileHeld(new SpitCubeCube());
         new JoystickButton(driver, 2).whenReleased(new CancelCubeCube());
-//        new JoystickButton(driver, 7).whenPressed(new Transmission());
-//
-//        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
+
+
+        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
 //
 //        //Used for deploying the ramp
 //        new JoystickButton(driver, 8).whenPressed(new DeployRamp());
@@ -43,15 +45,19 @@ public final class OI {
         //Presets
 
         //High scale
-        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
+//        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
         new JoystickButton(operator, 4).whenPressed(new Arm45());
 
+        //Low Scale
+//        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
+
+
         //Switch
-        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
+//        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
         new JoystickButton(operator, 5).whenPressed(new ArmSwitch());
 
         //Ground
-        new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
+//        new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
         new JoystickButton(operator, 1).whenPressed(new ArmLevel());
     }
 }

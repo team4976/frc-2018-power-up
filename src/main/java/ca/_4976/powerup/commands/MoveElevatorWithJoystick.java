@@ -24,7 +24,7 @@ public class MoveElevatorWithJoystick extends ListenableCommand {
     }
 
     @Override protected void end() {
-        Robot.elevator.stop();
+        Robot.elevator.holdElevator();
     }
 
 

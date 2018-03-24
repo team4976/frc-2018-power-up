@@ -35,12 +35,12 @@ public class CubeCube extends ListenableCommand{
     @Override
     protected void end(){
 
-        if(Robot.cubeHandler.getAButtonCount() == 2  && !Robot.motion.isRecording()){
-            new AutoCube().start();
-        }
-
-        else {
-            Robot.cubeHandler.resetFlags();
-        }
+//        if(Robot.cubeHandler.getAButtonCount() == 2  && !Robot.motion.isRecording()){
+//            new ArmSwitch().start();
+//        }
+//
+//        else {
+//            Robot.cubeHandler.resetFlags();
+//        }
     }
 }

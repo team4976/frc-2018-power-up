@@ -27,6 +27,6 @@ public class ElevatorTarget extends ListenableCommand {
     @Override
     protected void end(){
         Robot.elevator.resetPresetFlags();
-        Robot.elevator.stop();
+        Robot.elevator.holdElevator();
     }
 }

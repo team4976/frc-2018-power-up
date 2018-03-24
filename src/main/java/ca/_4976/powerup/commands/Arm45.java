@@ -23,7 +23,6 @@ public class Arm45 extends ListenableCommand{
 
     @Override
     protected void end(){
-        System.out.println("45 Ended");
         Robot.linkArm.resetArmFlags();
         Robot.linkArm.setHoldingSpeed();
     }

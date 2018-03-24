@@ -21,11 +21,6 @@ public class ArmTarget extends ListenableCommand {
     }
 
     @Override
-    protected void execute(){
-        System.out.println("STILL GOINVG");
-    }
-
-    @Override
     protected boolean isFinished() {
         return Robot.elevator.testInputs(false) || Robot.linkArm.testArmInput() || Robot.linkArm.checkArmTarget();
     }

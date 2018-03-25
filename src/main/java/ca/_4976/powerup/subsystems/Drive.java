@@ -56,6 +56,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     public Drive() {
 
+
         left.setDistancePerPulse(0.0001114);
         right.setDistancePerPulse(0.0001114);
 
@@ -267,10 +268,10 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     }
 
     public void highGear(){
-        transmission.set(DoubleSolenoid.Value.kForward);
+        transmission.set(DoubleSolenoid.Value.kReverse);
     }
 
-    public void lowGear(){ transmission.set(DoubleSolenoid.Value.kReverse);}
+    public void lowGear(){ transmission.set(DoubleSolenoid.Value.kForward);}
 
 
     //set the default state for the gear switch

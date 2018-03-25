@@ -45,19 +45,19 @@ public final class OI {
         //Presets
 
         //High scale
-//        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
-        new JoystickButton(operator, 4).whenPressed(new Arm45());
+        new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
+//        new JoystickButton(operator, 4).whenPressed(new Arm45());
 
         //Low Scale
 //        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
 
 
         //Switch
-//        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
-        new JoystickButton(operator, 5).whenPressed(new ArmSwitch());
+        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
+//        new JoystickButton(operator, 5).whenPressed(new ArmSwitch());
 
         //Ground
-//        new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
-        new JoystickButton(operator, 1).whenPressed(new ArmLevel());
+        new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
+//        new JoystickButton(operator, 1).whenPressed(new ArmLevel());
     }
 }

@@ -7,10 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,7 +29,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     public TalonSRX leftRear = new TalonSRX(12);
 
     // The right drive motors pwm pins 2 and 3
-    public VictorSPX rightFront = new VictorSPX(11);
+    public TalonSRX rightFront = new TalonSRX(11);
     public TalonSRX rightRear = new TalonSRX(13);
 
     // The encoders on the drive system
@@ -214,10 +211,12 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     public synchronized void setTankDrive(double left, double right) {
 
         leftRear.set(ControlMode.PercentOutput, left);
+//        System.out.println("The left output value is " + left);
         leftFront.follow(leftRear);
 
         rightRear.set(ControlMode.PercentOutput, right);
-        rightFront.follow(rightRear);
+//        System.out.println("The right output value is " + right);
+        rightFront.set(ControlMode.PercentOutput, right);
     }
 
     /**
@@ -258,7 +257,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         if (gear == false){
             transmission.set(DoubleSolenoid.Value.kForward);
             gear = true;
-
         }
         else{
             transmission.set(DoubleSolenoid.Value.kReverse);
@@ -279,5 +277,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 //        gear = false;
 //        transmission.set(DoubleSolenoid.Value.kReverse);
 //        System.out.println("default gear called");
+    }
+    public void vision (){
+        CameraServer.getInstance().startAutomaticCapture();
     }
 }

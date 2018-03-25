@@ -1,14 +1,10 @@
 package ca._4976.powerup;
 
+import ca._4976.powerup.commands.*;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.Drive;
 import ca._4976.powerup.subsystems.Motion;
 import ca._4976.powerup.subsystems.CubeHandler;
-import ca._4976.powerup.commands.DefaultGear;
-import ca._4976.powerup.commands.ElevEncoderReset;
-import ca._4976.powerup.commands.RecordProfile;
-import ca._4976.powerup.commands.RunProfile;
-import ca._4976.powerup.commands.LoadProfile;
 import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.*;
 import edu.wpi.first.networktables.NetworkTable;
@@ -63,7 +59,6 @@ public final class Robot extends IterativeRobot {
     public final NetworkTableEntry straightSelected =  table.getEntry("Straight auto Selected");
 
 
-
     public final NetworkTableEntry profiles =  table.getEntry("Profiles");
 
 
@@ -78,6 +73,7 @@ public final class Robot extends IterativeRobot {
 
         linkArm.resetArmEncoder();
         new DefaultGear().start();
+        new Vision().start();
 
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);
@@ -102,92 +98,62 @@ public final class Robot extends IterativeRobot {
     @Override public void autonomousInit() {
 
         String gameData = DriverStation.getInstance().getGameSpecificMessage();
-        if (gameData!= null){
+        if (gameData != null) {
             char switchPosition = gameData.charAt(0);
             char scalePosition = gameData.charAt(1);
-            if (straightSelected.getBoolean(false)){
+            if (straightSelected.getBoolean(false)) {
                 new LoadProfile("DriveStraight.csv").start();
                 new RunProfile().start();
             } else {
-                if (leftSelected.getBoolean(false)){
-                if(switchSelect.getBoolean(false)){
-                if (switchPosition == 'L'){
-                   new LoadProfile("LeftSelectedSwitchSelectedSwitchLeft.csv").start();
-                   new RunProfile().start();
-                } else if (switchPosition == 'R'){
-                   new LoadProfile("LeftSelectedSwitchSelectedSwitchRight.csv").start();
-                   new RunProfile().start();
-                }
-                } else if (scaleSelected.getBoolean(false)){
-                    if (scalePosition == 'L'){
-                        new LoadProfile("LeftSelectedScaleSelectedScaleLeft.csv").start();
-                        new RunProfile().start();
-                    } else if (scalePosition == 'R'){
-                        new LoadProfile("LeftSelectedScaleSelectedScaleRight.csv").start();
-                        new RunProfile().start();
-                    }
-                } else if (autoSelected.getBoolean(false)){
+                if (leftSelected.getBoolean(false)) {
                     if (scalePosition == 'L') {
-                        new LoadProfile("LeftSelectedScaleSelectedScaleLeftAuto.csv").start();
+                        new LoadProfile("ScaleLeft.csv").start();
                         new RunProfile().start();
-                    } else if (switchPosition == 'L'){
-                        new LoadProfile("LeftSelectedSwitchSelectedSwitchLeftAuto.csv").start();
+                    }
+                    else if (switchPosition == 'L') {
+                        new LoadProfile("LeftSwitch.csv").start();
+                        new RunProfile().start();
+                    }
+                    else {
+                        new LoadProfile("DriveStraight.csv").start();
                         new RunProfile().start();
                     }
                 }
-            } else if (centerSelected.getBoolean(false)){
-                    if(switchSelect.getBoolean(false)){
-                        if (switchPosition == 'L'){
-                         new LoadProfile("CenterSelectedSwitchSelectedSwitchLeft.csv").start();
-                         new RunProfile().start();
-               } else if (switchPosition == 'R'){
-                   new LoadProfile("CenterSelectedSwitchSelectedSwitchRight.csv").start();
-                   new RunProfile().start();
-               }
-           } else if (scaleSelected.getBoolean(false)){
-               if (scalePosition == 'L'){
-                   new LoadProfile("CenterSelectedScaleSelectedScaleLeft.csv").start();
-                   new RunProfile().start();
-               } else if (scalePosition == 'R'){
-                   new LoadProfile("CenterSelectedScaleSelectedScaleRight.csv").start();
-                   new RunProfile().start();
-               }
-           }
+                else if (centerSelected.getBoolean(false)) {
+                    if (switchSelect.getBoolean(false)) {
+                        if (switchPosition == 'L') {
+                            new LoadProfile("CenterSelectedSwitchSelectedSwitchLeft.csv").start();
+                            new RunProfile().start();
+                        } else if (switchPosition == 'R') {
+                            new LoadProfile("CenterSelectedSwitchSelectedSwitchRight.csv").start();
+                            new RunProfile().start();
+                        }
+                    }
 
-        } else if (rightSelected.getBoolean(false)){
-            if(switchSelect.getBoolean(false)){
-               if (switchPosition == 'L'){
-                   new LoadProfile("RightSelectedSwitchSelectedSwitchLeft.csv").start();
-                   new RunProfile().start();
-               } else if (switchPosition == 'R'){
-                   new LoadProfile("RightSelectedSwitchSelectedSwitchRight.csv").start();
-                   new RunProfile().start();
+                } else if (rightSelected.getBoolean(false)) {
+                     if (scalePosition == 'R') {
+                        new LoadProfile("ScaleRight.csv").start();
+                        new RunProfile().start();
+                    }
+                    else if (switchPosition == 'R') {
+                        new LoadProfile("RightSwitch.csv").start();
+                        new RunProfile().start();
+                    }
+
+                    else {
+                        new LoadProfile("DriveStraight.csv").start();
+                        new RunProfile().start();
+                    }
                 }
-    } else if (scaleSelected.getBoolean(false)){
-        if (scalePosition == 'L'){
-            new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
-            new RunProfile().start();
-        } else if (scalePosition == 'R'){
-            new LoadProfile("RightSelectedScaleSelectedScaleRight.csv").start();
-            new RunProfile().start();
-        }
-    } else if (autoSelected.getBoolean(false)){
-        if (scalePosition == 'R') {
-            new LoadProfile("RightSelectedScaleSelectedScaleLeft.csv").start();
-            new RunProfile().start();
-        } else if (switchPosition == 'R'){
-            new LoadProfile("RightSelectedSwitchSelectedSwitchLeft.csv").start();
-            new RunProfile().start();
-        }
-    }
-}
-        }} else {
+            }
+        } else {
             System.out.println("Error no field variable found");
             new LoadProfile("DriveStraight.csv").start();
             new RunProfile().start();
         }
-
     }
+
+
 
     @Override public void autonomousPeriodic(){
       //  runProfile.start();
@@ -195,12 +161,15 @@ public final class Robot extends IterativeRobot {
         log();
     }
 
+    @Override public void teleopInit(){
+       //Robot.drive.lowGear();
+    }
+
+
     @Override public void teleopPeriodic(){
         new DefaultGear().start();
         Scheduler.getInstance().run();
         log();
-        System.out.println("Left output current is " + Robot.drive.leftFront.getOutputCurrent());
-        System.out.println("Right output current is " + Robot.drive.rightFront.getOutputCurrent());
         if (!Robot.drive.userControlEnabled){
             System.out.println("User control: " + Robot.drive.userControlEnabled);
         }

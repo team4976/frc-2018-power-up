@@ -29,8 +29,9 @@ public final class OI {
         new JoystickButton(driver, 2).whileHeld(new SpitCubeCube());
         new JoystickButton(driver, 2).whenReleased(new CancelCubeCube());
 
-
-        new JoystickButton(operator, 8).whenPressed(new ActivateClimber());
+        //Climbing controls
+//        new JoystickButton(operator, 6).whenPressed(new ActivateClimber());
+//        new JoystickButton(operator, 5).whenPressed(new DeactivateClimber());
 //
 //        //Used for deploying the ramp
 //        new JoystickButton(driver, 8).whenPressed(new DeployRamp());
@@ -46,18 +47,17 @@ public final class OI {
 
         //High scale
         new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
-//        new JoystickButton(operator, 4).whenPressed(new Arm45());
+        new JoystickButton(operator, 4).whenPressed(new Arm45());
 
         //Low Scale
 //        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
 
-
         //Switch
-        new JoystickButton(operator, 5).whenPressed(new ElevatorGround());
-//        new JoystickButton(operator, 5).whenPressed(new ArmSwitch());
+        new JoystickButton(operator, 3).whenPressed(new ElevatorGround());
+        new JoystickButton(operator, 3).whenPressed(new ArmSwitch());
 
         //Ground
         new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
-//        new JoystickButton(operator, 1).whenPressed(new ArmLevel());
+        new JoystickButton(operator, 1).whenPressed(new ArmLevel());
     }
 }

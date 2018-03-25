@@ -12,6 +12,6 @@ public class Climb extends ListenableCommand {
 
     @Override
     protected boolean isFinished() {
-        return false;
+        return true;
     }
 }

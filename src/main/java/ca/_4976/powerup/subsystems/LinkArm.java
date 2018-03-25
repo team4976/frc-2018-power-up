@@ -272,17 +272,17 @@ public final class LinkArm extends Subsystem implements Sendable {
             }
 
             else if(armPresetDown){
-                if(target < 0 - 500){
-                    motorOut = motorSpeed;
+                if(target < -500){
+                    motorOut = 0.7 * motorSpeed;
                 }
 
                 else {
-                    motorOut = 0.7 * motorSpeed;
+                    motorOut = motorSpeed;
                 }
             }
 
 //            System.out.println("ARM SLOW");
-            armSpeedMultiplier = Math.abs(((getArmEncoderValue() - target) / 10000) * 3);
+            armSpeedMultiplier = Math.abs(((getArmEncoderValue() - target) / 10000) * 2);
             armMotor.set(ControlMode.PercentOutput, motorOut * armSpeedMultiplier);
 //            slowSet = true;
         }

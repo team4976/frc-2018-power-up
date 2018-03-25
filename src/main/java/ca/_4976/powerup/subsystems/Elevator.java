@@ -42,9 +42,9 @@ public final class Elevator extends Subsystem implements Sendable {
     private double presetOutput;
     private double tolerance;
     private double speedMultiplier;
-    private final double normalSpeed = 0.9;
+    private final double normalSpeed = 1;
     private final double slowSpeed = 0.4;
-    private final double holdingSpeed = 0.2;
+    private final double holdingSpeed = 0.12;
     private double target;
 
     public static double elevMaxValue = 2300 / 2.057,
@@ -67,6 +67,7 @@ public final class Elevator extends Subsystem implements Sendable {
         //Preset tolerance
         tolerance = 150;
     }
+
 
 
     @Override
@@ -99,14 +100,15 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
-      //      System.out.println("MANUAL: ELEVATOR ENCODER: " + getHeight());
+//            System.out.println("MANUAL: ELEVATOR ENCODER: " + getHeight());
 
+        System.out.println("Manual control");
 
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),
         oobInput = 0, // value used for out of bounds processing
-        motorOut = 0,
+        motorOut = holdingSpeed,
         armHeight = Robot.linkArm.getArmEncoderValue(),
         dynamicLimit,
         armTarget,
@@ -130,16 +132,17 @@ public final class Elevator extends Subsystem implements Sendable {
                 Math.abs(operatorInput) <= deadRange) {
 
             deadZoneFlag = true;
+            speedMultiplier = 1;
             motorOut = holdingSpeed;
             multiSet = true;
         }
 
-        else if (Math.abs(driverInput) > deadRange) {
+        else if (Math.abs(driverInput) > deadRange && !Robot.motion.isRunning()) {
             driverFlag = true;
             motorOut = driverInput;
         }
 
-        else if (Math.abs(operatorInput) > deadRange) {
+        else if (Math.abs(operatorInput) > deadRange && !Robot.motion.isRunning()) {
             operatorFlag = true;
             motorOut = operatorInput;
         }
@@ -157,21 +160,11 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //Limit switches
         if((maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)){
+            System.out.println("Switch hit");
             motorOut = holdingSpeed;
             multiSet = true;
         }
 
-//        //Normal
-//        else {
-//            //Downward speed adjustment
-//            if(oobInput > 0){
-//                motorOut = 0.7 * oobInput;
-//            }
-//
-//            else{
-//                motorOut = oobInput;
-//            }
-//        }
 
         //TODO FIX ARM ENCODER
 
@@ -208,8 +201,8 @@ public final class Elevator extends Subsystem implements Sendable {
         //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
 
-            if((getHeight() > elevMaxValue - 300 && oobInput > 0) ||
-                    (getHeight() < groundValue + 300  && oobInput < 0) && !multiSet)
+            if((getHeight() > elevMaxValue - 500 && oobInput > 0) ||
+                    (getHeight() < groundValue + 500  && oobInput < 0) && !multiSet)
             {
                 speedMultiplier = slowSpeed;
             }
@@ -218,6 +211,7 @@ public final class Elevator extends Subsystem implements Sendable {
                 speedMultiplier = normalSpeed;
             }
 
+            System.out.println("Output: " + motorOut * speedMultiplier);
             elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
         }
     }
@@ -358,11 +352,11 @@ public final class Elevator extends Subsystem implements Sendable {
      * Simply runs motors for use in Climber subsystem & commands
      */
     public void climb(){
-        elevMotorMain.set(ControlMode.PercentOutput, -0.5);
+        elevMotorMain.set(ControlMode.PercentOutput, -1);
     }
 
     public void down(){
-        elevMotorMain.set(ControlMode.PercentOutput, 0.5);
+        elevMotorMain.set(ControlMode.PercentOutput, 0.6);
     }
 
     /**

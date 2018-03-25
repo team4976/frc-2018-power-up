@@ -2,9 +2,12 @@
 package ca._4976.powerup.subsystems;
 
 
+import ca._4976.powerup.Robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -31,7 +34,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
             NetworkTableEntry spit = it.getEntry("Spit");
 
             fullSpeed.setDefaultDouble(-0.8);
-            slowSpeed.setDefaultDouble(-0.2);
+            slowSpeed.setDefaultDouble(-0.3);
             current.setDefaultDouble(35);
             spit.setDefaultDouble(0.4); //1 LOUD AF
             Spit=spit.getDouble(0);
@@ -65,12 +68,17 @@ public final class CubeHandler extends Subsystem implements Sendable {
         if (grabberI.getOutputCurrent() > grabCurrent && intakeCounter > 10) {
             grabberI.set(PercentOutput, notFast);
             currentFlag = true;
+            Robot.oi.driver.setRumble(GenericHID.RumbleType.kLeftRumble, 1);
+            Robot.oi.operator.setRumble(GenericHID.RumbleType.kLeftRumble, 1);
         }
         intakeCounter++;
     }
 
     public void spitGear(){
         grabberI.set(PercentOutput, Spit);
+        Robot.oi.operator.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+        Robot.oi.driver.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+
         currentFlag = false;
         intakeCounter = 0;
     }

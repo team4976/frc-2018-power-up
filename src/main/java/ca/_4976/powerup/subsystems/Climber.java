@@ -18,20 +18,20 @@ public class Climber extends Subsystem {
     //Variable used to determine if left/right bumper was pressed.
     public int endGameToggle = 0;
 
-    public void run(){}
-
     //When the start button on the operator controller is pressed change the elevator gear from low to high and vice-versa
     //Also toggles the guides used for climbing
     public void activateClimber(){
-        if(!lowGearElevator) {
-            climbingShift.set(DoubleSolenoid.Value.kForward);
-            guides.set(DoubleSolenoid.Value.kReverse);
-            lowGearElevator = true;
-        } else if (lowGearElevator){
-            climbingShift.set(DoubleSolenoid.Value.kReverse);
-            guides.set(DoubleSolenoid.Value.kForward);
-            lowGearElevator = false;
-        }
+
+        climbingShift.set(DoubleSolenoid.Value.kForward);
+        guides.set(DoubleSolenoid.Value.kReverse);
+        lowGearElevator = true;
+    }
+
+    public void deactivateClimber(){
+
+        climbingShift.set(DoubleSolenoid.Value.kReverse);
+        guides.set(DoubleSolenoid.Value.kForward);
+        lowGearElevator = false;
     }
 
     //Increases the variable endGameToggle, which is used to say when we are ready to climb

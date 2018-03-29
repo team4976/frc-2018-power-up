@@ -8,6 +8,7 @@ import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.ArmTarget;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -25,49 +26,49 @@ import static ca.qormix.library.Lazy.use;
 public final class Elevator extends Subsystem implements Sendable {
 
     // Elevator motors
-    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2);
+    private final TalonSRX elevMotorMain = new TalonSRX(2);
     private final VictorSPX elevSlave1 = new VictorSPX(3);
-    private final WPI_TalonSRX elevSustainableFreeLegalUnionizedLaborer = new WPI_TalonSRX(8);
+    private final TalonSRX elevSustainableFreeLegalUnionizedLaborer = new TalonSRX(8);
 
     // Encoder on elevator
     public final Encoder elevEncoder = new Encoder(4, 5);
 
-
     private final DigitalInput limitSwitchMax = new DigitalInput(6);
     private final DigitalInput limitSwitchMin = new DigitalInput(7);
 
-    private final AnalogInput testSwitch = new AnalogInput(0);
-
-    // Preset values
+    // Processing values
     private double presetOutput;
     private double tolerance;
     private double speedMultiplier;
     private final double normalSpeed = 1;
-    private final double slowSpeed = 0.4;
+    private final double slowSpeed = 0.25;
     private final double holdingSpeed = 0.12;
     private double target;
 
+    // Preset values
     public static double elevMaxValue = 2300 / 2.057,
     scaleHighValue = 2100 / 2.057,
     scaleLowValue = 1220 / 2.057,
     limitValue = 750 /2.057,
     groundValue = 0;
 
-    public boolean elevPresetUp = false;
-    public boolean elevPresetDown = false;
+    // Preset control
+    private boolean elevPresetUp = false;
+    private boolean elevPresetDown = false;
+
+    // Climber tracker
+    private boolean isShifted = false;
 
     public Elevator() {
-
         elevSlave1.follow(elevMotorMain);
         elevSustainableFreeLegalUnionizedLaborer.follow(elevMotorMain);
 
         //Output value for presets
-        presetOutput = 0.8;//normalSpeed;
+        presetOutput = normalSpeed;
 
         //Preset tolerance
         tolerance = 150;
     }
-
 
 
     @Override
@@ -86,12 +87,16 @@ public final class Elevator extends Subsystem implements Sendable {
         elevEncoder.reset();
     }
 
-    public boolean getSwitches(){
-        return !limitSwitchMax.get() || !limitSwitchMin.get();
-    }
-
     public void holdElevator(){
         elevMotorMain.set(ControlMode.PercentOutput, holdingSpeed);
+    }
+
+    public void setClimberShifted(boolean isShifted){
+        this.isShifted = isShifted;
+    }
+
+    public boolean getClimberShifted(){
+        return isShifted;
     }
 
     /**
@@ -137,14 +142,12 @@ public final class Elevator extends Subsystem implements Sendable {
             multiSet = true;
         }
 
-        else if (Math.abs(driverInput) > deadRange && !Robot.motion.isRunning()) {
+        else if (Math.abs(driverInput) > deadRange) {
             driverFlag = true;
-            motorOut = driverInput;
         }
 
-        else if (Math.abs(operatorInput) > deadRange && !Robot.motion.isRunning()) {
+        else if (Math.abs(operatorInput) > deadRange) {
             operatorFlag = true;
-            motorOut = operatorInput;
         }
 
         //Output processing
@@ -156,8 +159,6 @@ public final class Elevator extends Subsystem implements Sendable {
             oobInput = operatorInput;
         }
 
-//        System.out.println("Elev input: " + oobInput);
-
         //Limit switches
         if((maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)){
             System.out.println("Switch hit");
@@ -165,10 +166,20 @@ public final class Elevator extends Subsystem implements Sendable {
             multiSet = true;
         }
 
+        //Downward speed adjustment
+        else if(!getClimberShifted()){
+            if(oobInput < 0){
+                motorOut = 0.7 * oobInput;
+            }
 
-        //TODO FIX ARM ENCODER
+            else{
+                motorOut = oobInput;
+            }
+        }
 
-        /*//Elevator slow and stop bands (below limit)
+        // todo: Remodel for new elevator
+
+        //Elevator slow and stop bands (below limit)
         if(elevatorLimitReached){
 
             dynamicLimit = (armHeight + 3450.1)/-3.6503;
@@ -181,12 +192,11 @@ public final class Elevator extends Subsystem implements Sendable {
                     && getHeight() > 30)
             {
 
-                speedMultiplier = normalSpeed * 0.5;
+                speedMultiplier = slowSpeed;
                 multiSet = true;
 
                 while(Robot.linkArm.getArmEncoderValue() < armTarget) {
-                    if(oobInput > 0 || Robot.oi.
-                    tor.getRawAxis(5) < 0){
+                    if(oobInput > 0 || Robot.oi.operator.getRawAxis(5) < 0){
                         break;
                     }
 
@@ -195,7 +205,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
                 Robot.linkArm.setHoldingSpeed();
             }
-        }*/
+        }
 
 
         //Final output check
@@ -211,7 +221,6 @@ public final class Elevator extends Subsystem implements Sendable {
                 speedMultiplier = normalSpeed;
             }
 
-            System.out.println("Output: " + motorOut * speedMultiplier);
             elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
         }
     }

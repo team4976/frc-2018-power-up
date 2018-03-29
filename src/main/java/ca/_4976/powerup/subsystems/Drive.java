@@ -53,6 +53,11 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     public Drive() {
 
+//        todo: Add current limiting to drive motors - options below
+//        leftRear.configPeakCurrentLimit();
+//        leftRear.configPeakCurrentDuration();
+//        leftRear.configContinuousCurrentLimit();
+//        leftRear.enableCurrentLimit(true);
 
         left.setDistancePerPulse(0.0001114);
         right.setDistancePerPulse(0.0001114);

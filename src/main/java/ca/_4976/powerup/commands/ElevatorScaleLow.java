@@ -1,6 +1,7 @@
 package ca._4976.powerup.commands;
 
 import ca._4976.powerup.Robot;
+import ca._4976.powerup.subsystems.Elevator;
 
 /**
  * Created by 4976 on 2018-02-15.
@@ -13,7 +14,7 @@ public class ElevatorScaleLow extends ListenableCommand {
 
     @Override
     protected void initialize(){
-        Robot.elevator.moveToTarget(Robot.elevator.scaleLowValue);
+        Robot.elevator.moveToTarget(Elevator.scaleLowValue);
     }
 
     @Override
@@ -24,6 +25,5 @@ public class ElevatorScaleLow extends ListenableCommand {
     @Override
     protected void end(){
         Robot.elevator.resetPresetFlags();
-        Robot.elevator.holdElevator();
     }
 }

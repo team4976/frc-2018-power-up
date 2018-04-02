@@ -41,13 +41,13 @@ public final class Elevator extends Subsystem implements Sendable {
     private double tolerance;
     private double speedMultiplier;
     private final double normalSpeed = 1;
-    private final double slowSpeed = 0.25;
+    private final double slowSpeed = 0.4;
     private final double holdingSpeed = 0.12;
     private double target;
 
     // Preset values
     public static double elevMaxValue = 2300 / 2.057,
-    scaleHighValue = 2100 / 2.057,
+    scaleHighValue = elevMaxValue,//2100 / 2.057,
     scaleLowValue = 1220 / 2.057,
     limitValue = 750 /2.057,
     groundValue = 0;
@@ -167,7 +167,7 @@ public final class Elevator extends Subsystem implements Sendable {
         }
 
         //Downward speed adjustment
-        else if(!getClimberShifted()){
+        else if(!getClimberShifted() && !deadZoneFlag){
             if(oobInput < 0){
                 motorOut = 0.7 * oobInput;
             }
@@ -179,7 +179,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
         // todo: Remodel for new elevator
 
-        //Elevator slow and stop bands (below limit)
+       /* //Elevator slow and stop bands (below limit)
         if(elevatorLimitReached){
 
             dynamicLimit = (armHeight + 3450.1)/-3.6503;
@@ -205,14 +205,14 @@ public final class Elevator extends Subsystem implements Sendable {
 
                 Robot.linkArm.setHoldingSpeed();
             }
-        }
+        }*/
 
 
         //Final output check
         if(deadZoneFlag || driverFlag || operatorFlag) {
 
-            if((getHeight() > elevMaxValue - 500 && oobInput > 0) ||
-                    (getHeight() < groundValue + 500  && oobInput < 0) && !multiSet)
+            if((getHeight() > elevMaxValue - 200 && oobInput > 0) ||
+                    (getHeight() < groundValue + 350  && oobInput < 0) && !multiSet)
             {
                 speedMultiplier = slowSpeed;
             }
@@ -220,6 +220,7 @@ public final class Elevator extends Subsystem implements Sendable {
             else if(!multiSet){
                 speedMultiplier = normalSpeed;
             }
+
 
             elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
         }

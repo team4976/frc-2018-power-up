@@ -36,7 +36,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
             fullSpeed.setDefaultDouble(-0.8);
             slowSpeed.setDefaultDouble(-0.3);
             current.setDefaultDouble(35);
-            spit.setDefaultDouble(0.4); //1 LOUD AF
+            spit.setDefaultDouble(0.3); //1 LOUD AF
             Spit=spit.getDouble(0);
             speedFast=fullSpeed.getDouble(0);
             notFast=slowSpeed.getDouble(0);
@@ -68,8 +68,6 @@ public final class CubeHandler extends Subsystem implements Sendable {
         if (grabberI.getOutputCurrent() > grabCurrent && intakeCounter > 10) {
             grabberI.set(PercentOutput, notFast);
             currentFlag = true;
-            Robot.oi.driver.setRumble(GenericHID.RumbleType.kLeftRumble, 1);
-            Robot.oi.operator.setRumble(GenericHID.RumbleType.kLeftRumble, 1);
         }
         intakeCounter++;
     }

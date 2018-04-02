@@ -34,7 +34,7 @@ public final class LinkArm extends Subsystem implements Sendable {
     public double armHighValue = 0,
     arm45Value = -800,
     arm30Value = -1660,
-    armLevelValue = -3850,
+    armLevelValue = -3600,
     armMinValue = -5800;
 
     private boolean armPresetUp = false;
@@ -249,7 +249,7 @@ public final class LinkArm extends Subsystem implements Sendable {
         this.target = target;
         
         if(getArmEncoderValue() > target) {
-            armMotor.set(ControlMode.PercentOutput, motorSpeed);
+            armMotor.set(ControlMode.PercentOutput, 0.3 * motorSpeed);
             armPresetDown = true;
         }
 

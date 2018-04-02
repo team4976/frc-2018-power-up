@@ -67,7 +67,7 @@ public final class Elevator extends Subsystem implements Sendable {
         presetOutput = normalSpeed;
 
         //Preset tolerance
-        tolerance = 150;
+        tolerance = 25; //150
     }
 
 
@@ -107,13 +107,11 @@ public final class Elevator extends Subsystem implements Sendable {
 
 //            System.out.println("MANUAL: ELEVATOR ENCODER: " + getHeight());
 
-        System.out.println("Manual control");
-
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),
-        oobInput = 0, // value used for out of bounds processing
-        motorOut = holdingSpeed,
+        oobInput = 0, // value used for processing
+        motorOut = holdingSpeed, //initialized to holding speed. when needed, just set multiplier to 1 and multiset to true
         armHeight = Robot.linkArm.getArmEncoderValue(),
         dynamicLimit,
         armTarget,
@@ -125,49 +123,40 @@ public final class Elevator extends Subsystem implements Sendable {
         deadZoneFlag = false,
         driverFlag = false,
         operatorFlag = false,
-        multiSet = false;
+        multiplierSet = false;
 
         //Reset encoder at bottom
-        if(minFlag){
-            resetEncoder();
-        }
+        if(minFlag){ resetEncoder(); }
 
-        //Input processing
-        if (Math.abs(driverInput) <= deadRange &&
-                Math.abs(operatorInput) <= deadRange) {
 
-            deadZoneFlag = true;
+        // Input reading
+        if (Math.abs(driverInput) > deadRange) { driverFlag = true; }
+
+        else if (Math.abs(operatorInput) > deadRange) { operatorFlag = true; }
+
+
+        // Output processing
+        if(driverFlag){ oobInput = driverInput; }
+
+        else if(operatorFlag){ oobInput = operatorInput; }
+
+
+        // Stop/Hold conditions
+        if ((Math.abs(driverInput) <= deadRange && Math.abs(operatorInput) <= deadRange) //dead zone
+            || (maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)) { //switches
+
+            if(getHeight() < 10){
+                motorOut = 0; // Stop motors at bottom
+            }
+
             speedMultiplier = 1;
-            motorOut = holdingSpeed;
-            multiSet = true;
+            deadZoneFlag = true;
+            multiplierSet = true;
         }
 
-        else if (Math.abs(driverInput) > deadRange) {
-            driverFlag = true;
-        }
-
-        else if (Math.abs(operatorInput) > deadRange) {
-            operatorFlag = true;
-        }
-
-        //Output processing
-        if(driverFlag){
-            oobInput = driverInput;
-        }
-
-        else if(operatorFlag){
-            oobInput = operatorInput;
-        }
-
-        //Limit switches
-        if((maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)){
-            System.out.println("Switch hit");
-            motorOut = holdingSpeed;
-            multiSet = true;
-        }
 
         //Downward speed adjustment
-        else if(!getClimberShifted() && !deadZoneFlag){
+        if(!getClimberShifted() && !deadZoneFlag){
             if(oobInput < 0){
                 motorOut = 0.7 * oobInput;
             }
@@ -177,9 +166,13 @@ public final class Elevator extends Subsystem implements Sendable {
             }
         }
 
-        // todo: Remodel for new elevator
+        /**
+         * Proportional elevator/arm control to avoid collisions
+         */
 
-       /* //Elevator slow and stop bands (below limit)
+        /*
+        todo: Remodel for new elevator
+        //Elevator slow and stop bands (below limit)
         if(elevatorLimitReached){
 
             dynamicLimit = (armHeight + 3450.1)/-3.6503;
@@ -193,7 +186,7 @@ public final class Elevator extends Subsystem implements Sendable {
             {
 
                 speedMultiplier = slowSpeed;
-                multiSet = true;
+                multiplierSet = true;
 
                 while(Robot.linkArm.getArmEncoderValue() < armTarget) {
                     if(oobInput > 0 || Robot.oi.operator.getRawAxis(5) < 0){
@@ -205,19 +198,20 @@ public final class Elevator extends Subsystem implements Sendable {
 
                 Robot.linkArm.setHoldingSpeed();
             }
-        }*/
+        }
+        */
 
 
         //Final output check
-        if(deadZoneFlag || driverFlag || operatorFlag) {
+        if(deadZoneFlag || driverFlag || operatorFlag && !multiplierSet) {
 
+            // Top and bottom speed buffers
             if((getHeight() > elevMaxValue - 200 && oobInput > 0) ||
-                    (getHeight() < groundValue + 350  && oobInput < 0) && !multiSet)
-            {
+                    (getHeight() < groundValue + 350  && oobInput < 0)) {
                 speedMultiplier = slowSpeed;
             }
 
-            else if(!multiSet){
+            else {
                 speedMultiplier = normalSpeed;
             }
 
@@ -225,10 +219,6 @@ public final class Elevator extends Subsystem implements Sendable {
             elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
         }
     }
-
-
-    //********************************************************************/
-
 
     /**
      * Input test
@@ -257,13 +247,7 @@ public final class Elevator extends Subsystem implements Sendable {
             return true;
         }
 
-        else if (Math.abs(opInput) > deadRange) {
-            return true;
-        }
-
-        else {
-            return false;
-        }
+        else return Math.abs(opInput) > deadRange;
     }
 
     /**
@@ -280,9 +264,8 @@ public final class Elevator extends Subsystem implements Sendable {
         }
     }
 
-
     /**
-     * Target Preset
+     * Preset move + check method
      */
     public void moveToTarget(double target){
 
@@ -304,8 +287,9 @@ public final class Elevator extends Subsystem implements Sendable {
 
     public boolean checkTarget(){
 
-        double motorOut = 0;
-        if(Math.abs(getHeight() - target) < 200){
+        if(Math.abs(getHeight() - target) < 2 * tolerance){
+
+            double motorOut = 0;
 
             if(elevPresetUp){
                 motorOut = slowSpeed;
@@ -315,65 +299,10 @@ public final class Elevator extends Subsystem implements Sendable {
                 motorOut = -slowSpeed;
             }
 
-            elevMotorMain.set(ControlMode.PercentOutput, motorOut * 0.6);
+            elevMotorMain.set(ControlMode.PercentOutput, motorOut);
         }
 
         return getHeight() >= (target - tolerance) && getHeight() <= (target + tolerance);
-    }
-
-    /**
-     * Ground
-     *
-     * Move and check method
-     */
-    public void moveToGround() {
-
-        if(!elevPresetDown || !elevPresetUp) {
-
-            if (getHeight() > groundValue && limitSwitchMin.get()) {
-                elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
-                elevPresetDown = true;
-            }
-
-            else if (getHeight() < groundValue && limitSwitchMax.get()) {
-                elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
-                elevPresetUp = true;
-            }
-        }
-    }
-
-    public boolean checkGround(){
-
-        if(getHeight() >= groundValue - (2 * tolerance) || getHeight() <= groundValue + (2 * tolerance)){
-
-            if(elevPresetUp){
-                elevMotorMain.set(ControlMode.PercentOutput, 0.4);
-            }
-
-            else if(elevPresetDown){
-                elevMotorMain.set(ControlMode.PercentOutput, -0.3);
-            }
-        }
-
-        return getHeight() >= (groundValue - tolerance) && getHeight() <= groundValue + 5;
-    }
-
-    /**
-     * Simply runs motors for use in Climber subsystem & commands
-     */
-    public void climb(){
-        elevMotorMain.set(ControlMode.PercentOutput, -1);
-    }
-
-    public void down(){
-        elevMotorMain.set(ControlMode.PercentOutput, 0.6);
-    }
-
-    /**
-     * Take a wild guess
-     */
-    public void stop(){
-        elevMotorMain.set(ControlMode.PercentOutput, 0);
     }
 }
 

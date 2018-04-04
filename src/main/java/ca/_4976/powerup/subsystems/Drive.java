@@ -33,8 +33,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     public TalonSRX rightRear = new TalonSRX(13);
 
     // The encoders on the drive system
-    private Encoder left = new Encoder(0, 1);
-    private Encoder right = new Encoder(2, 3);
+    public Encoder left = new Encoder(0, 1);
+    public Encoder right = new Encoder(2, 3);
 
     // The ramping rate (change per second / ticks per second) { max accel, max jerk }
     private double[] ramp = new double[] { 1.0 / 200, 0.1 / 200 };
@@ -53,14 +53,9 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     public Drive() {
 
-//        todo: Add current limiting to drive motors - options below
-//        leftRear.configPeakCurrentLimit();
-//        leftRear.configPeakCurrentDuration();
-//        leftRear.configContinuousCurrentLimit();
-//        leftRear.enableCurrentLimit(true);
-
         left.setDistancePerPulse(0.0001114);
         right.setDistancePerPulse(0.0001114);
+
 
         // Adding our varables to NetworkTables
         use(NetworkTableInstance.getDefault().getTable("Drive"), it -> {
@@ -68,6 +63,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
             NetworkTableEntry tableEntry = it.getEntry("Ramp Rate");
 
             double[] rate = ramp;
+            //int allowableCurrent = 38;
+
 
             if (!tableEntry.exists()) {
 
@@ -80,6 +77,15 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
                 ramp = tableEntry.getDoubleArray(ramp);
 
             }, 0);
+
+            //leftRear.configPeakCurrentLimit(0,0);
+            //leftRear.configContinuousCurrentLimit(allowableCurrent, 0);
+
+            //rightRear.configPeakCurrentLimit(0,0);
+            //rightRear.configContinuousCurrentLimit(allowableCurrent, 0);
+
+            //leftRear.enableCurrentLimit(true);
+            //rightRear.enableCurrentLimit(true);
         });
 
         SmartDashboard.putData("Left Drive Encoder", left);
@@ -105,7 +111,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     public void arcadeDrive(Joystick joy) {
 
-
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
         double elevatorAffectedDrive = (1 -(Robot.elevator.getHeight()/3240))*forward;
@@ -118,6 +123,9 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         ///
         // Saves the joystick value as a power of 2 while still keeping the sign
         double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
+
+        System.out.println("Right front is " + rightFront.getOutputCurrent());
+
 
         arcadeDrive(turn, elevatorAffectedDrive);
 
@@ -221,7 +229,11 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
         rightRear.set(ControlMode.PercentOutput, right);
 //        System.out.println("The right output value is " + right);
-        rightFront.set(ControlMode.PercentOutput, right);
+       // rightFront.set(ControlMode.PercentOutput, right);
+        rightFront.follow(rightRear);
+        System.out.println("Right encoder "+right);
+        System.out.println("Left encoder "+left);
+
     }
 
     /**

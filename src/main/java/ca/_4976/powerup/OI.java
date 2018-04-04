@@ -30,8 +30,8 @@ public final class OI {
         new JoystickButton(driver, 2).whenReleased(new CancelCubeCube());
 
         //Climbing controls
-//        new JoystickButton(operator, 6).whenPressed(new ActivateClimber());
-//        new JoystickButton(operator, 5).whenPressed(new DeactivateClimber());
+        new JoystickButton(operator, 6).whenPressed(new ActivateClimber());
+        new JoystickButton(operator, 5).whenPressed(new DeactivateClimber());
 //
 //        //Used for deploying the ramp
 //        new JoystickButton(driver, 8).whenPressed(new DeployRamp());

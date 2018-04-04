@@ -108,7 +108,7 @@ public final class LinkArm extends Subsystem implements Sendable {
      * Motion limited proportional to elevator height past a certain point
      */
     public void moveLinkArm(){
-
+        System.out.println("Link arm encoder "+getArmEncoderValue());
         double deadRange = 0.15,
         elevatorHeight = Robot.elevator.getHeight(),
         dynamicLimit,

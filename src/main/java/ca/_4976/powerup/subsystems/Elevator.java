@@ -11,6 +11,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -38,7 +40,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
     // Processing values
     private double presetOutput;
-    private double tolerance;
+    private double tolerance = 25;
     private double speedMultiplier;
     private final double normalSpeed = 1;
     private final double slowSpeed = 0.4;
@@ -60,14 +62,23 @@ public final class Elevator extends Subsystem implements Sendable {
     private boolean isShifted = false;
 
     public Elevator() {
+
         elevSlave1.follow(elevMotorMain);
         elevSustainableFreeLegalUnionizedLaborer.follow(elevMotorMain);
 
         //Output value for presets
         presetOutput = normalSpeed;
 
-        //Preset tolerance
-        tolerance = 25; //150
+        use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
+
+            NetworkTableEntry holdingSpeed = it.getEntry("Holding Power");
+            NetworkTableEntry fastSpeed = it.getEntry("Fast Speed");
+            NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
+            NetworkTableEntry elevLimit = it.getEntry("Interlock Start Point");
+            NetworkTableEntry presetTol = it.getEntry("Preset Tolerance");
+
+
+        });
     }
 
 
@@ -106,7 +117,7 @@ public final class Elevator extends Subsystem implements Sendable {
     public void moveElevator() {
 
 //            System.out.println("MANUAL: ELEVATOR ENCODER: " + getHeight());
-
+        System.out.println("Elevator encoder "+elevEncoder.getDistance());
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),

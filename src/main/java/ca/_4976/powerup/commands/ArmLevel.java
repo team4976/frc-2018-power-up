@@ -25,6 +25,5 @@ public class ArmLevel extends ListenableCommand {
     protected void end(){
         System.out.println("Ground ended");
         Robot.linkArm.resetArmFlags();
-        Robot.linkArm.setHoldingSpeed();
     }
 }

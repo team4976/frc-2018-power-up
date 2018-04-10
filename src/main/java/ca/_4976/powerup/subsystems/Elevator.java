@@ -8,11 +8,8 @@ import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.ArmTarget;
 import ca._4976.powerup.commands.MoveElevatorWithJoystick;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -28,38 +25,38 @@ import static ca.qormix.library.Lazy.use;
 public final class Elevator extends Subsystem implements Sendable {
 
     // Elevator motors
-    private final TalonSRX elevMotorMain = new TalonSRX(2);
+    private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2);
     private final VictorSPX elevSlave1 = new VictorSPX(3);
-    private final TalonSRX elevSustainableFreeLegalUnionizedLaborer = new TalonSRX(8);
+    private final WPI_TalonSRX elevSustainableFreeLegalUnionizedLaborer = new WPI_TalonSRX(8);
 
     // Encoder on elevator
     public final Encoder elevEncoder = new Encoder(4, 5);
 
+
     private final DigitalInput limitSwitchMax = new DigitalInput(6);
     private final DigitalInput limitSwitchMin = new DigitalInput(7);
 
-    // Processing values
+    private final AnalogInput testSwitch = new AnalogInput(0);
+
+    // Preset values
     private double presetOutput;
-    private double tolerance = 25;
+    private double tolerance;
     private double speedMultiplier;
     private final double normalSpeed = 1;
     private final double slowSpeed = 0.4;
     private final double holdingSpeed = 0.12;
     private double target;
 
-    // Preset values
     public static double elevMaxValue = 2300 / 2.057,
-    scaleHighValue = elevMaxValue,//2100 / 2.057,
+    scaleHighValue = 2100 / 2.057,
     scaleLowValue = 1220 / 2.057,
     limitValue = 750 /2.057,
     groundValue = 0;
 
-    // Preset control
-    private boolean elevPresetUp = false;
-    private boolean elevPresetDown = false;
+    public boolean elevPresetUp = false;
+    public boolean elevPresetDown = false;
+    private boolean isShited = false;
 
-    // Climber tracker
-    private boolean isShifted = false;
 
     public Elevator() {
 
@@ -67,19 +64,12 @@ public final class Elevator extends Subsystem implements Sendable {
         elevSustainableFreeLegalUnionizedLaborer.follow(elevMotorMain);
 
         //Output value for presets
-        presetOutput = normalSpeed;
+        presetOutput = 0.8;//normalSpeed;
 
-        use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
-
-            NetworkTableEntry holdingSpeed = it.getEntry("Holding Power");
-            NetworkTableEntry fastSpeed = it.getEntry("Fast Speed");
-            NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
-            NetworkTableEntry elevLimit = it.getEntry("Interlock Start Point");
-            NetworkTableEntry presetTol = it.getEntry("Preset Tolerance");
-
-
-        });
+        //Preset tolerance
+        tolerance = 50;
     }
+
 
 
     @Override
@@ -98,31 +88,35 @@ public final class Elevator extends Subsystem implements Sendable {
         elevEncoder.reset();
     }
 
+    public boolean getSwitches(){
+        return !limitSwitchMax.get() || !limitSwitchMin.get();
+    }
+
     public void holdElevator(){
         elevMotorMain.set(ControlMode.PercentOutput, holdingSpeed);
     }
 
-    public void setClimberShifted(boolean isShifted){
-        this.isShifted = isShifted;
+    public void setClimberShifted(boolean isShited){
+        this.isShited = isShited;
     }
 
     public boolean getClimberShifted(){
-        return isShifted;
+        return isShited;
     }
-
     /**
      * Driver input overrides operator input. Only executes a movement initiated by the operator
      * when no input is detected from driver according to dead zone
      */
     public void moveElevator() {
 
-//            System.out.println("MANUAL: ELEVATOR ENCODER: " + getHeight());
-        System.out.println("Elevator encoder "+elevEncoder.getDistance());
+           // System.out.println("Manual - elevator encoder: " + getHeight());
+
+
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),
-        oobInput = 0, // value used for processing
-        motorOut = holdingSpeed, //initialized to holding speed. when needed, just set multiplier to 1 and multiset to true
+        oobInput = 0, // value used for out of bounds processing
+        motorOut = holdingSpeed,
         armHeight = Robot.linkArm.getArmEncoderValue(),
         dynamicLimit,
         armTarget,
@@ -134,56 +128,69 @@ public final class Elevator extends Subsystem implements Sendable {
         deadZoneFlag = false,
         driverFlag = false,
         operatorFlag = false,
-        multiplierSet = false;
+        multiSet = false;
 
         //Reset encoder at bottom
-        if(minFlag){ resetEncoder(); }
-
-
-        // Input reading
-        if (Math.abs(driverInput) > deadRange) { driverFlag = true; }
-
-        else if (Math.abs(operatorInput) > deadRange) { operatorFlag = true; }
-
-
-        // Output processing
-        if(driverFlag){ oobInput = driverInput; }
-
-        else if(operatorFlag){ oobInput = operatorInput; }
-
-
-        // Stop/Hold conditions
-        if ((Math.abs(driverInput) <= deadRange && Math.abs(operatorInput) <= deadRange) //dead zone
-            || (maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)) { //switches
-
-            if(getHeight() < 10){
-                motorOut = 0; // Stop motors at bottom
-            }
-
-            speedMultiplier = 1;
-            deadZoneFlag = true;
-            multiplierSet = true;
+        if(minFlag){
+            resetEncoder();
         }
 
+        //Input processing
+        if (Math.abs(driverInput) <= deadRange &&
+                Math.abs(operatorInput) <= deadRange) {
 
-        //Downward speed adjustment
-        if(!getClimberShifted() && !deadZoneFlag){
+            if(minFlag){
+                motorOut = 0;
+            }
+
+            else{
+                motorOut = holdingSpeed;
+            }
+
+            deadZoneFlag = true;
+            speedMultiplier = 1;
+            multiSet = true;
+        }
+
+        else if (Math.abs(driverInput) > deadRange && !Robot.motion.isRunning()) {
+            driverFlag = true;
+            motorOut = driverInput;
+        }
+
+        else if (Math.abs(operatorInput) > deadRange && !Robot.motion.isRunning()) {
+            operatorFlag = true;
+            motorOut = operatorInput;
+        }
+
+        //Output processing
+        if(driverFlag){
+            oobInput = driverInput;
+        }
+
+        else if(operatorFlag){
+            oobInput = operatorInput;
+        }
+
+        //Limit switches
+        if((maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)){
+            motorOut = holdingSpeed;
+            multiSet = true;
+        }
+
+        else if(!getClimberShifted() && !deadZoneFlag){
+
             if(oobInput < 0){
                 motorOut = 0.7 * oobInput;
             }
 
-            else{
+            else {
                 motorOut = oobInput;
             }
         }
 
-        /**
-         * Proportional elevator/arm control to avoid collisions
-         */
+        //TODO FIX ARM ENCODER
 
-        /*
-        todo: Remodel for new elevator
-        //Elevator slow and stop bands (below limit)
+        /*//Elevator slow and stop bands (below limit)
         if(elevatorLimitReached){
 
             dynamicLimit = (armHeight + 3450.1)/-3.6503;
@@ -196,11 +203,12 @@ public final class Elevator extends Subsystem implements Sendable {
                     && getHeight() > 30)
             {
 
-                speedMultiplier = slowSpeed;
-                multiplierSet = true;
+                speedMultiplier = normalSpeed * 0.5;
+                multiSet = true;
 
                 while(Robot.linkArm.getArmEncoderValue() < armTarget) {
-                    if(oobInput > 0 || Robot.oi.operator.getRawAxis(5) < 0){
+                    if(oobInput > 0 || Robot.oi.
+                    tor.getRawAxis(5) < 0){
                         break;
                     }
 
@@ -209,27 +217,34 @@ public final class Elevator extends Subsystem implements Sendable {
 
                 Robot.linkArm.setHoldingSpeed();
             }
-        }
-        */
+        }*/
 
 
         //Final output check
-        if(deadZoneFlag || driverFlag || operatorFlag && !multiplierSet) {
+        if(deadZoneFlag || driverFlag || operatorFlag) {
 
-            // Top and bottom speed buffers
-            if((getHeight() > elevMaxValue - 200 && oobInput > 0) ||
-                    (getHeight() < groundValue + 350  && oobInput < 0)) {
+            if((getHeight() > elevMaxValue - 175 && oobInput > 0) ||
+                    (getHeight() < groundValue + 500  && oobInput < 0) && !multiSet)
+            {
                 speedMultiplier = slowSpeed;
             }
 
-            else {
+            else if(!multiSet){
                 speedMultiplier = normalSpeed;
             }
 
+            double output = motorOut * speedMultiplier;
+            if(output == holdingSpeed){
+               // System.out.println("Elevator holding");
+            }
 
             elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
         }
     }
+
+
+    //********************************************************************/
+
 
     /**
      * Input test
@@ -258,7 +273,13 @@ public final class Elevator extends Subsystem implements Sendable {
             return true;
         }
 
-        else return Math.abs(opInput) > deadRange;
+        else if (Math.abs(opInput) > deadRange) {
+            return true;
+        }
+
+        else {
+            return false;
+        }
     }
 
     /**
@@ -275,8 +296,9 @@ public final class Elevator extends Subsystem implements Sendable {
         }
     }
 
+
     /**
-     * Preset move + check method
+     * Target Preset
      */
     public void moveToTarget(double target){
 
@@ -298,9 +320,8 @@ public final class Elevator extends Subsystem implements Sendable {
 
     public boolean checkTarget(){
 
-        if(Math.abs(getHeight() - target) < 2 * tolerance){
-
-            double motorOut = 0;
+        double motorOut = 0;
+        if(Math.abs(getHeight() - target) < 200){
 
             if(elevPresetUp){
                 motorOut = slowSpeed;
@@ -310,10 +331,65 @@ public final class Elevator extends Subsystem implements Sendable {
                 motorOut = -slowSpeed;
             }
 
-            elevMotorMain.set(ControlMode.PercentOutput, motorOut);
+            elevMotorMain.set(ControlMode.PercentOutput, motorOut * 0.6);
         }
 
         return getHeight() >= (target - tolerance) && getHeight() <= (target + tolerance);
+    }
+
+    /**
+     * Ground
+     *
+     * Move and check method
+     */
+    public void moveToGround() {
+
+        if(!elevPresetDown || !elevPresetUp) {
+
+            if (getHeight() > groundValue && limitSwitchMin.get()) {
+                elevMotorMain.set(ControlMode.PercentOutput, -presetOutput);
+                elevPresetDown = true;
+            }
+
+            else if (getHeight() < groundValue && limitSwitchMax.get()) {
+                elevMotorMain.set(ControlMode.PercentOutput, presetOutput);
+                elevPresetUp = true;
+            }
+        }
+    }
+
+    public boolean checkGround(){
+
+        if(getHeight() >= groundValue - (2 * tolerance) || getHeight() <= groundValue + (2 * tolerance)){
+
+            if(elevPresetUp){
+                elevMotorMain.set(ControlMode.PercentOutput, 0.4);
+            }
+
+            else if(elevPresetDown){
+                elevMotorMain.set(ControlMode.PercentOutput, -0.3);
+            }
+        }
+
+        return getHeight() >= (groundValue - tolerance) && getHeight() <= groundValue + 5;
+    }
+
+    /**
+     * Simply runs motors for use in Climber subsystem & commands
+     */
+    public void climb(){
+        elevMotorMain.set(ControlMode.PercentOutput, -1);
+    }
+
+    public void down(){
+        elevMotorMain.set(ControlMode.PercentOutput, 0.6);
+    }
+
+    /**
+     * Take a wild guess
+     */
+    public void stop(){
+        elevMotorMain.set(ControlMode.PercentOutput, 0);
     }
 }
 

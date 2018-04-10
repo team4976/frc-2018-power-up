@@ -57,6 +57,10 @@ public final class Robot extends IterativeRobot {
     public final NetworkTableEntry centerSelected =  table.getEntry("Center Auto Selected");
     public final NetworkTableEntry rightSelected =  table.getEntry("Right auto Selected");
     public final NetworkTableEntry straightSelected =  table.getEntry("Straight auto Selected");
+    public final NetworkTableEntry oneCubeSelected =  table.getEntry("One Cube Selected");
+    public final NetworkTableEntry twoCubeSelected =  table.getEntry("Two Cube Selected");
+
+
 
 
     public final NetworkTableEntry profiles =  table.getEntry("Profiles");
@@ -87,6 +91,8 @@ public final class Robot extends IterativeRobot {
         centerSelected.setDefaultBoolean(false);
         rightSelected.setDefaultBoolean(false);
         straightSelected.setDefaultBoolean(false);
+        oneCubeSelected.setDefaultBoolean(false);
+        twoCubeSelected.setDefaultBoolean(false);
     }
 
     @Override public void disabledInit() {
@@ -97,43 +103,65 @@ public final class Robot extends IterativeRobot {
 
     @Override public void autonomousInit() {
 
+        boolean selectedStraight = straightSelected.getBoolean(false);
+        boolean selectedLeft = leftSelected.getBoolean(false);
+//        boolean selectedScale
+
         String gameData = DriverStation.getInstance().getGameSpecificMessage();
         if (gameData != null) {
             char switchPosition = gameData.charAt(0);
             char scalePosition = gameData.charAt(1);
-            if (straightSelected.getBoolean(false)) {
+            if (selectedStraight) {
                 new LoadProfile("DriveStraight.csv").start();
                 new RunProfile().start();
             } else {
-                if (leftSelected.getBoolean(false)) {
-                    if (scalePosition == 'L') {
-                        new LoadProfile("ScaleLeft.csv").start();
-                        new RunProfile().start();
-                    }
-                    else if (switchPosition == 'L') {
-                        new LoadProfile("LeftSwitch.csv").start();
-                        new RunProfile().start();
-                    }
-                    else {
-                        new LoadProfile("DriveStraight.csv").start();
-                        new RunProfile().start();
+                if (selectedLeft) {
+                    if (scaleSelected.getBoolean(false) && switchSelect.getBoolean(false)){
+                        System.out.println("Running a scale and a switch");
+                        if (scalePosition == 'L' && switchPosition == 'L'){
+                            System.out.println("Running Left Scale Left Switch");
+                            new LoadProfile("LeftScaleLeftSwitch.csv").start();
+                            new RunProfile().start();
+                        } else if (scalePosition == 'L' && switchPosition == 'R'){
+                            new LoadProfile("LeftScaleRightSwitch.csv").start();
+                            new RunProfile().start();
+
+                        }
+                    } else {
+                        if (scalePosition == 'L') {
+                            System.out.println("Scale Left");
+                            new LoadProfile("ScaleLeftOneCube.csv").start();
+                            new RunProfile().start();
+                        } else if (switchPosition == 'L') {
+                            new LoadProfile("LeftSwitch.csv").start();
+                            new RunProfile().start();
+                        } else {
+                            new LoadProfile("DriveStraight.csv").start();
+                            new RunProfile().start();
+                        }
                     }
                 }
                 else if (centerSelected.getBoolean(false)) {
                     if (switchSelect.getBoolean(false)) {
                         if (switchPosition == 'L') {
-                            new LoadProfile("CenterSelectedSwitchSelectedSwitchLeft.csv").start();
+                            new LoadProfile("CenterSwitchLeft2Cube.csv").start();
                             new RunProfile().start();
                         } else if (switchPosition == 'R') {
-                            new LoadProfile("CenterSelectedSwitchSelectedSwitchRight.csv").start();
+                            new LoadProfile("2CubeSwitchRightSide.csv").start();
                             new RunProfile().start();
                         }
                     }
 
                 } else if (rightSelected.getBoolean(false)) {
                      if (scalePosition == 'R') {
-                        new LoadProfile("ScaleRight.csv").start();
-                        new RunProfile().start();
+                         if (oneCubeSelected.getBoolean(false)){
+                             new LoadProfile("RightSideScaleOneCube.csv").start();
+                             new RunProfile().start();
+                         } else if (twoCubeSelected.getBoolean(false)){
+                             new LoadProfile("RightSideScaleTwoCube.csv");
+                             new RunProfile().start();
+                         }
+
                     }
                     else if (switchPosition == 'R') {
                         new LoadProfile("RightSwitch.csv").start();
@@ -151,7 +179,6 @@ public final class Robot extends IterativeRobot {
             new LoadProfile("DriveStraight.csv").start();
             new RunProfile().start();
         }
-
     }
 
 

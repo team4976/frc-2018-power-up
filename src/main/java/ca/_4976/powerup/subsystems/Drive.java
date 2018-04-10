@@ -33,8 +33,8 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     public TalonSRX rightRear = new TalonSRX(13);
 
     // The encoders on the drive system
-    public Encoder left = new Encoder(0, 1);
-    public Encoder right = new Encoder(2, 3);
+    private Encoder left = new Encoder(0, 1);
+    private Encoder right = new Encoder(2, 3);
 
     // The ramping rate (change per second / ticks per second) { max accel, max jerk }
     private double[] ramp = new double[] { 1.0 / 200, 0.1 / 200 };
@@ -53,9 +53,18 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     public Drive() {
 
+
         left.setDistancePerPulse(0.0001114);
         right.setDistancePerPulse(0.0001114);
 
+        leftRear.configPeakCurrentLimit(0,0);
+        leftRear.configContinuousCurrentLimit(40, 0);
+
+        rightRear.configPeakCurrentLimit(0,0);
+        rightRear.configContinuousCurrentLimit(40,0);
+
+        rightFront.configPeakCurrentLimit(0,0);
+        rightFront.configContinuousCurrentLimit(40,0);
 
         // Adding our varables to NetworkTables
         use(NetworkTableInstance.getDefault().getTable("Drive"), it -> {
@@ -63,8 +72,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
             NetworkTableEntry tableEntry = it.getEntry("Ramp Rate");
 
             double[] rate = ramp;
-            //int allowableCurrent = 38;
-
 
             if (!tableEntry.exists()) {
 
@@ -77,15 +84,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
                 ramp = tableEntry.getDoubleArray(ramp);
 
             }, 0);
-
-            //leftRear.configPeakCurrentLimit(0,0);
-            //leftRear.configContinuousCurrentLimit(allowableCurrent, 0);
-
-            //rightRear.configPeakCurrentLimit(0,0);
-            //rightRear.configContinuousCurrentLimit(allowableCurrent, 0);
-
-            //leftRear.enableCurrentLimit(true);
-            //rightRear.enableCurrentLimit(true);
         });
 
         SmartDashboard.putData("Left Drive Encoder", left);
@@ -107,9 +105,14 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
     /**
      * Applies Zero throttle to the drive motors
      */
-    public void stop() {   setTankDrive(0, 0); }
+    public void stop() {
+        //setTankDrive(0, 0);
+        System.out.println("Stop drive function called");
+        arcadeDrive(0,0);
+    }
 
     public void arcadeDrive(Joystick joy) {
+
 
         // Save the left and right trigger values as a combined value
         double forward = joy.getRawAxis(3) - joy.getRawAxis(2);
@@ -124,9 +127,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         // Saves the joystick value as a power of 2 while still keeping the sign
         double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
 
-        System.out.println("Right front is " + rightFront.getOutputCurrent());
-
-
         arcadeDrive(turn, elevatorAffectedDrive);
 
 
@@ -137,8 +137,9 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         if (userControlEnabled) { // Used to disable user input when running a profile.
 
             // Set our taget based on arcade style control
-            target[0] = forward + turn;
-            target[1] = -forward + turn;
+            target[0] = forward + turn + 0.01;
+            target[1] = -forward + turn + 0.01;
+
 
             // If ramping is disabled directly output the target to the motors
             if (!ramping) setTankDrive(target[0], target[1]);
@@ -229,11 +230,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
         rightRear.set(ControlMode.PercentOutput, right);
 //        System.out.println("The right output value is " + right);
-       // rightFront.set(ControlMode.PercentOutput, right);
-        rightFront.follow(rightRear);
-        System.out.println("Right encoder "+right);
-        System.out.println("Left encoder "+left);
-
+        rightFront.set(ControlMode.PercentOutput, right);
     }
 
     /**
@@ -291,9 +288,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
     //set the default state for the gear switch
     public void defaultGear(){
-//        gear = false;
-//        transmission.set(DoubleSolenoid.Value.kReverse);
-//        System.out.println("default gear called");
     }
     public void vision (){
         CameraServer.getInstance().startAutomaticCapture();

@@ -32,6 +32,7 @@ public final class OI {
         //Climbing controls
         new JoystickButton(operator, 6).whenPressed(new ActivateClimber());
         new JoystickButton(operator, 5).whenPressed(new DeactivateClimber());
+
 //
 //        //Used for deploying the ramp
 //        new JoystickButton(driver, 8).whenPressed(new DeployRamp());
@@ -49,9 +50,8 @@ public final class OI {
         new JoystickButton(operator, 4).whenPressed(new ElevatorScaleHigh());
         new JoystickButton(operator, 4).whenPressed(new Arm45());
 
-        //Auto
-        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleHigh());
-        new JoystickButton(operator, 2).whenPressed(new ArmLevel());
+        //Low Scale
+//        new JoystickButton(operator, 2).whenPressed(new ElevatorScaleLow());
 
         //Switch
         new JoystickButton(operator, 3).whenPressed(new ElevatorGround());

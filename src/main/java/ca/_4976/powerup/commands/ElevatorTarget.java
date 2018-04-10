@@ -5,15 +5,18 @@ import ca._4976.powerup.Robot;
 /**
  * Created by 4976 on 2018-02-15.
  */
-public class ElevatorScaleLow extends ListenableCommand {
+public class ElevatorTarget extends ListenableCommand {
 
-    public ElevatorScaleLow(){
+    private double target;
+
+    public ElevatorTarget(double target){
         requires(Robot.elevator);
+        this.target = target;
     }
 
     @Override
     protected void initialize(){
-        Robot.elevator.moveToTarget(Robot.elevator.scaleLowValue);
+        Robot.elevator.moveToTarget(target);
     }
 
     @Override

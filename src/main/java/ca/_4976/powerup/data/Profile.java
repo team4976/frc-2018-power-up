@@ -41,7 +41,6 @@ public final class Profile {
                     builder.append("\n");
                     builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
                     builder.append(moment.position[0]).append(",").append(moment.position[1]).append(",,");
-                    builder.append(moment.velocity[0]).append(",").append(moment.velocity[1]);
 
                     if (moment.commands.length > 0) builder.append(",");
 
@@ -75,7 +74,6 @@ public final class Profile {
 
                     builder.append("output:[").append(moment.output[0]).append(", ").append(moment.output[1]).append("]\n");
                     builder.append("position:[").append(moment.position[0]).append(", ").append(moment.position[1]).append("]\n");
-                    builder.append("velocity:[").append(moment.velocity[0]).append(", ").append(moment.velocity[1]).append("]\n");
 
                     builder.append("\t}\n");
                 }
@@ -125,8 +123,7 @@ public final class Profile {
                     moments.add(new Moment(
                             commands,
                             new Double[] { Double.parseDouble(split[0]), Double.parseDouble(split[1]) },
-                            new Double[] { Double.parseDouble(split[3]), Double.parseDouble(split[4]) },
-                            new Double[] { Double.parseDouble(split[6]), Double.parseDouble(split[7]) }
+                            new Double[] { Double.parseDouble(split[3]), Double.parseDouble(split[4]) }
                     ));
                 }
 

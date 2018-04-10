@@ -24,6 +24,5 @@ public class ArmCube extends ListenableCommand {
     @Override
     protected void end(){
         Robot.linkArm.resetArmFlags();
-        Robot.linkArm.setHoldingSpeed();
     }
 }

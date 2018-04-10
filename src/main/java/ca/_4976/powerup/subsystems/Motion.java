@@ -39,7 +39,7 @@ public final class Motion extends Subsystem implements Sendable {
     private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
-    private double p = 0, i = 0, d = 0;
+    private double p = 3.0, i = 0, d = 0;
 
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Motion");
     private final NetworkTableEntry leftError = table.getEntry("Left Error");
@@ -107,8 +107,7 @@ public final class Motion extends Subsystem implements Sendable {
                     moments.add(new Moment(
                             report.toArray(new Integer[report.size()]),
                             Robot.drive.getTankDrive(),
-                            Robot.drive.getEncoderPosition(),
-                            Robot.drive.getEncoderRate()
+                            Robot.drive.getEncoderPosition()
                     ));
 
                     report.clear();
@@ -159,8 +158,6 @@ public final class Motion extends Subsystem implements Sendable {
             while (isRunning && interval < profile.moments.length && ds.isEnabled()) {
 
                 if (System.nanoTime() - lastTick >= timing)  {
-
-
                     momentCounter++;
                     lastTick = System.nanoTime();
 

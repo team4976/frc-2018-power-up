@@ -10,10 +10,10 @@ public class Climber extends Subsystem {
     //TODO - COMMENTED OUT CLIMBERSHIFT SOLENOID - CONFLICT WITH DRIVE
 
     //Solenoid used to change the elevator from high to low gear and vice-versa
-    private final DoubleSolenoid climbingShift = new DoubleSolenoid(10,1,4);
+    private final DoubleSolenoid climbingShift = new DoubleSolenoid(10,0,6);
 
     //Solenoid used to deploy the guides for climbing
-    private final DoubleSolenoid guides = new DoubleSolenoid(10,0,6);
+    private final DoubleSolenoid guides = new DoubleSolenoid(10,1,4);
     //Variable to show whether in high gear or low gear
     private boolean lowGearElevator = false;
     //Variable used to determine if left/right bumper was pressed.
@@ -31,22 +31,26 @@ public class Climber extends Subsystem {
     }
 
     public void deactivateClimber(){
-     //   System.out.println("Deactivating climbver");
+        //   System.out.println("Deactivating climbver");
         climbingShift.set(DoubleSolenoid.Value.kReverse);
         Robot.elevator.setClimberShifted(false);
         lowGearElevator = false;
     }
 
     public void guides(){
+        System.out.println("Guide state is " + guideState);
 
         if (guideState == true){
-            guides.set(DoubleSolenoid.Value.kReverse);
-            guideState = !guideState;
+            guides.set(DoubleSolenoid.Value.kForward);
+            System.out.println("Firing in reverse and guide state is " + guideState);
+
+            guideState = false;
         }
 
-        if (guideState == false){
-            guides.set(DoubleSolenoid.Value.kForward);
-            guideState = !guideState;
+        else if (guideState == false){
+            guides.set(DoubleSolenoid.Value.kReverse);
+            System.out.println("Firing forward and guide state is " + guideState);
+            guideState = true;
         }
     }
 
@@ -67,4 +71,5 @@ public class Climber extends Subsystem {
     protected void initDefaultCommand(){
 
     }
+
 }

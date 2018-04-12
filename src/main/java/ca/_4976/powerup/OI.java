@@ -32,6 +32,8 @@ public final class OI {
         //Climbing controls
         new JoystickButton(operator, 6).whenPressed(new ActivateClimber());
         new JoystickButton(operator, 5).whenPressed(new DeactivateClimber());
+        new JoystickButton(operator, 8).whenReleased(new LowerClimberGuides()
+        );
 
 
 //        //Used for deploying the ramp

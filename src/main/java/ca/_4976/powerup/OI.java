@@ -63,7 +63,6 @@ public final class OI {
         new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
         new JoystickButton(operator, 1).whenPressed(new ArmLevel());
 
-        LoadProfile leftScale = new LoadProfile("ScaleLeftOneCube.csv");
 
     }
 }

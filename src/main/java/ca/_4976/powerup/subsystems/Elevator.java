@@ -108,6 +108,10 @@ public final class Elevator extends Subsystem implements Sendable {
 
 //        System.out.println("Manual - elevator encoder: " + getHeight());
 
+
+        System.out.println("Elevator main output is " + elevMotorMain.getMotorOutputPercent());
+        System.out.println("Elevator slave output is " + elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
+        System.out.println("Elevator slave 2 output is " + elevSlave1.getMotorOutputPercent());
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),
@@ -131,16 +135,22 @@ public final class Elevator extends Subsystem implements Sendable {
             resetEncoder();
         }
 
-        //Input processing
-        if (Math.abs(driverInput) <= deadRange &&
-                Math.abs(operatorInput) <= deadRange) {
+        if (isShited){
+            elevSlave1.set(ControlMode.PercentOutput, -Robot.oi.operator.getRawAxis(1));
+            elevMotorMain.set(ControlMode.PercentOutput, Robot.oi.operator.getRawAxis(1));
 
-            if(minFlag){
-                motorOut = 0;
+        }
+
+            //Input processing
+            if (Math.abs(driverInput) <= deadRange &&
+                    Math.abs(operatorInput) <= deadRange) {
+
+                if(minFlag){
+                    motorOut = 0;
             }
 
             else if(getClimberShifted()){
-                motorOut = 0;
+                //motorOut = 0;
             }
 
             else {
@@ -174,7 +184,7 @@ public final class Elevator extends Subsystem implements Sendable {
         //Limit switches
         if((maxFlag && oobInput >= 0) || (minFlag && oobInput <= 0)){
             if(getClimberShifted()){
-                motorOut = 0;
+               // motorOut = 0;
             }
 
             else {

@@ -119,7 +119,7 @@ public final class Robot extends IterativeRobot {
         boolean selectedLeft = leftSelected.getBoolean(false);
 //        boolean selectedScale
 
-        String gameData = DriverStation.getInstance().getGameSpecificMessage();
+               String gameData = DriverStation.getInstance().getGameSpecificMessage();
         if (gameData != null) {
             char switchPosition = gameData.charAt(0);
             char scalePosition = gameData.charAt(1);
@@ -168,7 +168,12 @@ public final class Robot extends IterativeRobot {
                     }
 
                 } else if (rightSelected.getBoolean(false)) {
-                     if (switchPosition == 'R') {
+
+                    if (scalePosition == 'R'){
+                        new LoadProfile("RightSideScaleOneCube.csv").start();
+                        new RunProfile().start();
+                    }
+                     else if (switchPosition == 'R') {
 //                         if (oneCubeSelected.getBoolean(false)){
 //                             new LoadProfile("RightSideScaleOneCube.csv").start();
 //                             new RunProfile().start();

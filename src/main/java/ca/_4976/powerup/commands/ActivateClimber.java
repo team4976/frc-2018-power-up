@@ -8,6 +8,7 @@ public class ActivateClimber extends ListenableCommand{
 
     @Override
     protected void initialize(){
+        System.out.println("Elevator should be running at 100%");
         Robot.climber.activateClimber();
     }
 

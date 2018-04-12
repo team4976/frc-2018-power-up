@@ -69,6 +69,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
             grabberI.set(PercentOutput, notFast);
             currentFlag = true;
         }
+        //if(getAButtonCount()){}
         intakeCounter++;
     }
 

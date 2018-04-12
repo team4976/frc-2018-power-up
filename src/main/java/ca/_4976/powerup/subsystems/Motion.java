@@ -42,7 +42,7 @@ public final class Motion extends Subsystem implements Sendable {
     private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
-    private double p = 5.0, i = 0, d = 0;
+    private double p = 7.0, i = 0, d = 0;
 
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Motion");
     private final NetworkTableEntry leftError = table.getEntry("Left Error");

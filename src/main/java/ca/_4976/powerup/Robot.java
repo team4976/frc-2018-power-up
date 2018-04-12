@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -77,6 +78,8 @@ public final class Robot extends IterativeRobot {
     @Override public void robotInit() {
 
         oi = new OI();
+
+        Robot.climber.climbingShift.set(DoubleSolenoid.Value.kReverse);
 
 
         linkArm.resetArmEncoder();

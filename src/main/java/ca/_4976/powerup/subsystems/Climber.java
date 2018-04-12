@@ -10,7 +10,7 @@ public class Climber extends Subsystem {
     //TODO - COMMENTED OUT CLIMBERSHIFT SOLENOID - CONFLICT WITH DRIVE
 
     //Solenoid used to change the elevator from high to low gear and vice-versa
-    private final DoubleSolenoid climbingShift = new DoubleSolenoid(10,6,0);
+    public final DoubleSolenoid climbingShift = new DoubleSolenoid(10,6,0);
 
     //Solenoid used to deploy the guides for climbing
     private final DoubleSolenoid guides = new DoubleSolenoid(10,1,4);

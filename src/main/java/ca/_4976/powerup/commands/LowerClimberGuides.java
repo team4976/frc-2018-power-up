@@ -8,7 +8,7 @@ import ca._4976.powerup.Robot;
 public class LowerClimberGuides extends ListenableCommand {
 
     @Override protected void initialize(){
-        //Robot.climber.lowerScaleGrabber();
+        Robot.climber.guides();
     }
 
 

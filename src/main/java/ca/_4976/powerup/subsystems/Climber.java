@@ -19,12 +19,13 @@ public class Climber extends Subsystem {
     //Variable used to determine if left/right bumper was pressed.
     public int endGameToggle = 0;
 
+    private boolean guideState = true;
+
     //When the start button on the operator controller is pressed change the elevator gear from low to high and vice-versa
     //Also toggles the guides used for climbing
     public void activateClimber(){
         System.out.println("Activating climber");
         climbingShift.set(DoubleSolenoid.Value.kForward);
-        guides.set(DoubleSolenoid.Value.kReverse);
         Robot.elevator.setClimberShifted(true);
         lowGearElevator = true;
     }
@@ -32,10 +33,23 @@ public class Climber extends Subsystem {
     public void deactivateClimber(){
      //   System.out.println("Deactivating climbver");
         climbingShift.set(DoubleSolenoid.Value.kReverse);
-        guides.set(DoubleSolenoid.Value.kForward);
         Robot.elevator.setClimberShifted(false);
         lowGearElevator = false;
     }
+
+    public void guides(){
+
+        if (guideState == true){
+            guides.set(DoubleSolenoid.Value.kReverse);
+            guideState = !guideState;
+        }
+
+        if (guideState == false){
+            guides.set(DoubleSolenoid.Value.kForward);
+            guideState = !guideState;
+        }
+    }
+
 
 
 

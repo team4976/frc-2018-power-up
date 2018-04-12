@@ -20,7 +20,7 @@ public class DPadStuff extends Subsystem  {
         }
 
         else if (Robot.oi.operator.getPOV() == 90){
-         //   new LowerClimberGuides().start();
+            new LowerClimberGuides().start();
         }
 
         else if (Robot.oi.operator.getPOV() == 180){

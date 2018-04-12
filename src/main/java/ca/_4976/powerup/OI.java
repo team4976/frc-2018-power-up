@@ -33,7 +33,7 @@ public final class OI {
         new JoystickButton(operator, 6).whenPressed(new ActivateClimber());
         new JoystickButton(operator, 5).whenPressed(new DeactivateClimber());
 
-//
+
 //        //Used for deploying the ramp
 //        new JoystickButton(driver, 8).whenPressed(new DeployRamp());
 //        new JoystickButton(driver, 8).whenReleased(new StopDeployingRamp());
@@ -60,5 +60,8 @@ public final class OI {
         //Ground
         new JoystickButton(operator, 1).whenPressed(new ElevatorGround());
         new JoystickButton(operator, 1).whenPressed(new ArmLevel());
+
+        LoadProfile leftScale = new LoadProfile("ScaleLeftOneCube.csv");
+
     }
 }

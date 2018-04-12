@@ -20,13 +20,9 @@ public final class LoadProfile extends Command {
      * @param file this file will be read from the default directory and loaded
      *             as a profile.
      */
+    Profile loadedProfile;
     public LoadProfile(String file) {
-
         this.file = file;
-    }
-
-    @Override protected void initialize() {
-
         try {
 
             BufferedReader reader = new BufferedReader(new FileReader(
@@ -37,14 +33,25 @@ public final class LoadProfile extends Command {
             for (String line = reader.readLine(); line!= null; line = reader.readLine()) builder.append(line).append("\n");
 
             //CVS is currently the only format implemented
-            Profile profile = Profile.deserialize(builder.toString(), Profile.Format.CSV);
+            loadedProfile = Profile.deserialize(builder.toString(), Profile.Format.CSV);
 
-            Robot.motion.profile = Profile.deserialize(builder.toString(), Profile.Format.CSV);
+            // Robot.motion.profile = Profile.deserialize(builder.toString(), Profile.Format.CSV);
             reader.close();
 
-            System.out.println("Successfully loaded " + file + " runs for " + profile.moments.length / 200.0 + " seconds");
+            System.out.println("Successfully loaded " + file + " runs for " + loadedProfile.moments.length / 200.0 + " seconds");
 
         } catch (IOException e) { e.printStackTrace(); }
+
+    }
+
+    public void preLoad(){
+
+    }
+
+    @Override protected void initialize() {
+        Robot.motion.profile = loadedProfile;
+
+
     }
 
     @Override protected boolean isFinished() {

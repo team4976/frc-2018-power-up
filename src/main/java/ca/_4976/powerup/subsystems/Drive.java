@@ -139,8 +139,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
             // Set our taget based on arcade style control
             target[0] = forward + turn + 0.01;
             target[1] = -forward + turn + 0.01;
-
-
             // If ramping is disabled directly output the target to the motors
             if (!ramping) setTankDrive(target[0], target[1]);
         }

@@ -30,7 +30,7 @@ public class Climber extends Subsystem {
     }
 
     public void deactivateClimber(){
-        System.out.println("Deactivating climbver");
+     //   System.out.println("Deactivating climbver");
         climbingShift.set(DoubleSolenoid.Value.kReverse);
         guides.set(DoubleSolenoid.Value.kForward);
         Robot.elevator.setClimberShifted(false);

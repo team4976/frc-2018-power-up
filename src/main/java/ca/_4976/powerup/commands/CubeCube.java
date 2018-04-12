@@ -25,9 +25,7 @@ public class CubeCube extends ListenableCommand{
     protected boolean isFinished(){
         if(Robot.cubeHandler.getAButtonCount() != 2) {
             return Robot.cubeHandler.currentFlag;
-        }
-
-        else {
+        } else {
             return true;
         }
     }

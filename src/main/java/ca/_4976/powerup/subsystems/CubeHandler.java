@@ -77,6 +77,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
         currentFlag = false;
         intakeCounter = 0;
+
     }
 
     public void printCurrent(){

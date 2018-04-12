@@ -17,9 +17,10 @@ public abstract class ListenableCommand extends Command {
     private final int id;
 
     ListenableCommand() {
-
         id = Initialization.commands.size();
+
         Initialization.commands.add(this);
+
     }
 
     @Override public void start() {

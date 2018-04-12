@@ -31,6 +31,9 @@ public final class Motion extends Subsystem implements Sendable {
 
     private DriverStation ds = DriverStation.getInstance();
     public Profile profile = Profile.blank();
+    public Profile driveStraightProfile = Profile.blank();
+
+
     private Drive drive = Robot.drive;
     private boolean isRunning = false;
     private boolean isRecording = false;
@@ -39,7 +42,7 @@ public final class Motion extends Subsystem implements Sendable {
     private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
-    private double p = 3.0, i = 0, d = 0;
+    private double p = 5.0, i = 0, d = 0;
 
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Motion");
     private final NetworkTableEntry leftError = table.getEntry("Left Error");
@@ -52,7 +55,7 @@ public final class Motion extends Subsystem implements Sendable {
         if (commands == null) {
 
             commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
-            Initialization.commands = null;
+            //Initialization.commands = null;
         }
     }
 
@@ -196,12 +199,14 @@ public final class Motion extends Subsystem implements Sendable {
                                     + d * derivative[1]
                     );
 
+
                     builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
                     builder.append(error[0]).append(",").append(error[1]).append(",,");
 
                     try{
                         for (int command : moment.commands) {
                             commands[command].start();
+
                         }
 
                     } catch (NullPointerException   exception){

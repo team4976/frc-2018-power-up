@@ -16,7 +16,10 @@ public final class Profile {
 
     public final String name;
     public final String version;
+
     public final Moment[] moments;
+    public ArrayList loadedProfiles;
+
 
     public Profile(String name, String version, Moment[] moments) {
 
@@ -82,6 +85,7 @@ public final class Profile {
 
                 return builder.toString();
 
+
             case EXCEL:
 
                 throw new UnsupportedOperationException("Not Implemented");
@@ -90,7 +94,7 @@ public final class Profile {
 
     public static Profile blank() { return new Profile("null", "null", new Moment[0]); }
 
-    public static Profile deserialize(String fileOutput, Format format) {
+    public static  Profile deserialize(String fileOutput, Format format) {
 
         switch (format) {
 
@@ -114,7 +118,7 @@ public final class Profile {
                                     break;
                                 }
                             } catch (IndexOutOfBoundsException e){
-                                System.out.println("error");
+                                System.out.println("Loading");
                             }
 
                         }
@@ -127,7 +131,10 @@ public final class Profile {
                     ));
                 }
 
+
+
                 String[] split = lines[0].split(": ")[1].split(" ");
+
 
                 return new Profile(
                         split[0],

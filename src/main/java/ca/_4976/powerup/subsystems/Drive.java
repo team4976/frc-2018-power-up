@@ -122,9 +122,10 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         }
         ///
         // Saves the joystick value as a power of 2 while still keeping the sign
-        double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / x));
+        double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / (x + 0.001)));
 
-        arcadeDrive(turn, elevatorAffectedDrive);
+
+        arcadeDrive(turn , elevatorAffectedDrive);
 
 
     }

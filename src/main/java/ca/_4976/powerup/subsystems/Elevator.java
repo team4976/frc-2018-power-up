@@ -106,7 +106,7 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
-        System.out.println("Manual - elevator encoder: " + getHeight());
+       // System.out.println("Manual - elevator encoder: " + getHeight());
 
 
         double deadRange = 0.15,

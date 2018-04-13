@@ -203,6 +203,9 @@ public final class Motion extends Subsystem implements Sendable {
                     builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
                     builder.append(error[0]).append(",").append(error[1]).append(",,");
 
+                    System.out.println("The left motor output is " + moment.output[0]);
+                    System.out.println("The right motor output is "+ moment.output[1]);
+
                     try{
                         for (int command : moment.commands) {
                             commands[command].start();

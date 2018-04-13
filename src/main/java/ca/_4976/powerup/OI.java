@@ -28,6 +28,7 @@ public final class OI {
         new JoystickButton(driver, 3).whenPressed(new CancelCubeCube());
         new JoystickButton(driver, 2).whileHeld(new SpitCubeCube());
         new JoystickButton(driver, 2).whenReleased(new CancelCubeCube());
+        new JoystickButton(driver, 1).whenPressed(new cubeSecondGear());
 
         //Climbing controls
         new JoystickButton(operator, 6).whenPressed(new ActivateClimber());

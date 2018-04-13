@@ -20,7 +20,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
     //public boolean countCubeCube = false;
 
-    public boolean currentFlag = false;
+    public boolean currentFlag = false, secondGear = false;
     private int intakeCounter = 0;
     private int aButtonCount = 0;
     private double speedFast, notFast, grabCurrent, Spit;
@@ -49,6 +49,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
     public void resetFlags(){
         currentFlag = false;
+        secondGear = false;
         intakeCounter = 0;
     }
 
@@ -56,20 +57,22 @@ public final class CubeHandler extends Subsystem implements Sendable {
     public void stop(){
         grabberI.set(PercentOutput, 0);
         currentFlag = true;
+        secondGear = false;
         intakeCounter = 0;
     }
 
     public void intakeCube() {
         grabberI.set(PercentOutput, speedFast);
         currentFlag = false;
+        secondGear = false;
     }
 
     public void cubeCurrent() {
         if (grabberI.getOutputCurrent() > grabCurrent && intakeCounter > 10) {
             grabberI.set(PercentOutput, notFast);
             currentFlag = true;
+            secondGear = true;
         }
-        //if(getAButtonCount()){}
         intakeCounter++;
     }
 
@@ -77,6 +80,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
         grabberI.set(PercentOutput, Spit);
 
         currentFlag = false;
+        secondGear = false;
         intakeCounter = 0;
 
     }
@@ -94,6 +98,12 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
     public void resetACount(){
         aButtonCount = 0;
+    }
+
+    public void gearSwitch(){
+        if (secondGear == true){
+            grabberI.set(PercentOutput, speedFast);
+        }
     }
 
 }

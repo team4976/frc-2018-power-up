@@ -71,7 +71,9 @@ public final class Robot extends IterativeRobot {
     private final RecordProfile recordProfile = new RecordProfile();
     private final RunProfile runProfile = new RunProfile();
 
-
+    LoadProfile leftProfile;
+    LoadProfile rightScale;
+    LoadProfile rightSwitch;
 
 
 
@@ -102,6 +104,9 @@ public final class Robot extends IterativeRobot {
         twoCubeSelected.setDefaultBoolean(false);
 
        // LoadProfile preLoad = new LoadProfile("ScaleLeftOneCube.csv").preLoad();
+        leftProfile = new LoadProfile("ScaleLeftOneCube.csv");
+        rightScale = new LoadProfile("RightSideScale.csv");
+        rightSwitch = new LoadProfile("RightSwitch.csv");
 
     }
 
@@ -147,7 +152,8 @@ public final class Robot extends IterativeRobot {
                     } else {
                         if (scalePosition == 'L') {
                             System.out.println("Scale Left");
-                            new LoadProfile("ScaleLeftOneCube.csv").start();
+                            //new LoadProfile("ScaleLeftOneCube.csv").start();
+                            leftProfile.start();
                             new RunProfile().start();
 
                         } else if (switchPosition == 'L') {
@@ -173,7 +179,8 @@ public final class Robot extends IterativeRobot {
                 } else if (rightSelected.getBoolean(false)) {
 
                     if (scalePosition == 'R'){
-                        new LoadProfile("RightSideScaleOneCube.csv").start();
+                       // new LoadProfile("R.csv").start();
+                        rightScale.start();
                         new RunProfile().start();
                     }
                      else if (switchPosition == 'R') {
@@ -184,7 +191,8 @@ public final class Robot extends IterativeRobot {
 //                             new LoadProfile("RightSideScaleTwoCube.csv");
 //                             new RunProfile().start();
 //                         }
-                         new LoadProfile("RightSwitch.csv").start();
+                         //new LoadProfile("RightSwitch.csv").start();
+                        rightSwitch.start();
                          new RunProfile().start();
 
                     }

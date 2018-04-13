@@ -109,9 +109,9 @@ public final class Elevator extends Subsystem implements Sendable {
 //        System.out.println("Manual - elevator encoder: " + getHeight());
 
 
-        System.out.println("Elevator main output is " + elevMotorMain.getMotorOutputPercent());
-        System.out.println("Elevator slave output is " + elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
-        System.out.println("Elevator slave 2 output is " + elevSlave1.getMotorOutputPercent());
+//        System.out.println("Elevator main output is " + elevMotorMain.getMotorOutputPercent());
+//        System.out.println("Elevator slave output is " + elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
+//        System.out.println("Elevator slave 2 output is " + elevSlave1.getMotorOutputPercent());
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),

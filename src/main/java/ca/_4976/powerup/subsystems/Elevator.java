@@ -43,7 +43,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private double tolerance;
     private double speedMultiplier;
     private final double normalSpeed = 1;
-    private final double slowSpeed = 0.7;
+    private final double slowSpeed = 0.4;
     private final double holdingSpeed = 0.12;
     private double target;
 
@@ -109,15 +109,6 @@ public final class Elevator extends Subsystem implements Sendable {
         System.out.println("Manual - elevator encoder: " + getHeight());
 
 
-<<<<<<< Updated upstream
-//        System.out.println("Elevator main output is " + elevMotorMain.getMotorOutputPercent());
-//        System.out.println("Elevator slave output is " + elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
-//        System.out.println("Elevator slave 2 output is " + elevSlave1.getMotorOutputPercent());
-=======
-       // System.out.println("Elevator main output is " + elevMotorMain.getMotorOutputPercent());
-        //System.out.println("Elevator slave output is " + elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
-        //System.out.println("Elevator slave 2 output is " + elevSlave1.getMotorOutputPercent());
->>>>>>> Stashed changes
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),
@@ -248,20 +239,43 @@ public final class Elevator extends Subsystem implements Sendable {
 
         //Final output check
         //If any inputm
-        if(deadZoneFlag || driverFlag || operatorFlag) {
+            if(deadZoneFlag || driverFlag || operatorFlag) {
 
-            if((getHeight() > elevMaxValue - 175 && oobInput > 0) ||
-                    (getHeight() < groundValue + 500  && oobInput < 0) && !multiSet && !getClimberShifted())
-            {
-                speedMultiplier = slowSpeed;
+                if((getHeight() > elevMaxValue - 175 && oobInput > 0) ||
+                        (getHeight() < groundValue + 500  && oobInput < 0) && !multiSet && !getClimberShifted())
+                {
+                    speedMultiplier = slowSpeed;
+                }
+
+                else if(multiSet){
+                    speedMultiplier = normalSpeed;
+                }
+
+                elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
             }
+//        } else {
+//
+//            //Set Elevator speed to joystick value from controller
+//            //Bottom Limit Hit
+//            System.out.println("the min flag value is " + minFlag);
+//            System.out.println("The oob input is " + oobInput);
+//            if (minFlag && oobInput < 0){
+//                elevMotorMain.set(ControlMode.PercentOutput, 0);
+//            } else {
+//                elevMotorMain.set(ControlMode.PercentOutput, oobInput);
+//
+//            }
+//            //Holding Speed
+//            if (oobInput == 0 && !isShited){
+//                elevMotorMain.set(ControlMode.PercentOutput, holdingSpeed);
+//
+//            }
+//        }
 
-            else if(!multiSet){
-                speedMultiplier = normalSpeed;
-            }
 
-            elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
-        }
+
+
+
 
     }
 

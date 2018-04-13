@@ -43,7 +43,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private double tolerance;
     private double speedMultiplier;
     private final double normalSpeed = 1;
-    private final double slowSpeed = 0.4;
+    private final double slowSpeed = 0.7;
     private final double holdingSpeed = 0.12;
     private double target;
 
@@ -106,12 +106,18 @@ public final class Elevator extends Subsystem implements Sendable {
      */
     public void moveElevator() {
 
-//        System.out.println("Manual - elevator encoder: " + getHeight());
+        System.out.println("Manual - elevator encoder: " + getHeight());
 
 
+<<<<<<< Updated upstream
 //        System.out.println("Elevator main output is " + elevMotorMain.getMotorOutputPercent());
 //        System.out.println("Elevator slave output is " + elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
 //        System.out.println("Elevator slave 2 output is " + elevSlave1.getMotorOutputPercent());
+=======
+       // System.out.println("Elevator main output is " + elevMotorMain.getMotorOutputPercent());
+        //System.out.println("Elevator slave output is " + elevSustainableFreeLegalUnionizedLaborer.getMotorOutputPercent());
+        //System.out.println("Elevator slave 2 output is " + elevSlave1.getMotorOutputPercent());
+>>>>>>> Stashed changes
         double deadRange = 0.15,
         driverInput = -Robot.oi.driver.getRawAxis(5),
         operatorInput = -Robot.oi.operator.getRawAxis(1),
@@ -147,19 +153,19 @@ public final class Elevator extends Subsystem implements Sendable {
 
                 if(minFlag){
                     motorOut = 0;
-            }
+                }
 
-            else if(getClimberShifted()){
-                //motorOut = 0;
-            }
+                else if(getClimberShifted()){
+                    //motorOut = 0;
+                }
 
-            else {
-                motorOut = holdingSpeed;
-            }
+                else {
+                    motorOut = holdingSpeed;
+                }
 
-            deadZoneFlag = true;
-            speedMultiplier = 1;
-            multiSet = true;
+                deadZoneFlag = true;
+                speedMultiplier = 1;
+                multiSet = true;
         }
 
         else if (Math.abs(driverInput) > deadRange && !Robot.motion.isRunning()) {
@@ -241,6 +247,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
 
         //Final output check
+        //If any inputm
         if(deadZoneFlag || driverFlag || operatorFlag) {
 
             if((getHeight() > elevMaxValue - 175 && oobInput > 0) ||
@@ -255,6 +262,7 @@ public final class Elevator extends Subsystem implements Sendable {
 
             elevMotorMain.set(ControlMode.PercentOutput, motorOut * speedMultiplier);
         }
+
     }
 
 

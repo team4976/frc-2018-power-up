@@ -71,9 +71,18 @@ public final class Robot extends IterativeRobot {
     private final RecordProfile recordProfile = new RecordProfile();
     private final RunProfile runProfile = new RunProfile();
 
+<<<<<<< Updated upstream
     LoadProfile leftProfile;
     LoadProfile rightScale;
     LoadProfile rightSwitch;
+=======
+
+    LoadProfile leftScale;
+    LoadProfile rightSwitch;
+    LoadProfile rightScale;
+    LoadProfile rightSideLeftScale;
+    LoadProfile leftSwitch;
+>>>>>>> Stashed changes
 
 
 
@@ -108,7 +117,12 @@ public final class Robot extends IterativeRobot {
         rightScale = new LoadProfile("RightSideScale.csv");
         rightSwitch = new LoadProfile("RightSwitch.csv");
 
-    }
+        rightSwitch = new LoadProfile("RightSwitch.csv");
+        rightScale = new LoadProfile("RightSideScaleComplement.csv");
+        rightSideLeftScale = new LoadProfile("RightSideLeftScale.csv");
+        leftScale = new LoadProfile("LeftSideScaleComplement.csv");
+        leftSwitch = new LoadProfile("LeftSwitch.csv");
+}
 
     @Override public void disabledInit() {
 
@@ -152,12 +166,19 @@ public final class Robot extends IterativeRobot {
                     } else {
                         if (scalePosition == 'L') {
                             System.out.println("Scale Left");
+<<<<<<< Updated upstream
                             //new LoadProfile("ScaleLeftOneCube.csv").start();
                             leftProfile.start();
+=======
+                           // new LoadProfile("ScaleLeftOneCube.csv").start();
+                            //leftScale.start();
+                            leftScale.start();
+>>>>>>> Stashed changes
                             new RunProfile().start();
 
                         } else if (switchPosition == 'L') {
-                            new LoadProfile("LeftSwitch.csv").start();
+                           // new LoadProfile("LeftSwitch.csv").start();
+                            leftSwitch.start();
                             new RunProfile().start();
                         } else {
                             new LoadProfile("DriveStraight.csv").start();
@@ -179,11 +200,15 @@ public final class Robot extends IterativeRobot {
                 } else if (rightSelected.getBoolean(false)) {
 
                     if (scalePosition == 'R'){
+<<<<<<< Updated upstream
                        // new LoadProfile("R.csv").start();
+=======
+                       // new LoadProfile("RightSideScaleOneCube.csv").start();
+>>>>>>> Stashed changes
                         rightScale.start();
                         new RunProfile().start();
                     }
-                     else if (switchPosition == 'R') {
+//                     else if (switchPosition == 'R') {
 //                         if (oneCubeSelected.getBoolean(false)){
 //                             new LoadProfile("RightSideScaleOneCube.csv").start();
 //                             new RunProfile().start();
@@ -192,13 +217,19 @@ public final class Robot extends IterativeRobot {
 //                             new RunProfile().start();
 //                         }
                          //new LoadProfile("RightSwitch.csv").start();
+<<<<<<< Updated upstream
                         rightSwitch.start();
                          new RunProfile().start();
+=======
+//                        rightSwitch.start();
+//                        new RunProfile().start();
+>>>>>>> Stashed changes
 
-                    }
+                  //  }
                     else {
-                         new LoadProfile("DriveStraight.csv").start();
-                         new RunProfile().start();
+                         //new LoadProfile("DriveStraight.csv").start();
+                        rightSideLeftScale.start();
+                        new RunProfile().start();
                      }
             }
         }

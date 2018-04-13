@@ -85,9 +85,6 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
 
             }, 0);
         });
-
-        SmartDashboard.putData("Left Drive Encoder", left);
-        SmartDashboard.putData("Right Drive Encoder", right);
     }
 
     /**

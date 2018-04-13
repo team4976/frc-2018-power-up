@@ -62,18 +62,22 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
 
     public void intakeCube() {
-        grabberI.set(PercentOutput, speedFast);
-        currentFlag = false;
-        secondGear = false;
+        if (secondGear == false) {
+            grabberI.set(PercentOutput, speedFast);
+            currentFlag = false;
+            secondGear = false;
+        }
     }
 
     public void cubeCurrent() {
-        if (grabberI.getOutputCurrent() > grabCurrent && intakeCounter > 10) {
-            grabberI.set(PercentOutput, notFast);
-            currentFlag = true;
-            secondGear = true;
+        if (secondGear == false) {
+            if (grabberI.getOutputCurrent() > grabCurrent && intakeCounter > 10) {
+                grabberI.set(PercentOutput, notFast);
+                currentFlag = true;
+                secondGear = true;
+            }
+            intakeCounter++;
         }
-        intakeCounter++;
     }
 
     public void spitGear(){
@@ -103,6 +107,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
     public void gearSwitch(){
         if (secondGear == true){
             grabberI.set(PercentOutput, speedFast);
+            secondGear = false;
         }
     }
 

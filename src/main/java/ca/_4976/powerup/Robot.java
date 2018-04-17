@@ -110,7 +110,7 @@ public final class Robot extends IterativeRobot {
 
 
         rightSwitch = new LoadProfile("RightSwitch.csv");
-        rightScale = new LoadProfile("RightSideScale.csv");
+        rightScale = new LoadProfile("RightSideScaleComplement.csv");
         rightSideLeftScale = new LoadProfile("RightSideLeftScale.csv");
         leftScale = new LoadProfile("LeftSideScale.csv");
         leftSwitch = new LoadProfile("LeftSwitch.csv");

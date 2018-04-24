@@ -14,6 +14,6 @@ public class ClampCube extends ListenableCommand {
 
     @Override
     protected boolean isFinished() {
-        return Robot.cubeHandler.haveCube;
+        return true;
     }
 }

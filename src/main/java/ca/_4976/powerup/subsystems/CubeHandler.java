@@ -62,6 +62,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
     public void open(){
         inSolenoid.set(DoubleSolenoid.Value.kReverse);
+        new GrabSwitch().cancel();
         open=true;
     }
 
@@ -71,6 +72,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
     public void spinFast() {
         grabberL.set(PercentOutput, speedFast);
         grabberR.set(PercentOutput, -speedFast);
+
     }
 
     public void check(){

@@ -1,10 +1,15 @@
 package ca._4976.powerup.commands;
 
 import ca._4976.powerup.Robot;
+import edu.wpi.first.wpilibj.command.Command;
 
-public class CancelCubeCube extends ListenableCommand {
+/**
+ * Created by 4976 on 2018-04-19.
+ */
+public class CloseClaw extends Command{
+
     @Override
-    protected void initialize(){
+    protected void initialize() {
         Robot.cubeHandler.close();
         Robot.cubeHandler.stop();
     }
@@ -13,7 +18,4 @@ public class CancelCubeCube extends ListenableCommand {
     protected boolean isFinished() {
         return true;
     }
-
-    @Override
-    protected void end(){}
 }

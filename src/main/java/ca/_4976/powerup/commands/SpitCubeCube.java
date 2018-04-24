@@ -5,7 +5,9 @@ import ca._4976.powerup.Robot;
 public class SpitCubeCube extends ListenableCommand {
 
     @Override
-    protected void initialize(){Robot.cubeHandler.spitGear();}
+    protected void initialize(){
+        Robot.cubeHandler.spitCube();
+    }
 
     @Override
     protected boolean isFinished() {

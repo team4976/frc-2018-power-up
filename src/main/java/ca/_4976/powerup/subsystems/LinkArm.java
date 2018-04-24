@@ -19,7 +19,7 @@ import static ca.qormix.library.Lazy.use;
 public final class LinkArm extends Subsystem implements Sendable {
 
     //Motor inside linkarm carriage - raises/lowers arm
-    private final TalonSRX armMotor = new TalonSRX(4);
+    private final TalonSRX armMotor = new TalonSRX(1);
 
     //Motor values
     private double motorSpeed = 1.0;
@@ -117,7 +117,6 @@ public final class LinkArm extends Subsystem implements Sendable {
         //Reset encoder
         if(maxFlag){
             resetArmEncoder();
-//            System.out.println("ARM RESET - ENCODER AT: " + getArmEncoderValue());
         }
 
         //Dead zone

@@ -42,15 +42,11 @@ public final class Motion extends Subsystem implements Sendable {
     private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
-    private double p = 3.0, i = 0, d = 0;
-    //private double p, i, d;
+    private double p = 7.0, i = 0, d = 0;
+
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Motion");
     private final NetworkTableEntry leftError = table.getEntry("Left Error");
     private final NetworkTableEntry rightError = table.getEntry("Right Error");
-
-    double smartDashboardLeftError;
-    double smartDashboardRightError;
-
 
     @Override protected void initDefaultCommand() { }
 
@@ -155,7 +151,6 @@ public final class Motion extends Subsystem implements Sendable {
             double[] derivative = new double[2];
             double[] lastError = new double[2];
 
-
             StringBuilder builder = new StringBuilder();
 
             builder.append("Motion Profile Log: ").append(profile.name).append(" ").append(profile.version).append('\n');
@@ -176,10 +171,6 @@ public final class Motion extends Subsystem implements Sendable {
                         error[0] = moment.position[0] - it[0];
                         error[1] = moment.position[1] - it[1];
                     });
-
-                    smartDashboardLeftError = error[0];
-                    smartDashboardRightError = error[1];
-                    System.out.println("Left error is "  + smartDashboardLeftError + " ,, Right error is " + smartDashboardRightError );
 
                     leftError.setDouble(error[0]);
                     rightError.setDouble(error[1]);
@@ -212,6 +203,8 @@ public final class Motion extends Subsystem implements Sendable {
                     builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
                     builder.append(error[0]).append(",").append(error[1]).append(",,");
 
+                    System.out.println("The left motor output is " + moment.output[0]);
+                    System.out.println("The right motor output is "+ moment.output[1]);
 
                     try{
                         for (int command : moment.commands) {
@@ -248,14 +241,10 @@ public final class Motion extends Subsystem implements Sendable {
         setName("Motion Profile PID");
 
         builder.setSmartDashboardType("PIDController");
-       // builder.addDoubleProperty("leftError", () -> smartDashboardLeftError, it -> smartDashboardLeftError = it);
-       // builder.addDoubleProperty("RightError", () -> smartDashboardRightError, it -> smartDashboardRightError = it);
         builder.setSafeState(this::stop);
-//        builder.addDoubleProperty("p", () -> p, it -> p = it);
-//        builder.addDoubleProperty("i", () -> i, it -> i = it);
-//        builder.addDoubleProperty("d", () -> d, it -> d = it);
-
-
+        builder.addDoubleProperty("p", () -> p, it -> p = it);
+        builder.addDoubleProperty("i", () -> i, it -> i = it);
+        builder.addDoubleProperty("d", () -> d, it -> d = it);
         builder.addBooleanProperty("enabled", this::isRunning, ignored -> {});
     }
 }

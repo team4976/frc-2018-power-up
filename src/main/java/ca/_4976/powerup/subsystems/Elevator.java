@@ -24,19 +24,15 @@ import static ca.qormix.library.Lazy.use;
  */
 public final class Elevator extends Subsystem implements Sendable {
 
-    // Elevator motors
+    // Hardware
     private final WPI_TalonSRX elevMotorMain = new WPI_TalonSRX(2);
     private final VictorSPX elevSlave1 = new VictorSPX(3);
     private final WPI_TalonSRX elevSustainableFreeLegalUnionizedLaborer = new WPI_TalonSRX(8);
 
-    // Encoder on elevator
-    public final Encoder elevEncoder = new Encoder(4, 5);
-
+    private final Encoder elevEncoder = new Encoder(4, 5);
 
     private final DigitalInput limitSwitchMax = new DigitalInput(6);
     private final DigitalInput limitSwitchMin = new DigitalInput(7);
-
-    private final AnalogInput testSwitch = new AnalogInput(0);
 
     // Preset values
     private double presetOutput;

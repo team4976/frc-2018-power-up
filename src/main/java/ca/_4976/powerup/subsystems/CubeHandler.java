@@ -3,112 +3,93 @@ package ca._4976.powerup.subsystems;
 
 
 import ca._4976.powerup.Robot;
+import ca._4976.powerup.commands.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 import static ca.qormix.library.Lazy.use;
 import static com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput;
 
 //Main superclass that holds all the methods used by the commands
 public final class CubeHandler extends Subsystem implements Sendable {
-    public final TalonSRX grabberI = new TalonSRX(0);
+    public final TalonSRX grabberL = new TalonSRX(0);
+    public final TalonSRX grabberR = new TalonSRX(4);
+    public final DoubleSolenoid inSolenoid = new DoubleSolenoid(10,7,5);//real values
 
-    //public boolean countCubeCube = false;
+    private final AnalogInput intakeBumper = new AnalogInput(0); //Replace this value with actual value on comp bot, might have to change to analog
+    // (<10) -> pressed, (~190) -> not pressed
 
-    public boolean currentFlag = false, secondGear = false;
-    private int intakeCounter = 0;
-    private int aButtonCount = 0;
-    private double speedFast, notFast, grabCurrent, Spit;
+    private double speedFast=0.8, notFast=0.3, spit =-0.6;
+    public boolean haveCube=true;
+    private boolean open=false;
 
-    public CubeHandler(){
-        use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
-
-            NetworkTableEntry fullSpeed = it.getEntry("Full Speed");
-            NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
-            NetworkTableEntry current = it.getEntry("Current");
-            NetworkTableEntry spit = it.getEntry("Spit");
-
-            fullSpeed.setDefaultDouble(-0.8);
-            slowSpeed.setDefaultDouble(-0.3);
-            current.setDefaultDouble(35);
-            spit.setDefaultDouble(0.4); //1 LOUD AF
-            Spit=spit.getDouble(0);
-            speedFast=fullSpeed.getDouble(0);
-            notFast=slowSpeed.getDouble(0);
-            grabCurrent=current.getDouble(0);
-        });
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        setName("Grabber");
+        builder.setSafeState(this::stop);
+        builder.addDoubleProperty("Fast Speed",()->speedFast,it->speedFast=it);
+        builder.addDoubleProperty("Fast Speed",()->notFast,it->notFast=it);
+        builder.addDoubleProperty("Fast Speed",()->spit,it->spit=it);
     }
+
+    public CubeHandler(){}
 
     @Override
     protected void initDefaultCommand() {}
 
-    public void resetFlags(){
-        currentFlag = false;
-        secondGear = false;
-        intakeCounter = 0;
-    }
-
-
     public void stop(){
-        grabberI.set(PercentOutput, 0);
-        currentFlag = true;
-        secondGear = false;
-        intakeCounter = 0;
+        new CloseGroup().cancel();
+        new IntakeCube().cancel();
+        grabberL.set(PercentOutput, 0);
+        grabberR.set(PercentOutput, 0);
     }
 
-    public void intakeCube() {
-        if (secondGear == false) {
-            grabberI.set(PercentOutput, speedFast);
-            currentFlag = false;
-            secondGear = false;
+    public void close(){
+        inSolenoid.set(DoubleSolenoid.Value.kForward);
+        open=false;
+    }
+
+    public void rumbleOn(){
+        Robot.oi.driver.setRumble(GenericHID.RumbleType.kRightRumble,1);
+        Robot.oi.driver.setRumble(GenericHID.RumbleType.kLeftRumble,1);
+    }
+
+    public void rumbleOff(){
+        Robot.oi.driver.setRumble(GenericHID.RumbleType.kRightRumble,0);
+        Robot.oi.driver.setRumble(GenericHID.RumbleType.kLeftRumble,0);
+    }
+    public void open(){
+        inSolenoid.set(DoubleSolenoid.Value.kReverse);
+        open=true;
+    }
+
+    public void bumper(){
+        if (intakeBumper.getValue()<10&&open) new CloseGroup().start();
+    }
+    public void spinFast() {
+        grabberL.set(PercentOutput, speedFast);
+        grabberR.set(PercentOutput, -speedFast);
+    }
+
+    public void check(){
+        if (open){
+            new CloseGroup().start();}
+        else {
+            new IntakeCube().start();
+            new OpenClaw().start();
         }
     }
 
-    public void cubeCurrent() {
-        if (secondGear == false) {
-            if (grabberI.getOutputCurrent() > grabCurrent && intakeCounter > 10) {
-                grabberI.set(PercentOutput, notFast);
-                currentFlag = true;
-                secondGear = true;
-            }
-            intakeCounter++;
-        }
+    public void spinSlow() {
+            grabberL.set(PercentOutput, notFast);
+            grabberR.set(PercentOutput, -notFast);
     }
 
-    public void spitGear(){
-        grabberI.set(PercentOutput, Spit);
-
-        currentFlag = false;
-        secondGear = false;
-        intakeCounter = 0;
-
-    }
-
-    public void printCurrent(){
-    }
-
-    public void incrementACount(){
-        aButtonCount++;
-    }
-
-    public int getAButtonCount(){
-        return aButtonCount;
-    }
-
-    public void resetACount(){
-        aButtonCount = 0;
-    }
-
-    public void gearSwitch(){
-        if (secondGear == true){
-            grabberI.set(PercentOutput, speedFast);
-            secondGear = false;
-        }
+    public void spitCube(){
+        grabberL.set(PercentOutput, spit);
+        grabberR.set(PercentOutput, -spit);
     }
 
 }

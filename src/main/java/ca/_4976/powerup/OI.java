@@ -15,9 +15,6 @@ public final class OI {
     public Joystick operator = new Joystick(1);
 
     OI() {
-
-        //TODO JOYSTICK STOLEN
-
         new JoystickButton(driver,8).whenPressed(new RecordProfile());
         new JoystickButton(driver,7).whenPressed(new RunProfile());
        // new JoystickButton(driver, 4).whenPressed(new Transmission());
@@ -28,13 +25,11 @@ public final class OI {
         new JoystickButton(driver, 3).whenPressed(new CancelCubeCube());
         new JoystickButton(driver, 2).whileHeld(new SpitCubeCube());
         new JoystickButton(driver, 2).whenReleased(new CancelCubeCube());
-        new JoystickButton(driver, 1).whenPressed(new cubeSecondGear());
 
         //Climbing controls
         new JoystickButton(operator, 6).whenPressed(new ActivateClimber());
         new JoystickButton(operator, 5).whenPressed(new DeactivateClimber());
-        new JoystickButton(operator, 8).whenReleased(new LowerClimberGuides()
-        );
+        new JoystickButton(operator, 8).whenReleased(new LowerClimberGuides());
 
 
 //        //Used for deploying the ramp

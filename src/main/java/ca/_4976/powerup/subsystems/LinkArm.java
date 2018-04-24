@@ -27,8 +27,10 @@ public final class LinkArm extends Subsystem implements Sendable {
     private final double armConstSpeed = 1.0;
     private double holdingPower = -0.05; //compensate for reversal of motor
 
-    private final DigitalInput armSwitchMax = new DigitalInput(8);
-    private final DigitalInput armSwitchMin = new DigitalInput(9);
+    public final DigitalInput armSwitchMax = new DigitalInput(8);
+    public final DigitalInput armSwitchMin = new DigitalInput(9);
+
+    public Boolean minFlag, maxFlag;
 
     //Preset values
     public double armHighValue = 0,
@@ -201,8 +203,8 @@ public final class LinkArm extends Subsystem implements Sendable {
         double deadRange = 0.15;
         double armInput = Robot.oi.operator.getRawAxis(5);
 
-        boolean maxFlag = !armSwitchMax.get();
-        boolean minFlag = !armSwitchMin.get();
+        maxFlag = !armSwitchMax.get();
+        minFlag = !armSwitchMin.get();
 
         if(maxFlag && armPresetUp || minFlag && armPresetDown){
           //  System.out.println("arm cancelled");

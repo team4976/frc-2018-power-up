@@ -31,8 +31,10 @@ public final class Elevator extends Subsystem implements Sendable {
 
     private final Encoder elevEncoder = new Encoder(4, 5);
 
-    private final DigitalInput limitSwitchMax = new DigitalInput(6);
-    private final DigitalInput limitSwitchMin = new DigitalInput(7);
+    public final DigitalInput limitSwitchMax = new DigitalInput(6);
+    public final DigitalInput limitSwitchMin = new DigitalInput(7);
+
+    public Boolean maxFlag, minFlag;
 
     // Preset values
     private double presetOutput;
@@ -290,8 +292,8 @@ public final class Elevator extends Subsystem implements Sendable {
         double drInput = -Robot.oi.driver.getRawAxis(5);
         double opInput = -Robot.oi.operator.getRawAxis(1);
 
-        boolean maxFlag = !limitSwitchMax.get();
-        boolean minFlag = !limitSwitchMin.get();
+        maxFlag = !limitSwitchMax.get();
+        minFlag = !limitSwitchMin.get();
 
 
         if(affectedBySwitches && ((maxFlag && elevPresetUp) || (minFlag && elevPresetDown))){

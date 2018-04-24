@@ -21,7 +21,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
     private final AnalogInput intakeBumper = new AnalogInput(0); //Replace this value with actual value on comp bot, might have to change to analog
     // (<10) -> pressed, (~190) -> not pressed
 
-    private double speedFast=0.8, notFast=0.3, spit =-0.6;
+    private double speedFast= 0.8, notFast= 0.3, spit = -0.6, spitFast = -0.8;
     public boolean haveCube=true;
     private boolean open=false;
 
@@ -88,8 +88,15 @@ public final class CubeHandler extends Subsystem implements Sendable {
     }
 
     public void spitCube(){
-        grabberL.set(PercentOutput, spit);
-        grabberR.set(PercentOutput, -spit);
+//        if (Robot.elevator.minFlag == true && Robot.linkArm.maxFlag == true){
+//            grabberL.set(PercentOutput, spitFast);
+//            grabberR.set(PercentOutput, -spitFast);
+//        }
+//        else {
+            grabberL.set(PercentOutput, spit);
+            grabberR.set(PercentOutput, -spit);
+//        }
+//Todo Change grabber code to make it go fast
     }
 
 }

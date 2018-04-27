@@ -13,7 +13,6 @@ public class Climber extends Subsystem {
     public final DoubleSolenoid climbingShift = new DoubleSolenoid(10,6,0);
 
     //Solenoid used to deploy the guides for climbing
-    private final DoubleSolenoid guides = new DoubleSolenoid(10,1,4);
     //Variable to show whether in high gear or low gear
     private boolean lowGearElevator = false;
     //Variable used to determine if left/right bumper was pressed.
@@ -41,14 +40,14 @@ public class Climber extends Subsystem {
         System.out.println("Guide state is " + guideState);
 
         if (guideState == true){
-            guides.set(DoubleSolenoid.Value.kForward);
+            //guides.set(DoubleSolenoid.Value.kForward);
             System.out.println("Firing in reverse and guide state is " + guideState);
 
             guideState = false;
         }
 
         else if (guideState == false){
-            guides.set(DoubleSolenoid.Value.kReverse);
+            //guides.set(DoubleSolenoid.Value.kReverse);
             System.out.println("Firing forward and guide state is " + guideState);
             guideState = true;
         }

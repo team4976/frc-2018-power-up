@@ -57,13 +57,17 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         left.setDistancePerPulse(0.0001114);
         right.setDistancePerPulse(0.0001114);
 
-        leftRear.configPeakCurrentLimit(0,0);
+       // leftRear.enableCurrentLimit(true);
+
+        leftRear.configPeakCurrentLimit(40,0);
         leftRear.configContinuousCurrentLimit(40, 0);
 
-        rightRear.configPeakCurrentLimit(0,0);
+       // rightRear.enableCurrentLimit(true);
+        rightRear.configPeakCurrentLimit(40,0);
         rightRear.configContinuousCurrentLimit(40,0);
 
-        rightFront.configPeakCurrentLimit(0,0);
+        //rightFront.enableCurrentLimit(true);
+        rightFront.configPeakCurrentLimit(40,0);
         rightFront.configContinuousCurrentLimit(40,0);
 
         // Adding our varables to NetworkTables
@@ -121,7 +125,11 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         }
         ///
         // Saves the joystick value as a power of 2 while still keeping the sign
-        double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / (x + 0.001)));
+        double turn = using(joy.getRawAxis(0), x -> x = x * x * (Math.abs(x) / (x)));
+
+        if (Double.isNaN(turn)){
+            turn = 0;
+        }
 
 
         arcadeDrive(turn , elevatorAffectedDrive);
@@ -222,6 +230,7 @@ public final class Drive extends Subsystem implements Runnable, Sendable {
         leftRear.set(ControlMode.PercentOutput, left);
 //        System.out.println("The left output value is " + left);
         leftFront.follow(leftRear);
+
 
         rightRear.set(ControlMode.PercentOutput, right);
 //        System.out.println("The right output value is " + right);

@@ -5,13 +5,11 @@ import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.Drive;
 import ca._4976.powerup.subsystems.Motion;
 import ca._4976.powerup.subsystems.CubeHandler;
-import ca._4976.powerup.data.Profile;
 import ca._4976.powerup.subsystems.*;
 //import com.sun.xml.internal.bind.v2.model.runtime.RuntimeTypeInfoSet;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -73,11 +71,11 @@ public final class Robot extends IterativeRobot {
 
 
 
-    LoadProfile leftScale;
-    LoadProfile rightSwitch;
-    LoadProfile rightScale;
-    LoadProfile rightSideLeftScale;
-    LoadProfile leftSwitch;
+    LoadProfile left2Scale;
+    LoadProfile right2Switch;
+    LoadProfile right2Scale;
+    LoadProfile rightXScale;
+    LoadProfile left2Switch;
 
 
 
@@ -87,10 +85,12 @@ public final class Robot extends IterativeRobot {
 
         Robot.climber.climbingShift.set(DoubleSolenoid.Value.kReverse);
 
+        new Vision().start();
+
 
         linkArm.resetArmEncoder();
         new DefaultGear().start();
-        new Vision().start();
+
 
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);
@@ -108,30 +108,21 @@ public final class Robot extends IterativeRobot {
         twoCubeSelected.setDefaultBoolean(false);
 
 
-
-        rightSwitch = new LoadProfile("RightSwitch.csv");
-        rightScale = new LoadProfile("RightSideScaleComplement.csv");
-        rightSideLeftScale = new LoadProfile("RightSideLeftScale.csv");
-        leftScale = new LoadProfile("LeftSideScale.csv");
-        leftSwitch = new LoadProfile("LeftSwitch.csv");
-}
-
-    @Override public void disabledInit() {
-
-        motion.stop();
-
+        right2Switch = new LoadProfile("Right2Switch.csv");
+        right2Scale = new LoadProfile("Right2Scale.csv");
+        rightXScale = new LoadProfile("RightXScale.csv");
+        left2Scale = new LoadProfile("Left2Scale.csv");
+        left2Switch = new LoadProfile("Left2Switch.csv");
     }
 
+    @Override public void disabledInit() {
+        motion.stop();
+    }
 
     @Override public void autonomousInit() {
 
-
-       // LoadProfile leftScale = new LoadProfile("ScaleLeftOneCube.csv");
-
-
         boolean selectedStraight = straightSelected.getBoolean(false);
         boolean selectedLeft = leftSelected.getBoolean(false);
-//        boolean selectedScale
 
                String gameData = DriverStation.getInstance().getGameSpecificMessage();
         if (gameData != null) {
@@ -140,38 +131,18 @@ public final class Robot extends IterativeRobot {
             if (selectedStraight) {
                 new LoadProfile("DriveStraight.csv").start();
                 new RunProfile().start();
-              //  new RunProfile().start();
             } else {
                 if (selectedLeft) {
-                    if (scaleSelected.getBoolean(false) && switchSelect.getBoolean(false)){
-                        System.out.println("Running a scale and a switch");
-                        if (scalePosition == 'L' && switchPosition == 'L'){
-                            System.out.println("Running Left Scale Left Switch");
-                            new LoadProfile("LeftScaleLeftSwitch.csv").start();
-                            new RunProfile().start();
-                            //leftScale.start();
-                        } else if (scalePosition == 'L' && switchPosition == 'R'){
-                            new LoadProfile("LeftScaleRightSwitch.csv").start();
-                            new RunProfile().start();
-
-                        }
+                    if (scalePosition == 'L') {
+                        System.out.println("Scale Left");
+                        left2Scale.start();
+                        new RunProfile().start();
+                    } else if (switchPosition == 'L') {
+                        left2Switch.start();
+                        new RunProfile().start();
                     } else {
-                        if (scalePosition == 'L') {
-                            System.out.println("Scale Left");
-                            //new LoadProfile("ScaleLeftOneCube.csv").start();
-                           // new LoadProfile("ScaleLeftOneCube.csv").start();
-                            //leftScale.start();
-                            leftScale.start();
-                            new RunProfile().start();
-
-                        } else if (switchPosition == 'L') {
-                           // new LoadProfile("LeftSwitch.csv").start();
-                            leftSwitch.start();
-                            new RunProfile().start();
-                        } else {
-                            new LoadProfile("LeftSideRightScale.csv").start();
-                            new RunProfile().start();
-                        }
+                        new LoadProfile("DriveStraight.csv").start();
+                        new RunProfile().start();
                     }
                 }
                 else if (centerSelected.getBoolean(false)) {
@@ -187,24 +158,22 @@ public final class Robot extends IterativeRobot {
 
                 } else if (rightSelected.getBoolean(false)) {
                     if (scalePosition == 'R'){
-                        rightScale.start();
+                        right2Scale.start();
                         new RunProfile().start();
                     }
-
-                    else if (switchPosition == 'R'){
-                        rightSwitch.start();
+                    else  if (switchPosition == 'R'){
+                        right2Switch.start();
                         new RunProfile().start();
                     }
                     else {
-                         //new LoadProfile("DriveStraight.csv").start();
-                        rightSideLeftScale.start();
+                         new LoadProfile("DriveStraight.csv").start();
+                        rightXScale.start();
                         new RunProfile().start();
                      }
             }
         }
 
         } else {
-        System.out.println("Error no field variable found");
             new LoadProfile("DriveStraight.csv").start();
             new RunProfile().start();
         }
@@ -220,8 +189,10 @@ public final class Robot extends IterativeRobot {
         log();
     }
 
+
     @Override public void teleopInit(){
        //Robot.drive.lowGear();
+        Robot.cubeHandler.initGripper();
     }
 
 

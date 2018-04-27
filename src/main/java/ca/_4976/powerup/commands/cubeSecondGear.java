@@ -9,7 +9,7 @@ public class cubeSecondGear extends ListenableCommand{
 
     @Override
     protected void initialize(){
-        Robot.cubeHandler.gearSwitch();
+      //  Robot.cubeHandler.gearSwitch();
     }
 
     @Override

@@ -36,7 +36,7 @@ public final class Elevator extends Subsystem implements Sendable {
     private final DigitalInput limitSwitchMax = new DigitalInput(6);
     private final DigitalInput limitSwitchMin = new DigitalInput(7);
 
-    private final AnalogInput testSwitch = new AnalogInput(0);
+    //private final AnalogInput testSwitch = new AnalogInput(0);
 
     // Preset values
     private double presetOutput;

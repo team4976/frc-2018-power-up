@@ -25,10 +25,13 @@ public final class OI {
         new JoystickButton(driver, 4).whenReleased(new ShiftLow());
 
         new JoystickButton(driver, 1).whenPressed(new CubeCube());
+       // new JoystickButton(driver, 1).whenReleased(new CloseGripper());
         new JoystickButton(driver, 3).whenPressed(new CancelCubeCube());
         new JoystickButton(driver, 2).whileHeld(new SpitCubeCube());
-        new JoystickButton(driver, 2).whenReleased(new CancelCubeCube());
-        new JoystickButton(driver, 1).whenPressed(new cubeSecondGear());
+        new JoystickButton(driver, 2).whenReleased(new StopGripperMotors());
+
+
+
 
         //Climbing controls
         new JoystickButton(operator, 6).whenPressed(new ActivateClimber());

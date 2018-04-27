@@ -3,6 +3,7 @@ package ca._4976.powerup.subsystems;
 import ca._4976.powerup.commands.ListenableCommand;
 import ca._4976.powerup.Robot;
 import ca._4976.powerup.commands.SaveProfile;
+import ca._4976.powerup.commands.Vision;
 import ca._4976.powerup.data.Initialization;
 import ca._4976.powerup.data.Moment;
 import ca._4976.powerup.data.Profile;
@@ -33,7 +34,6 @@ public final class Motion extends Subsystem implements Sendable {
     public Profile profile = Profile.blank();
     public Profile driveStraightProfile = Profile.blank();
 
-
     private Drive drive = Robot.drive;
     private boolean isRunning = false;
     private boolean isRecording = false;
@@ -42,7 +42,7 @@ public final class Motion extends Subsystem implements Sendable {
     private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
-    private double p = 3.0, i = 0, d = 0;
+    private double p = 5, i = 0, d = 0;
     //private double p, i, d;
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Motion");
     private final NetworkTableEntry leftError = table.getEntry("Left Error");
@@ -103,11 +103,13 @@ public final class Motion extends Subsystem implements Sendable {
             double timing = 1e+9 / 200;
             long lastTick = System.nanoTime() - (long) timing;
 
+
             ArrayList<Moment> moments = new ArrayList<>();
 
             while (isRecording && ds.isEnabled()) {
 
                 if (System.nanoTime() - lastTick >= timing) {
+
 
                     lastTick = System.nanoTime();
 
@@ -148,6 +150,7 @@ public final class Motion extends Subsystem implements Sendable {
             double timing = 1e+9 / 200;
             long lastTick = System.nanoTime() - (long) timing;
 
+
             int interval = 0;
 
             double[] error = new double[2];
@@ -156,16 +159,17 @@ public final class Motion extends Subsystem implements Sendable {
             double[] lastError = new double[2];
 
 
-            StringBuilder builder = new StringBuilder();
-
-            builder.append("Motion Profile Log: ").append(profile.name).append(" ").append(profile.version).append('\n');
-            builder.append("Left Output,Right Output,,Left Error,Right Error\n");
+//            StringBuilder builder = new StringBuilder();
+//
+//            builder.append("Motion Profile Log: ").append(profile.name).append(" ").append(profile.version).append('\n');
+//            builder.append("Left Output,Right Output,,Left Error,Right Error\n");
 
             if (profile.moments.length == 0) System.out.println("No Profile Loaded");
 
             while (isRunning && interval < profile.moments.length && ds.isEnabled()) {
 
                 if (System.nanoTime() - lastTick >= timing)  {
+
                     momentCounter++;
                     lastTick = System.nanoTime();
 
@@ -177,9 +181,6 @@ public final class Motion extends Subsystem implements Sendable {
                         error[1] = moment.position[1] - it[1];
                     });
 
-                    smartDashboardLeftError = error[0];
-                    smartDashboardRightError = error[1];
-                    System.out.println("Left error is "  + smartDashboardLeftError + " ,, Right error is " + smartDashboardRightError );
 
                     leftError.setDouble(error[0]);
                     rightError.setDouble(error[1]);
@@ -196,6 +197,7 @@ public final class Motion extends Subsystem implements Sendable {
                     lastError[0] = error[0];
                     lastError[1] = error[1];
 
+
                     drive.setTankDrive(
                             moment.output[0]
                                     + p * error[0]
@@ -208,14 +210,14 @@ public final class Motion extends Subsystem implements Sendable {
                                     + d * derivative[1]
                     );
 
-
-                    builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
-                    builder.append(error[0]).append(",").append(error[1]).append(",,");
+//
+//                    builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
+//                    builder.append(error[0]).append(",").append(error[1]).append(",,");
 
 
                     try{
                         for (int command : moment.commands) {
-                            commands[command].start();
+                          commands[command].start();
 
                         }
 
@@ -227,15 +229,15 @@ public final class Motion extends Subsystem implements Sendable {
                 }
             }
 
-            try {
-
-                BufferedWriter writer = new BufferedWriter(new FileWriter(
-                        new File("/home/lvuser/motion/logs/" + profile.name + " - " + profile.version)));
-
-                writer.write(builder.toString());
-                writer.close();
-
-            } catch (IOException ignored) { }
+//            try {
+//
+//                BufferedWriter writer = new BufferedWriter(new FileWriter(
+//                        new File("/home/lvuser/motion/logs/" + profile.name + " - " + profile.version)));
+//
+//                writer.write(builder.toString());
+//                writer.close();
+//
+//            } catch (IOException ignored) { }
 
             isRunning = false;
             drive.setTankDrive(0, 0);
@@ -245,17 +247,17 @@ public final class Motion extends Subsystem implements Sendable {
 
     @Override public void initSendable(SendableBuilder builder) {
 
-        setName("Motion Profile PID");
+       // setName("Motion Profile PID");
 
-        builder.setSmartDashboardType("PIDController");
+    //    builder.setSmartDashboardType("PIDController");
        // builder.addDoubleProperty("leftError", () -> smartDashboardLeftError, it -> smartDashboardLeftError = it);
        // builder.addDoubleProperty("RightError", () -> smartDashboardRightError, it -> smartDashboardRightError = it);
-        builder.setSafeState(this::stop);
+       // builder.setSafeState(this::stop);
 //        builder.addDoubleProperty("p", () -> p, it -> p = it);
 //        builder.addDoubleProperty("i", () -> i, it -> i = it);
 //        builder.addDoubleProperty("d", () -> d, it -> d = it);
 
 
-        builder.addBooleanProperty("enabled", this::isRunning, ignored -> {});
+     //   builder.addBooleanProperty("enabled", this::isRunning, ignored -> {});
     }
 }

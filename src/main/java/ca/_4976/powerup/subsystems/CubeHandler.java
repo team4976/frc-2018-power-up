@@ -1,13 +1,11 @@
 //Group members: Michael, Nick, Jessy, Ian
 package ca._4976.powerup.subsystems;
 
-
-import ca._4976.powerup.Robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -16,99 +14,79 @@ import static com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput;
 
 //Main superclass that holds all the methods used by the commands
 public final class CubeHandler extends Subsystem implements Sendable {
-    public final TalonSRX grabberI = new TalonSRX(0);
+    public final TalonSRX gripperRight = new TalonSRX(8);
+    public final TalonSRX gripperLeft = new TalonSRX(0);
 
-    //public boolean countCubeCube = false;
 
-    public boolean currentFlag = false, secondGear = false;
-    private int intakeCounter = 0;
-    private int aButtonCount = 0;
-    private double speedFast, notFast, grabCurrent, Spit;
+    private final DoubleSolenoid intakeSolenoid = new DoubleSolenoid(10,1,4);
+
+    int toggle = 0;
+
+    private final AnalogInput intakeBumper = new AnalogInput(0); //Replace this value with actual value on comp bot, might have to change to analog
+
 
     public CubeHandler(){
-        use(NetworkTableInstance.getDefault().getTable("Grabber"), it -> {
+        gripperLeft.enableCurrentLimit(true);
 
-            NetworkTableEntry fullSpeed = it.getEntry("Full Speed");
-            NetworkTableEntry slowSpeed = it.getEntry("Slow Speed");
-            NetworkTableEntry current = it.getEntry("Current");
-            NetworkTableEntry spit = it.getEntry("Spit");
+        gripperLeft.configPeakCurrentLimit(25,500);
+        gripperLeft.configContinuousCurrentLimit(10,1000);
 
-            fullSpeed.setDefaultDouble(-0.8);
-            slowSpeed.setDefaultDouble(-0.3);
-            current.setDefaultDouble(35);
-            spit.setDefaultDouble(0.4); //1 LOUD AF
-            Spit=spit.getDouble(0);
-            speedFast=fullSpeed.getDouble(0);
-            notFast=slowSpeed.getDouble(0);
-            grabCurrent=current.getDouble(0);
-        });
+        gripperRight.enableCurrentLimit(true);
+        gripperRight.configPeakCurrentLimit(25,500);
+        gripperRight.configContinuousCurrentLimit(10,1000);
     }
 
     @Override
     protected void initDefaultCommand() {}
 
-    public void resetFlags(){
-        currentFlag = false;
-        secondGear = false;
-        intakeCounter = 0;
-    }
-
-
     public void stop(){
-        grabberI.set(PercentOutput, 0);
-        currentFlag = true;
-        secondGear = false;
-        intakeCounter = 0;
+        gripperLeft.set(PercentOutput, 0);
+        gripperRight.set(PercentOutput, 0);
+        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        toggle = 0;
+
     }
 
-    public void intakeCube() {
-        if (secondGear == false) {
-            grabberI.set(PercentOutput, speedFast);
-            currentFlag = false;
-            secondGear = false;
+    public void stopMotos(){
+        gripperLeft.set(PercentOutput, 0);
+        gripperRight.set(PercentOutput, 0);
+        toggle = 0;
+
+    }
+
+    public void initGripper(){
+        gripperLeft.set(PercentOutput, 0);
+        gripperRight.set(PercentOutput, 0);
+        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void IntakeCube(){
+
+        switch (toggle){
+            case 0:
+                gripperLeft.set(PercentOutput, 0.8);
+                gripperRight.set(PercentOutput, -0.8);
+                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+                toggle = 1;
+                break;
+            case 1:
+
+                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+                toggle = 0;
+                break;
         }
     }
 
-    public void cubeCurrent() {
-        if (secondGear == false) {
-            if (grabberI.getOutputCurrent() > grabCurrent && intakeCounter > 10) {
-                grabberI.set(PercentOutput, notFast);
-                currentFlag = true;
-                secondGear = true;
-            }
-            intakeCounter++;
-        }
+
+    public void closeGripper(){
+        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+
+
     }
 
     public void spitGear(){
-        grabberI.set(PercentOutput, Spit);
-
-        currentFlag = false;
-        secondGear = false;
-        intakeCounter = 0;
+        gripperLeft.set(PercentOutput, -1.0);
+        gripperRight.set(PercentOutput, 1.0);
 
     }
-
-    public void printCurrent(){
-    }
-
-    public void incrementACount(){
-        aButtonCount++;
-    }
-
-    public int getAButtonCount(){
-        return aButtonCount;
-    }
-
-    public void resetACount(){
-        aButtonCount = 0;
-    }
-
-    public void gearSwitch(){
-        if (secondGear == true){
-            grabberI.set(PercentOutput, speedFast);
-            secondGear = false;
-        }
-    }
-
 }

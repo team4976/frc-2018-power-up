@@ -42,31 +42,21 @@ public final class Motion extends Subsystem implements Sendable {
     private ListenableCommand[] commands = null;
     public ArrayList<Integer> report = new ArrayList<>();
 
-    private double p = 5, i = 0, d = 0;
-    //private double p, i, d;
+    private double p = 10.0, i = 0.01, d = 0;
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("Motion");
     private final NetworkTableEntry leftError = table.getEntry("Left Error");
     private final NetworkTableEntry rightError = table.getEntry("Right Error");
 
-    double smartDashboardLeftError;
-    double smartDashboardRightError;
-
-
     @Override protected void initDefaultCommand() { }
 
     private void initCommands() {
-
         if (commands == null) {
-
             commands = Initialization.commands.toArray(new ListenableCommand[Initialization.commands.size()]);
-            //Initialization.commands = null;
         }
     }
 
     public ListenableCommand[] getCommands() {
-
         initCommands();
-
         return commands;
     }
 
@@ -75,50 +65,36 @@ public final class Motion extends Subsystem implements Sendable {
     public boolean isRunning() { return isRunning; }
 
     public synchronized void record() {
-
         initCommands();
-
         new Thread(new Record()).start();
     }
 
     public synchronized void run() {
-
         initCommands();
-
         new Thread(new Run()).start();
     }
 
     public synchronized void stop() {
-
         isRunning = false;
         isRecording = false;
     }
 
     private class Record implements Runnable {
-
         @Override public void run() {
-
             isRecording = true;
 
             double timing = 1e+9 / 200;
             long lastTick = System.nanoTime() - (long) timing;
 
-
             ArrayList<Moment> moments = new ArrayList<>();
-
             while (isRecording && ds.isEnabled()) {
-
                 if (System.nanoTime() - lastTick >= timing) {
-
-
                     lastTick = System.nanoTime();
-
                     moments.add(new Moment(
                             report.toArray(new Integer[report.size()]),
                             Robot.drive.getTankDrive(),
                             Robot.drive.getEncoderPosition()
                     ));
-
                     report.clear();
                 }
             }
@@ -139,9 +115,7 @@ public final class Motion extends Subsystem implements Sendable {
     }
 
     private class Run implements Runnable {
-
         @Override public void run() {
-
             drive.enableRamping(false);
             drive.setUserControlEnabled(false);
 
@@ -150,7 +124,6 @@ public final class Motion extends Subsystem implements Sendable {
             double timing = 1e+9 / 200;
             long lastTick = System.nanoTime() - (long) timing;
 
-
             int interval = 0;
 
             double[] error = new double[2];
@@ -158,29 +131,19 @@ public final class Motion extends Subsystem implements Sendable {
             double[] derivative = new double[2];
             double[] lastError = new double[2];
 
-
-//            StringBuilder builder = new StringBuilder();
-//
-//            builder.append("Motion Profile Log: ").append(profile.name).append(" ").append(profile.version).append('\n');
-//            builder.append("Left Output,Right Output,,Left Error,Right Error\n");
-
             if (profile.moments.length == 0) System.out.println("No Profile Loaded");
 
             while (isRunning && interval < profile.moments.length && ds.isEnabled()) {
-
                 if (System.nanoTime() - lastTick >= timing)  {
-
                     momentCounter++;
                     lastTick = System.nanoTime();
 
                     final Moment moment = profile.moments[interval];
 
                     use(drive.getEncoderPosition(), it -> {
-
                         error[0] = moment.position[0] - it[0];
                         error[1] = moment.position[1] - it[1];
                     });
-
 
                     leftError.setDouble(error[0]);
                     rightError.setDouble(error[1]);
@@ -210,15 +173,9 @@ public final class Motion extends Subsystem implements Sendable {
                                     + d * derivative[1]
                     );
 
-//
-//                    builder.append(moment.output[0]).append(",").append(moment.output[1]).append(",,");
-//                    builder.append(error[0]).append(",").append(error[1]).append(",,");
-
-
                     try{
                         for (int command : moment.commands) {
                           commands[command].start();
-
                         }
 
                     } catch (NullPointerException   exception){
@@ -229,16 +186,6 @@ public final class Motion extends Subsystem implements Sendable {
                 }
             }
 
-//            try {
-//
-//                BufferedWriter writer = new BufferedWriter(new FileWriter(
-//                        new File("/home/lvuser/motion/logs/" + profile.name + " - " + profile.version)));
-//
-//                writer.write(builder.toString());
-//                writer.close();
-//
-//            } catch (IOException ignored) { }
-
             isRunning = false;
             drive.setTankDrive(0, 0);
             drive.setUserControlEnabled(true);
@@ -246,18 +193,5 @@ public final class Motion extends Subsystem implements Sendable {
     }
 
     @Override public void initSendable(SendableBuilder builder) {
-
-       // setName("Motion Profile PID");
-
-    //    builder.setSmartDashboardType("PIDController");
-       // builder.addDoubleProperty("leftError", () -> smartDashboardLeftError, it -> smartDashboardLeftError = it);
-       // builder.addDoubleProperty("RightError", () -> smartDashboardRightError, it -> smartDashboardRightError = it);
-       // builder.setSafeState(this::stop);
-//        builder.addDoubleProperty("p", () -> p, it -> p = it);
-//        builder.addDoubleProperty("i", () -> i, it -> i = it);
-//        builder.addDoubleProperty("d", () -> d, it -> d = it);
-
-
-     //   builder.addBooleanProperty("enabled", this::isRunning, ignored -> {});
     }
 }

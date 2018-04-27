@@ -6,7 +6,6 @@ import ca._4976.powerup.subsystems.Drive;
 import ca._4976.powerup.subsystems.Motion;
 import ca._4976.powerup.subsystems.CubeHandler;
 import ca._4976.powerup.subsystems.*;
-//import com.sun.xml.internal.bind.v2.model.runtime.RuntimeTypeInfoSet;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,19 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static ca.qormix.library.Lazy.use;
 
-/**
- * This is the main class for running the Robot code.
- *
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
-
 public final class Robot extends IterativeRobot {
-
-
     public static OI oi;
     public final static Elevator elevator = new Elevator();
     public final static LinkArm linkArm = new LinkArm();
@@ -60,16 +47,10 @@ public final class Robot extends IterativeRobot {
     public final NetworkTableEntry oneCubeSelected =  table.getEntry("One Cube Selected");
     public final NetworkTableEntry twoCubeSelected =  table.getEntry("Two Cube Selected");
 
-
-
-
     public final NetworkTableEntry profiles =  table.getEntry("Profiles");
-
 
     private final RecordProfile recordProfile = new RecordProfile();
     private final RunProfile runProfile = new RunProfile();
-
-
 
     LoadProfile left2Scale;
     LoadProfile right2Switch;
@@ -77,10 +58,7 @@ public final class Robot extends IterativeRobot {
     LoadProfile rightXScale;
     LoadProfile left2Switch;
 
-
-
     @Override public void robotInit() {
-
         oi = new OI();
 
         Robot.climber.climbingShift.set(DoubleSolenoid.Value.kReverse);
@@ -90,7 +68,6 @@ public final class Robot extends IterativeRobot {
 
         linkArm.resetArmEncoder();
         new DefaultGear().start();
-
 
         SmartDashboard.putData(drive);
         SmartDashboard.putData(motion);
@@ -107,7 +84,6 @@ public final class Robot extends IterativeRobot {
         oneCubeSelected.setDefaultBoolean(false);
         twoCubeSelected.setDefaultBoolean(false);
 
-
         right2Switch = new LoadProfile("Right2Switch.csv");
         right2Scale = new LoadProfile("Right2Scale.csv");
         rightXScale = new LoadProfile("RightXScale.csv");
@@ -120,11 +96,10 @@ public final class Robot extends IterativeRobot {
     }
 
     @Override public void autonomousInit() {
-
         boolean selectedStraight = straightSelected.getBoolean(false);
         boolean selectedLeft = leftSelected.getBoolean(false);
 
-               String gameData = DriverStation.getInstance().getGameSpecificMessage();
+        String gameData = DriverStation.getInstance().getGameSpecificMessage();
         if (gameData != null) {
             char switchPosition = gameData.charAt(0);
             char scalePosition = gameData.charAt(1);
@@ -141,7 +116,7 @@ public final class Robot extends IterativeRobot {
                         left2Switch.start();
                         new RunProfile().start();
                     } else {
-                        new LoadProfile("DriveStraight.csv").start();
+                        new LoadProfile("Left1ScaleRight.csv").start();
                         new RunProfile().start();
                     }
                 }
@@ -155,7 +130,6 @@ public final class Robot extends IterativeRobot {
                             new RunProfile().start();
                         }
                     }
-
                 } else if (rightSelected.getBoolean(false)) {
                     if (scalePosition == 'R'){
                         right2Scale.start();
@@ -166,35 +140,26 @@ public final class Robot extends IterativeRobot {
                         new RunProfile().start();
                     }
                     else {
-                         new LoadProfile("DriveStraight.csv").start();
+                         new LoadProfile("RightSide1ScaleLeft.csv").start();
                         rightXScale.start();
                         new RunProfile().start();
                      }
+                }
             }
-        }
-
         } else {
             new LoadProfile("DriveStraight.csv").start();
             new RunProfile().start();
         }
-
-
     }
 
-
-
     @Override public void autonomousPeriodic(){
-      //  runProfile.start();
         Scheduler.getInstance().run();
         log();
     }
 
-
     @Override public void teleopInit(){
-       //Robot.drive.lowGear();
         Robot.cubeHandler.initGripper();
     }
-
 
     @Override public void teleopPeriodic(){
         new DefaultGear().start();

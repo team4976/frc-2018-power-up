@@ -9,7 +9,7 @@ public class StopGripperMotors extends ListenableCommand {
 
     @Override
     protected void initialize(){
-        Robot.cubeHandler.stopMotos();}
+        Robot.cubeHandler.stopMotors();}
 
     @Override
     protected boolean isFinished() {

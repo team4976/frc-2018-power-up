@@ -126,7 +126,7 @@ public final class Robot extends IterativeRobot {
                             new LoadProfile("CenterSwitchLeft2Cube.csv").start();
                             new RunProfile().start();
                         } else if (switchPosition == 'R') {
-                            new LoadProfile("2CubeSwitchRightSide.csv").start();
+                            new LoadProfile("CenterSwitchRight2Cube.csv").start();
                             new RunProfile().start();
                         }
                     }
@@ -140,7 +140,7 @@ public final class Robot extends IterativeRobot {
                         new RunProfile().start();
                     }
                     else {
-                         new LoadProfile("RightSide1ScaleLeft.csv").start();
+                         new LoadProfile("DriveStraight.csv").start();
                         rightXScale.start();
                         new RunProfile().start();
                      }

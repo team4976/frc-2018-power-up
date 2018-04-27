@@ -21,7 +21,7 @@ public final class CubeHandler extends Subsystem implements Sendable {
 
         gripperRight.enableCurrentLimit(true);
         gripperRight.configPeakCurrentLimit(40,3000);
-        gripperRight.configContinuousCurrentLimit(10,1000);
+        gripperRight.configContinuousCurrentLimit(12,1000);
     }
 
     @Override
